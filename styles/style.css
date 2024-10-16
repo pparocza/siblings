@@ -1,0 +1,27 @@
+.UI_DIV{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+}
+h1{
+    font: 28px Brush Script MT, sans-serif;
+}
+a{
+    font: 15px Trebuchet MS, sans-serif;
+}
+button{
+    font: 17px Garamond, sans-serif;
+}
+label{
+    font: 17px Courier, sans-serif;
+}
+span{
+    font: 17px Courier, sans-serif;
+}
+div{
+    font: 15px Trebuchet MS, sans-serif;
+}
+body{background: black;}
