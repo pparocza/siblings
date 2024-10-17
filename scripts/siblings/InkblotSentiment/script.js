@@ -1,7 +1,6 @@
 import { IS } from "../../../script.js";
 
 IS.onLoad(inkblotSentiment);
-console.log("testing change");
 
 function inkblotSentiment()
 {
