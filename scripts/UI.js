@@ -1,4 +1,6 @@
 import * as main from "../script.js";
+import { IS } from "../script.js";
+import { SIBLING_OPTIONS_ARRAY } from "./siblings/SiblingOptions.js";
 
 const START_BUTTON = document.querySelector('.START_BUTTON');
 const START_STRING = "start";
@@ -11,35 +13,81 @@ const ONLINE_BUTTON = document.querySelector('.ONLINE_BUTTON');
 const ONLINE_STRING = "online";
 const OFFLINE_STRING = "offline";
 
-const GAIN_SLIDER = document.querySelector('.GAIN_SLIDER');
+const VOLUME_SLIDER = document.querySelector('.VOLUME_SLIDER');
+const VOLUME_SLIDER_INITIAL_VALUE = 0.7;
+const VOLUME_SLIDER_DISPLAY = document.querySelector('.VOLUME_DISPLAY');
 
-const GAIN_DISPLAY = document.querySelector('.GAIN_VALUE_DISPLAY');
+const PIECE_SELECTION_DROPDOWN = document.querySelector('.SIBLING_SELECTION_MENU');
+const SIBLING_SCRIPT = document.querySelector('.SIBLING_SCRIPT');
+const SIBLING_PATH = './scripts/siblings/'
 
-ONLINE_BUTTON.onclick = function()
+function initializeUI()
 {
-	ONLINE_BUTTON.innerHTML === ONLINE_STRING ?
-		ONLINE_BUTTON.innerHTML = OFFLINE_STRING :
-		ONLINE_BUTTON.innerHTML = ONLINE_STRING;
+	initializePieceSelectionDropdown();
+	initializeOnlineButton();
+	initializeStartButton();
+	initializeVolumeSlider()
 }
 
-START_BUTTON.onclick = function()
+function initializePieceSelectionDropdown()
 {
-	switch (START_BUTTON.innerHTML)
+	for(let siblingOptionIndex = 0; siblingOptionIndex < SIBLING_OPTIONS_ARRAY.length; siblingOptionIndex++)
 	{
-		case (LOAD_STRING):
-			handleLoad();
-			break;
-		case (START_STRING):
-			handleStart();
-			break;
-		case (RESET_STRING):
-			handleReset();
-			break;
-		case (STOP_STRING):
-			handleStop();
-			break;
-		default:
-			break;
+		let option = document.createElement('option');
+		let siblingOption = SIBLING_OPTIONS_ARRAY[siblingOptionIndex];
+		option.value = siblingOption.folder;
+		option.innerHTML = siblingOption.title;
+		PIECE_SELECTION_DROPDOWN.appendChild(option);
+	}
+
+	PIECE_SELECTION_DROPDOWN.oninput = function ()
+	{
+		SIBLING_SCRIPT.src = SIBLING_PATH + PIECE_SELECTION_DROPDOWN.value + "/script.js";
+	}
+}
+
+function initializeOnlineButton()
+{
+	ONLINE_BUTTON.onclick = function()
+	{
+		ONLINE_BUTTON.innerHTML === ONLINE_STRING ?
+			ONLINE_BUTTON.innerHTML = OFFLINE_STRING :
+			ONLINE_BUTTON.innerHTML = ONLINE_STRING;
+	}
+}
+
+function initializeStartButton()
+{
+	START_BUTTON.onclick = function()
+	{
+		switch (START_BUTTON.innerHTML)
+		{
+			case (LOAD_STRING):
+				handleLoad();
+				break;
+			case (START_STRING):
+				handleStart();
+				break;
+			case (RESET_STRING):
+				handleReset();
+				break;
+			case (STOP_STRING):
+				handleStop();
+				break;
+			default:
+				break;
+		}
+	}
+}
+
+function initializeVolumeSlider()
+{
+	VOLUME_SLIDER.value = VOLUME_SLIDER_INITIAL_VALUE;
+	setVolume(VOLUME_SLIDER_INITIAL_VALUE);
+
+	VOLUME_SLIDER.oninput = function()
+	{
+		setVolume(VOLUME_SLIDER.value);
 	}
 }
 
@@ -56,20 +104,22 @@ function handleLoad()
 		default:
 			break;
 	}
-
-	setStartButton(START_STRING, false);
 }
 
 function loadOnline()
 {
+	PIECE_SELECTION_DROPDOWN.disabled = true;
 	setStartButton(LOADING_STRING, true);
-	main.load();
+	IS.onReady(setStartButtonReady);
+	setTimeout(() => { main.load() }, 500);
 }
 
 function loadOffline()
 {
+	PIECE_SELECTION_DROPDOWN.disabled = true;
 	setStartButton(LOADING_STRING, true);
-	main.load();
+	IS.onReady(setStartButtonReady);
+	setTimeout(() => { main.load() }, 500);
 }
 
 function handleStart()
@@ -117,8 +167,18 @@ function setStartButton(label, disabled)
 	START_BUTTON.disabled = disabled;
 }
 
-
-GAIN_SLIDER.oninput = function()
+function setStartButtonReady()
 {
-	GAIN_DISPLAY.innerHTML = parseInt(volume * 100) + "%";
+	setStartButton(START_STRING, false);
 }
+
+function setVolume(volumeSliderValue)
+{
+	let amplitudeScaler = Math.pow(volumeSliderValue, 2);
+	let amplitudeToDecibels = IS.amplitudeToDecibels(amplitudeScaler);
+	IS.outputVolume = amplitudeToDecibels;
+	VOLUME_SLIDER_DISPLAY.innerHTML = parseInt(amplitudeToDecibels) + " dB";
+}
+
+initializeUI();
+
