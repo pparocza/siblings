@@ -1,7 +1,14 @@
 import { IS } from "../../../script.js";
 
 IS.onLoad(inkblotSentiment);
-console.log("testing change");
+
+class VisibleParameter
+{
+    constructor()
+    {
+        // TODO: show parameter value to be entered in window for generation
+    }
+}
 
 function inkblotSentiment()
 {
