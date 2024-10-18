@@ -1,8 +1,9 @@
 import { IS } from "../../../script.js";
+import { SalineBufferSource } from "./SalineBufferSource.js";
 
 IS.onLoad(load);
 
 function load()
 {
-    console.log("New Load!");
+    let buffer = new SalineBufferSource();
 }
