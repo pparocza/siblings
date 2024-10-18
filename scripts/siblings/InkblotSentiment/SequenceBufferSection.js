@@ -120,8 +120,8 @@ export class SequenceBufferSection
         stereoDelay.connect(reverb);
         stereoDelay.connect(fmReverb.node);
 
-        // stereoDelay.connectToMainOutput();
-        // reverb.connectToMainOutput();
+        stereoDelay.connectToMainOutput();
+        reverb.connectToMainOutput();
         fmReverb.node.connectToMainOutput();
 
         this.stereoDelay = stereoDelay;
