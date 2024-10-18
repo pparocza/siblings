@@ -62,8 +62,6 @@ export class FMReverb
         fmReverb.gain = 0.0625;
         fmReverb.buffer = fmReverbBuffer;
 
-        fmReverbBuffer.print();
-
         this.node = fmReverb;
     }
 }
