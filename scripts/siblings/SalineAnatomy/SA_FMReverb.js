@@ -1,6 +1,4 @@
-
-
-export class FMReverb
+export class SA_FMReverb
 {
     constructor(siblingContext, fundamental, scale)
     {
@@ -61,13 +59,12 @@ export class FMReverb
 
         let fmReverb = IS.createConvolver();
         fmReverb.wetMix = 1;
-        fmReverb.gain = 0.0625;
         fmReverb.buffer = fmReverbBuffer;
 
-        this.wetMix = fmReverb.wetMix;
-        this.gain = fmReverb.gain;
         this.node = fmReverb;
         this.fmReverb = fmReverb;
+        this.wetMix = fmReverb.wetMix;
+        this.gain = fmReverb.gain;
     }
 
     set wetMix(value)
