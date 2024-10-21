@@ -20,6 +20,7 @@ const VOLUME_SLIDER_DISPLAY = document.querySelector('.VOLUME_DISPLAY');
 const PIECE_SELECTION_DROPDOWN = document.querySelector('.SIBLING_SELECTION_MENU');
 const SIBLING_SCRIPT = document.querySelector('.SIBLING_SCRIPT');
 const SIBLING_PATH = './scripts/siblings/'
+let SCRIPT_SRC = "";
 
 function initializeUI()
 {
@@ -42,7 +43,7 @@ function initializePieceSelectionDropdown()
 
 	PIECE_SELECTION_DROPDOWN.oninput = function ()
 	{
-		SIBLING_SCRIPT.src = SIBLING_PATH + PIECE_SELECTION_DROPDOWN.value + "/script.js";
+		SCRIPT_SRC = SIBLING_PATH + PIECE_SELECTION_DROPDOWN.value + "/script.js";
 	}
 }
 
@@ -109,6 +110,7 @@ function handleLoad()
 function loadOnline()
 {
 	PIECE_SELECTION_DROPDOWN.disabled = true;
+	SIBLING_SCRIPT.src = SCRIPT_SRC;
 	setStartButton(LOADING_STRING, true);
 	IS.onReady(setStartButtonReady);
 	setTimeout(() => { main.load() }, 500);
@@ -117,6 +119,7 @@ function loadOnline()
 function loadOffline()
 {
 	PIECE_SELECTION_DROPDOWN.disabled = true;
+	SIBLING_SCRIPT.src = SCRIPT_SRC;
 	setStartButton(LOADING_STRING, true);
 	IS.onReady(setStartButtonReady);
 	setTimeout(() => { main.load() }, 500);
