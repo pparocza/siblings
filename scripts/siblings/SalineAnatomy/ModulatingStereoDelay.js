@@ -1,12 +1,14 @@
-export class ModulatingStereoDelay
+import { IS_Effect } from "../../../node_modules/infinitesibling";
+
+export class ModulatingStereoDelay extends IS_Effect
 {
     constructor(siblingContext)
     {
+        super(siblingContext);
+
         let IS = siblingContext;
 
-        let input = IS.createGain();
         let delay = IS.createStereoDelay();
-        let output = IS.createGain();
 
         let delayModulatorBuffer = IS.createBuffer();
         delayModulatorBuffer.noise().amplitude(0.001).add();
@@ -24,19 +26,12 @@ export class ModulatingStereoDelay
         delayModulator2.playbackRate = IS.randomFloat(0.00025, 0.000125);
         delayModulator2.loop = true;
 
-        this.input = input;
         this.delay = delay;
-        this.output = output;
         this.delayModulator = delayModulator;
         this.delayModulator2 = delayModulator2;
 
-        this.input.connect(this.delay);
-        this.delay.connect(this.output);
-    }
-
-    connect(audioNode)
-    {
-        this.output.connect(audioNode);
+        this.connectInputTo(this.delay);
+        this.connectToOutput(this.delay);
     }
 
     start()
