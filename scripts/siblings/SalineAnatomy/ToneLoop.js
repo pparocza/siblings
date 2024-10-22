@@ -1,5 +1,4 @@
 import { IS_Node } from "../../../node_modules/infinitesibling";
-import { PRINT_TO_PAGE } from "../../PrintToPage.js";
 
 export class ToneLoop extends IS_Node
 {
@@ -10,8 +9,6 @@ export class ToneLoop extends IS_Node
     )
     {
         super(siblingContext);
-
-        PRINT_TO_PAGE("Loading [ToneLoop]");
 
         let IS = siblingContext;
 
