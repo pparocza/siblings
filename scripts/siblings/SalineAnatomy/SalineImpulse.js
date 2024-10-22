@@ -1,12 +1,13 @@
 import { SA_FMReverb } from "./SA_FMReverb.js";
+import { IS_Node } from "../../../node_modules/infinitesibling";
 
-export class SalineImpulse
+export class SalineImpulse extends IS_Node
 {
-    constructor(siblingContext, rate, fundamental, scale, startTime = 0, stopTime = 0, outputNode = null)
+    constructor(siblingContext, rate, fundamental, scale, startTime = 0, stopTime = 0)
     {
-        this.IS = siblingContext;
+        super(siblingContext);
 
-        let output = this.IS.createGain();
+        this.IS = siblingContext;
 
         let buffer = this.IS.createBuffer(1, 1);
         buffer.impulse().fill();
@@ -21,32 +22,19 @@ export class SalineImpulse
         bufferSource.connect(fmReverb1.node);
         bufferSource.connect(fmReverb2.node);
 
-        fmReverb1.node.connect(output);
-        fmReverb2.node.connect(output);
+        fmReverb1.node.connect(this.output);
+        fmReverb2.node.connect(this.output);
 
-        this.output = output;
         this.buffer = buffer;
         this.bufferSource = bufferSource;
 
         this.scheduleStart(startTime);
         this.scheduleStop(stopTime);
-
-        if(outputNode !== null)
-        {
-            this.output.connect(outputNode);
-        }
-
-        console.log(startTime, stopTime);
     }
 
     start()
     {
         this.bufferSource.start();
-    }
-
-    connect(audioNode)
-    {
-        this.output.connect(audioNode);
     }
 
     scheduleStart(time, duration = 0)
