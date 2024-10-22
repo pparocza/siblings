@@ -19,7 +19,8 @@ const VOLUME_SLIDER_DISPLAY = document.querySelector('.VOLUME_DISPLAY');
 
 const PIECE_SELECTION_DROPDOWN = document.querySelector('.SIBLING_SELECTION_MENU');
 const SIBLING_SCRIPT = document.querySelector('.SIBLING_SCRIPT');
-const SIBLING_PATH = './scripts/siblings/'
+const SIBLING_PATH = './scripts/siblings'
+let SCRIPT_SRC = "";
 
 function initializeUI()
 {
@@ -29,9 +30,9 @@ function initializeUI()
 	initializeVolumeSlider()
 }
 
-function initializePieceSelectionDropdown()
+async function initializePieceSelectionDropdown()
 {
-	for(let siblingOptionIndex = 0; siblingOptionIndex < SIBLING_OPTIONS_ARRAY.length; siblingOptionIndex++)
+	for (let siblingOptionIndex = 0; siblingOptionIndex < SIBLING_OPTIONS_ARRAY.length; siblingOptionIndex++)
 	{
 		let option = document.createElement('option');
 		let siblingOption = SIBLING_OPTIONS_ARRAY[siblingOptionIndex];
@@ -40,9 +41,22 @@ function initializePieceSelectionDropdown()
 		PIECE_SELECTION_DROPDOWN.appendChild(option);
 	}
 
-	PIECE_SELECTION_DROPDOWN.oninput = function ()
+	PIECE_SELECTION_DROPDOWN.oninput = requestSiblingScript;
+}
+
+async function requestSiblingScript()
+{
+	SCRIPT_SRC = SIBLING_PATH + "/" + PIECE_SELECTION_DROPDOWN.value + "/script.js";
+
+	const scriptRequest = await fetch(SCRIPT_SRC);
+
+	if (scriptRequest.ok)
 	{
-		SIBLING_SCRIPT.src = SIBLING_PATH + PIECE_SELECTION_DROPDOWN.value + "/script.js";
+		setStartButton(LOAD_STRING, false);
+	}
+	else
+	{
+		setStartButton(LOAD_STRING, true);
 	}
 }
 
@@ -58,6 +72,8 @@ function initializeOnlineButton()
 
 function initializeStartButton()
 {
+	START_BUTTON.disabled = true;
+
 	START_BUTTON.onclick = function()
 	{
 		switch (START_BUTTON.innerHTML)
@@ -109,6 +125,7 @@ function handleLoad()
 function loadOnline()
 {
 	PIECE_SELECTION_DROPDOWN.disabled = true;
+	SIBLING_SCRIPT.src = SCRIPT_SRC;
 	setStartButton(LOADING_STRING, true);
 	IS.onReady(setStartButtonReady);
 	setTimeout(() => { main.load() }, 500);
@@ -117,6 +134,7 @@ function loadOnline()
 function loadOffline()
 {
 	PIECE_SELECTION_DROPDOWN.disabled = true;
+	SIBLING_SCRIPT.src = SCRIPT_SRC;
 	setStartButton(LOADING_STRING, true);
 	IS.onReady(setStartButtonReady);
 	setTimeout(() => { main.load() }, 500);
