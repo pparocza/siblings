@@ -17,10 +17,13 @@ const VOLUME_SLIDER = document.querySelector('.VOLUME_SLIDER');
 const VOLUME_SLIDER_INITIAL_VALUE = 0.7;
 const VOLUME_SLIDER_DISPLAY = document.querySelector('.VOLUME_DISPLAY');
 
-const PIECE_SELECTION_DROPDOWN = document.querySelector('.SIBLING_SELECTION_MENU');
+const SIBLING_SELECTION_DROPDOWN = document.querySelector('.SIBLING_SELECTION_MENU');
 const SIBLING_SCRIPT = document.querySelector('.SIBLING_SCRIPT');
 const SIBLING_PATH = './scripts/siblings'
 let SCRIPT_SRC = "";
+
+const TITLE_DIV = document.querySelector('.TITLE_DIV');
+let TITLE = "";
 
 function initializeUI()
 {
@@ -36,17 +39,23 @@ async function initializePieceSelectionDropdown()
 	{
 		let option = document.createElement('option');
 		let siblingOption = SIBLING_OPTIONS_ARRAY[siblingOptionIndex];
-		option.value = siblingOption.folder;
+		option.value = siblingOption.directory;
 		option.innerHTML = siblingOption.title;
-		PIECE_SELECTION_DROPDOWN.appendChild(option);
+		SIBLING_SELECTION_DROPDOWN.appendChild(option);
 	}
 
-	PIECE_SELECTION_DROPDOWN.oninput = requestSiblingScript;
+	SIBLING_SELECTION_DROPDOWN.oninput = handleSiblingSelection;
+}
+
+function handleSiblingSelection()
+{
+	requestSiblingScript();
+	setTitle();
 }
 
 async function requestSiblingScript()
 {
-	SCRIPT_SRC = SIBLING_PATH + "/" + PIECE_SELECTION_DROPDOWN.value + "/script.js";
+	SCRIPT_SRC = SIBLING_PATH + "/" + SIBLING_SELECTION_DROPDOWN.value + "/script.js";
 
 	const scriptRequest = await fetch(SCRIPT_SRC);
 
@@ -58,6 +67,12 @@ async function requestSiblingScript()
 	{
 		setStartButton(LOAD_STRING, true);
 	}
+}
+
+function setTitle()
+{
+	let selectedIndex = SIBLING_SELECTION_DROPDOWN.selectedIndex;
+	TITLE = SIBLING_SELECTION_DROPDOWN.options[selectedIndex].text;
 }
 
 function initializeOnlineButton()
@@ -124,8 +139,10 @@ function handleLoad()
 
 function loadOnline()
 {
-	PIECE_SELECTION_DROPDOWN.disabled = true;
+	SIBLING_SELECTION_DROPDOWN.disabled = true;
 	SIBLING_SCRIPT.src = SCRIPT_SRC;
+	SIBLING_SELECTION_DROPDOWN.remove();
+	TITLE_DIV.innerHTML = TITLE;
 	setStartButton(LOADING_STRING, true);
 	IS.onReady(setStartButtonReady);
 	setTimeout(() => { main.load() }, 500);
@@ -133,7 +150,7 @@ function loadOnline()
 
 function loadOffline()
 {
-	PIECE_SELECTION_DROPDOWN.disabled = true;
+	SIBLING_SELECTION_DROPDOWN.disabled = true;
 	SIBLING_SCRIPT.src = SCRIPT_SRC;
 	setStartButton(LOADING_STRING, true);
 	IS.onReady(setStartButtonReady);

@@ -1,28 +1,51 @@
-.UI_DIV{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    -moz-transform: translateX(-50%) translateY(-50%);
-    -webkit-transform: translateX(-50%) translateY(-50%);
-    transform: translateX(-50%) translateY(-50%);
-}
-h1{
+h1
+{
     font: 28px Brush Script MT, sans-serif;
 }
-a{
+
+a
+{
     font: 15px Trebuchet MS, sans-serif;
 }
-button{
+
+button
+{
     font: 17px Garamond, sans-serif;
 }
-label{
+
+label
+{
     font: 17px Courier, sans-serif;
     color: whitesmoke;
 }
-span{
+
+span
+{
     font: 17px Courier, sans-serif;
 }
-div{
+
+div
+{
     font: 15px Trebuchet MS, sans-serif;
+    color: whitesmoke;
 }
-body{background: black;}
+
+body
+{
+    background: black;
+}
+
+.TITLE_DIV
+{
+    font: 28px Brush Script MT, sans-serif;
+    text-align: center;
+    color: whitesmoke;
+}
+
+.UI_DIV
+{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}
