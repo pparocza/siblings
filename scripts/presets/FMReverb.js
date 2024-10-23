@@ -1,4 +1,4 @@
-export class SA_FMReverb
+export class FMReverb
 {
     constructor(siblingContext, fundamental, scale)
     {
