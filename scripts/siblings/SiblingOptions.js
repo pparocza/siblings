@@ -1,8 +1,8 @@
 class SiblingOption
 {
-    constructor(folder, title)
+    constructor(directory, title)
     {
-        this.folder = folder;
+        this.directory = directory;
         this.title = title;
     }
 }
