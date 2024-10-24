@@ -58,7 +58,7 @@ export const BufferPresets =
 
         // Create fmBuffer
         let fmBuffer = IS.createBuffer(1, 1);
-        fmBuffer.frequencyModulatedSine(5, 3.5, 2.13).fill();
+        fmBuffer.frequencyModulatedSine(IS.randomFloat(2, 6), IS.randomFloat(2, 6), IS.randomFloat(1, 3)).fill();
 
         let rampUpEnd = IS.randomFloat(0.05, 0.15);
         let rampDownExponent = IS.randomFloat(2, 5);
