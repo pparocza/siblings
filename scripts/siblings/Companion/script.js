@@ -118,12 +118,10 @@ function companionStandard()
             startOffset
         );
 
-/*
         pitchVoice.connect(reverb);
         pitchVoice.connect(delay);
 
-        IS.connectSeries(pitchVoice, pitchVoiceHighpass, pitchVoiceLowpass, IS.output);
-*/
+        IS.connectSeries(pitchVoice, IS.output);
 
         // Playing indeterminately noisey sources (gnarly fm) through tuned convolvers
 
@@ -132,7 +130,7 @@ function companionStandard()
 
     IS.outputVolume = -32;
 
-    let fmPadSource = IS.createBufferSource();
+/*  let fmPadSource = IS.createBufferSource();
     fmPadSource.playbackRate = 0.25;
     fmPadSource.buffer = BufferPresets.randomFMPad(IS);
     fmPadSource.loopEnd = fmPadSource.buffer.length;
@@ -153,6 +151,7 @@ function companionStandard()
     fmPadSource.connect(convolver);
     convolver.connectToMainOutput();
     convolver.connect(delay, reverb);
+*/
 }
 
 function pitchSource(nVoices, nPitches, fundamental, scale, nOnsets, speed, divArray, startOffset = 0)
