@@ -9,6 +9,8 @@ class SiblingOption
 
 export const SIBLING_OPTIONS_ARRAY =
 [
+    new SiblingOption("Companion", "Companion"),
+    new SiblingOption("ImitationIndex", "Imitation Index"),
     new SiblingOption("InkblotSentiment", "Inkblot Sentiment"),
     new SiblingOption("OneNote", "One Note"),
     new SiblingOption("RollingSine", "Rolling Sine"),
