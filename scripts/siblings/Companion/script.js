@@ -1,6 +1,5 @@
 import { IS } from "../../../script.js";
 import { BufferPresets } from "../../presets/BufferPresets.js";
-import { C_ModulatingStereoDelay } from "./C_ModulatingStereoDelay.js";
 
 let convolutionBuffer = IS.createBuffer(1, 1);
 

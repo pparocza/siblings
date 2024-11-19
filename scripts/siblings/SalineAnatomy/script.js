@@ -1,6 +1,6 @@
 import { IS } from "../../../script.js";
 import { SalineImpulse } from "./SalineImpulse.js";
-import { ModulatingStereoDelay } from "./ModulatingStereoDelay.js";
+import { ModulatingStereoDelay } from "../../presets/ModulatingStereoDelay.js";
 import { ToneLoop } from "./ToneLoop.js";
 
 // TODO: presets framework (extensions of effects classes? - base class includes a preset instance?)
