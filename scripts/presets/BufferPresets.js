@@ -32,26 +32,35 @@ export const BufferPresets =
         return buffer;
     },
 
-    impulse(siblingContext)
-    {
-        let IS = siblingContext;
-
-        let buffer = IS.createBuffer(1, 1);
-
-        buffer.impulse().fill();
-
-        return buffer;
-    },
-
     randomFMPercussion(siblingContext)
     {
         let IS = siblingContext;
 
+        let buffer = IS.createBuffer(1, IS.randomFloat(1, 2));
+
+        let carrierFrequency = IS.randomFloat(100, 5000);
+        let modulatorFrequency = IS.randomFloat(20, 1000);
+        let modulationGain = IS.randomFloat(1, 10);
+
+        buffer.frequencyModulatedSine(carrierFrequency, modulatorFrequency, modulationGain).fill();
+
+        let rampPeakPercent = IS.randomFloat(0.005, 0.015);
+        let upExp = IS.randomFloat(0.005, 0.2);
+        let downExp = IS.randomFloat(3, 6);
+        buffer.ramp(0, 1, rampPeakPercent, rampPeakPercent, upExp, downExp).multiply();
+
+        return buffer;
+    },
+
+    randomFMKey(siblingContext, fundamental)
+    {
+        let IS = siblingContext;
+
         let buffer = IS.createBuffer(1, 1);
 
-        let carrierFrequency = IS.randomFloat(100, 500);
-        let modulatorFrequency = IS.randomFloat(20, 10);
-        let modulationGain = IS.randomFloat(1, 10);
+        let carrierFrequency = fundamental;
+        let modulatorFrequency = carrierFrequency * IS.array(1, 2, 3, 4, 8).random();
+        let modulationGain = carrierFrequency * IS.array(1, 2, 3, 4, 0.125, 0.25).random();
 
         buffer.frequencyModulatedSine(carrierFrequency, modulatorFrequency, modulationGain).fill();
 
@@ -75,6 +84,37 @@ export const BufferPresets =
             let carrierFrequency = IS.randomFloat(500, 7000);
             let modulatorFrequency = IS.randomFloat(500, 7000);
             let modulationGain = IS.randomFloat(1, 300);
+
+            tempBuffer.frequencyModulatedSine(carrierFrequency, modulatorFrequency, modulationGain).fill();
+
+            let rampPeakPercent = IS.randomFloat(0.3, 0.8);
+            let upExp = IS.randomFloat(1, 2);
+            let downExp = IS.randomFloat(1, 2);
+            let startPercent = IS.randomFloat(0, 0.4);
+            let endPercent = IS.randomFloat(startPercent, 1);
+            tempBuffer.ramp(startPercent, endPercent, rampPeakPercent, rampPeakPercent, upExp, downExp).multiply();
+
+            tempBuffer.constant(1 / nLayers).multiply();
+
+            buffer.addBuffer(tempBuffer);
+        }
+
+        return buffer;
+    },
+
+    tonalFMPad(siblingContext, nLayers = 10, carrier)
+    {
+        let IS = siblingContext;
+
+        let buffer = IS.createBuffer(1, 20);
+        let tempBuffer = IS.createBuffer(1, 20);
+
+        let carrierFrequency = carrier;
+
+        for(let layer = 0; layer < nLayers; layer++)
+        {
+            let modulatorFrequency = carrierFrequency * IS.array(1, 2, 3, 4, 8).random();
+            let modulationGain = carrierFrequency * IS.array(1, 2, 3, 4, 0.125, 0.25).random();
 
             tempBuffer.frequencyModulatedSine(carrierFrequency, modulatorFrequency, modulationGain).fill();
 
