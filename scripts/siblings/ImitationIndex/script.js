@@ -1,241 +1,129 @@
 import { IS } from "../../../script.js";
 import { BufferPresets } from "../../presets/BufferPresets.js";
-import { C_ModulatingStereoDelay } from "./C_ModulatingStereoDelay.js";
+import { FMPadSource } from "./FMPadSource.js";
+import { ConvolverVoice } from "./ConvolverVoice.js";
 
-let convolutionBuffer = IS.createBuffer(1, 1);
+IS.onLoad(imitation);
 
-IS.onLoad(companionStandard);
+// TODO: 1. can't hear fmPadSources - 2. compare to original screencaps
 
-function companionStandard()
+let imitationOutput = IS.createGain();
+imitationOutput.connectToMainOutput();
+imitationOutput.volume = -12;
+
+let delay = IS.createStereoDelay();
+delay.gain = 0.125;
+delay.connectToMainOutput();
+
+let reverb = IS.createConvolver();
+reverb.gain = 0.5;
+reverb.connectToMainOutput();
+
+function imitation()
 {
-    let companionOutput = IS.createGain();
-    companionOutput.volume = -32;
-    companionOutput.connectToMainOutput();
-
-    let delay = IS.createStereoDelay();
-    delay.gain = 0.125;
-    delay.connectToMainOutput();
-
-    let reverb = IS.createConvolver();
-    reverb.gain = 0.5;
-    reverb.connectToMainOutput();
-
-    let modulatingDelay = new C_ModulatingStereoDelay(IS);
     let delayHighPass = IS.createFilter("highpass", 1000);
 
-    IS.connectSeries(reverb, modulatingDelay, delayHighPass, IS.output);
-    IS.connectSeries(delayHighPass, delay, IS.output);
-    modulatingDelay.start();
-    modulatingDelay.volume = 12;
+    IS.connectSeries(reverb, delayHighPass, imitationOutput);
+    IS.connectSeries(delayHighPass, delay, imitationOutput);
 
     // STRUCTURE
-
-    let nSections = 4;
-    let sectionLength = 40;
-    let nVoices = 5;
-    let nPitches = 20;
+    let nLayers = 50;
 
     let tonicOptions = IS.array("A", "B", "Bb", "C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#");
-    let modeOptions = IS.array("minor");
+    let modeOptions = IS.array("minor", "major", "dorian", "phrygian", "lydian", "mixolydian");
     let scale = IS.ratioScale(tonicOptions.random(), modeOptions.random());
     const fundamental = IS.randomFloat(25, 35);
-    let divArray = IS.array(1, 0.5, 1.5);
 
-    let speed = IS.randomFloat(2, 2);
+    let chord = IS.array
+    (
+        scale.value[0], scale.value[2], scale.value[3], scale.value[4],
+        scale.value[5], scale.value[6], scale.value[7]
+    );
 
-    let chords =
-    [
-        // 1
-        IS.array(scale.value[0], scale.value[2], scale.value[4]),
-        IS.array(scale.value[0], scale.value[2], scale.value[5]),
-
-        // 2
-        IS.array(scale.value[0], scale.value[2], scale.value[4]),
-        IS.array(scale.value[3], scale.value[4], scale.value[6], scale.value[6] * 2),
-        IS.array(scale.value[3], scale.value[4], scale.value[5], scale.value[5] * 2),
-
-        // 3
-        IS.array(scale.value[0], scale.value[2], scale.value[4], scale.value[4] * 2),
-        IS.array(scale.value[3], scale.value[4], scale.value[6], scale.value[6] * 2, scale.value[7], scale.value[7] * 2),
-        IS.array(scale.value[3], scale.value[4], scale.value[5], scale.value[5] * 2),
-
-        // 4
-        IS.array(scale.value[0], scale.value[2], scale.value[4], scale.value[4] * 2),
-        IS.array(scale.value[0], scale.value[2], scale.value[4]),
-        IS.array(scale.value[6] * 0.5, scale.value[1], scale.value[5]),
-        IS.array(scale.value[0], scale.value[2], scale.value[5], scale.value[5] * 2),
-
-        // 5
-        IS.array(scale.value[0], scale.value[2], scale.value[4], scale.value[4] * 2),
-        IS.array(scale.value[3], scale.value[4], scale.value[6], scale.value[6] * 2),
-        IS.array(scale.value[3], scale.value[4], scale.value[5], scale.value[5] * 2),
-
-        // 6
-        IS.array(scale.value[0], scale.value[2], scale.value[4], scale.value[4] * 2),
-        IS.array(scale.value[3], scale.value[4], scale.value[6], scale.value[6] * 2, scale.value[7], scale.value[7] * 2),
-        IS.array(scale.value[3], scale.value[4], scale.value[5], scale.value[5] * 2),
-
-        // 7
-        IS.array(scale.value[0], scale.value[2], scale.value[4], scale.value[4] * 2),
-        IS.array(scale.value[0], scale.value[2], scale.value[4]),
-    ];
-
-    let sectionProportions =
-    [
-        // 1
-        1, 0.5,
-        // 2
-        1, 0.5, 0.5,
-        // 3
-        1, 0.5, 0.5,
-        // 4
-        0.5, 0.5, 0.5, 0.5,
-        // 5
-        1, 0.5, 0.5,
-        // 6
-        1, 0.5, 0.5,
-        // 7
-        1, 0.5
-    ];
-
-    let startOffset = 0;
-
-    // PITCH
-    for(let i = 0; i < chords.length; i++)
-    {
-        let voiceSectionLength = (sectionLength * sectionProportions[i]) / speed;
-
-        let pitchVoice = pitchSource
-        (
-            // TODO: Parameter scheduling, so that you don't have to create an individual "voice" for each pitch
-            nVoices,
-            nPitches,
-            fundamental,
-            chords[i % chords.length],
-            voiceSectionLength,
-            speed,
-            divArray,
-            startOffset
-        );
-
-        pitchVoice.connect(reverb);
-        pitchVoice.connect(delay);
-
-        IS.connectSeries(pitchVoice, IS.output);
-
-        // Playing indeterminately noisey sources (gnarly fm) through tuned convolvers
-
-        startOffset += voiceSectionLength;
-    }
-
-    IS.outputVolume = -32;
-
-/*  let fmPadSource = IS.createBufferSource();
-    fmPadSource.playbackRate = 0.25;
-    fmPadSource.buffer = BufferPresets.randomFMPad(IS);
-    fmPadSource.loopEnd = fmPadSource.buffer.length;
-    fmPadSource.loop = true;
-    fmPadSource.volume = 6;
-    let fmPadFilter = IS.createFilter("lowpass", 1000);
-    fmPadSource.connect(fmPadFilter);
-    fmPadFilter.connect(delay, reverb);
-
-    fmPadSource.scheduleStart(0);
-
-    // THE IDEA IS FOR THIS CONVOLVER TO ACCENTUATE TONES FROM THE PITCHES IN THE BACKGROUND BASED ON THE NOISE OF
-    // THE FMPADSOURCE, BUT I REALLY LIKE HOW IT TURNED OUT WITH JUST THE CONVOLVER IN MONO
-
-    convolutionBuffer.constant(0.0025).multiply();
-
-    let convolver = IS.createConvolver(convolutionBuffer);
-    fmPadSource.connect(convolver);
-    convolver.connectToMainOutput();
-    convolver.connect(delay, reverb);
-*/
+    pads(nLayers, fundamental, chord);
+    keys(nLayers, fundamental, chord);
 }
 
-function pitchSource(nVoices, nPitches, fundamental, scale, nOnsets, speed, divArray, startOffset = 0)
+function pads(nLayers, fundamental, chord)
 {
-    let voiceArray = IS.array();
-    let voiceOutput = IS.createGain();
+    let fmPadSource = new FMPadSource(IS, nLayers, fundamental, chord);
+    let fmPadSource2 = new FMPadSource(IS, nLayers, fundamental, chord);
+    let fmPadSource3 = new FMPadSource(IS, nLayers, fundamental, chord);
 
-    const octaveOptions = IS.array(1, 2);
+    fmPadSource.sourceOutput.volume = -16;
+    fmPadSource2.sourceOutput.volume = -16;
+    fmPadSource3.sourceOutput.volume = -16;
 
-    for (let pitch = 0; pitch < nPitches; pitch++)
+    fmPadSource.convolverOutput.volume = 0;
+    fmPadSource2.convolverOutput.volume = 0;
+    fmPadSource3.convolverOutput.volume = 0;
+
+    let fmPadFilter = IS.createFilter("lowpass", 1000);
+    fmPadFilter.connect(delay, reverb);
+    fmPadFilter.connect(imitationOutput);
+
+    IS.connectMatrix
+    (
+        [fmPadSource.convolverOutput, fmPadSource2.convolverOutput, fmPadSource3.convolverOutput],
+        [fmPadFilter]
+    );
+
+    IS.connectMatrix
+    (
+        [fmPadSource.sourceOutput, fmPadSource.sourceOutput, fmPadSource.sourceOutput],
+        [fmPadFilter]
+    )
+
+    fmPadSource.scheduleStart(0);
+    fmPadSource2.scheduleStart((20 * 4) - 10);
+    fmPadSource3.scheduleStart((20 * 4 * 2) - 10);
+}
+
+function keys(nLayers, fundamental, chord)
+{
+    let possibleDurations = [1, 1.5, 2, 3, 1.33, 1.7];
+    let possibleDurations2 = [1, 1.5, 2, 0.25, 0.75, 1.25];
+
+    let startTimes = [0, 80, 160];
+    let timeLimits = [80, 160, 240];
+
+    for (let sectionIndex = 0; sectionIndex < startTimes.length; sectionIndex++)
     {
-        let voiceBuffer = IS.createBuffer(1, 1);
+        let startTime = startTimes[sectionIndex];
+        let timeLimit = timeLimits[sectionIndex];
 
-        let octave = octaveOptions.random();
-
-        let carrierFrequency = fundamental * scale.urn();
-        let modulatorFrequency = IS.randomFloat(5, 10);
-        let modulationGain = IS.randomFloat(0.125, 0.25);
-        voiceBuffer.frequencyModulatedSine(carrierFrequency, modulatorFrequency, modulationGain).add();
-        voiceBuffer.frequencyModulatedSine
-        (
-            carrierFrequency * IS.randomFloat(1.001, 1.007),
-            modulatorFrequency * IS.randomFloat(1.001, 1.007),
-            modulationGain * IS.randomFloat(1.001, 1.007)
-        ).add();
-
-        let rampPeakPercent = IS.randomFloat(0.001, 0.003);
-
-        if (IS.coinToss())
+        for(let i = 0; i < 10; i++)
         {
-            voiceBuffer.frequencyModulatedSine
+            let fmKeyCarrier = fundamental;
+            let fmKeyBuffer = BufferPresets.randomFMKey(IS, fmKeyCarrier);
+            let fmKeyBufferSource = IS.createBufferSource(fmKeyBuffer);
+            fmKeyBufferSource.playbackRate = IS.array(1, 2, 0.25, 0.5, 4).random();
+
+            fmKeyBufferSource.volume = -6;
+
+            let highpass = IS.createFilter("highpass", 1000);
+
+            let convolution = IS.createConvolver
             (
-                carrierFrequency * IS.randomFloat(0.000625, 0.0003125),
-                modulatorFrequency * IS.randomFloat(0.000625, 0.0003125),
-                modulationGain * IS.randomFloat(0.000625, 0.0003125),
-            ).multiply();
+                new ConvolverVoice(IS, nLayers, fundamental, chord)
+            );
 
-            if(IS.coinToss())
+            let panValue = i % 2 === 0 ? IS.randomFloat(0.6, 1) : -1 * IS.randomFloat(0.6, 1);
+            let convolutionPanner = IS.createStereoPanner(panValue);
+            IS.connectSeries(fmKeyBufferSource, highpass, convolution, convolutionPanner, imitationOutput);
+            convolution.connect(delay, reverb);
+
+            let sequence = IS.array()
+            sequence.timeSequence
+            (
+                100, possibleDurations, startTime, i === 0,
+                0.133, 0.001, 1, timeLimit
+            );
+
+            for(let sequenceIndex = 0; sequenceIndex < sequence.length; sequenceIndex++)
             {
-                rampPeakPercent = 1 - rampPeakPercent;
-                voiceBuffer.attenuate(-6);
-            }
-            else
-            {
-                voiceBuffer.attenuate(6);
-            }
-        }
-
-        let upExp = IS.randomFloat(0.005, 0.02);
-        let downExp = IS.randomFloat(3, 6);
-        voiceBuffer.ramp(0, 1, rampPeakPercent, rampPeakPercent, upExp, downExp).multiply();
-
-        let voiceSource = IS.createBufferSource(voiceBuffer);
-        voiceSource.playbackRate = 1 / octave;
-
-        let panner = IS.createStereoPanner(IS.randomFloat(-1, 1));
-
-        IS.connectSeries(voiceSource, panner, voiceOutput);
-
-        voiceArray.push(voiceSource);
-
-        convolutionBuffer.addBuffer(voiceBuffer);
-    }
-
-    let speedFactor = 1 / speed;
-
-    let previousOnsetTime = speedFactor * startOffset;
-
-    // TODO: Here is where having a separate sequence data type would be helpful
-    for (let onset = 0; onset < nOnsets; onset++)
-    {
-        let onsetTime = previousOnsetTime + (divArray.random() * speedFactor);
-
-        for (let voice = 0; voice < nVoices; voice++)
-        {
-            if(IS.coinToss(0.7))
-            {
-                let voiceSource = voiceArray.urn();
-                voiceSource.scheduleStart(onsetTime + IS.randomFloat(-0.02, 0.02));
+                fmKeyBufferSource.scheduleStart(sequence.value[sequenceIndex]);
             }
         }
-
-        previousOnsetTime = onsetTime;
     }
-
-    return voiceOutput;
 }
