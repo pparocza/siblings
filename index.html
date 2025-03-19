@@ -7,9 +7,14 @@
     <p>Basic Text</p>
 
     <script type="module">
-        import { InfiniteSibling } from "/infinitesibling";
+        import { InfiniteSibling } from "./infinitesibling/modules/InfiniteSibling.js";
 		const IS = new InfiniteSibling();
-        console.log(IS);
+
+            let buffer = IS.createBuffer(1, 1);
+            buffer.printOnOperationsComplete = true;
+            buffer.sine(1).add();
+
+            console.log(buffer);
     </script>
 
 </head>
