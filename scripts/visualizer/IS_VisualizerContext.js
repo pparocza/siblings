@@ -1,6 +1,6 @@
-import * as THREE from "three";
+import * as THREE from "../../three";
 import { IS } from "../../script";
-import { CSS2DRenderer } from "three/addons";
+import { CSS2DRenderer } from "../../three/addons";
 import { IS_VisualNetwork } from "./elements/IS_VisualNetwork.js";
 import { IS_VisualizerParameters } from "./IS_VisualizerParameters";
 
