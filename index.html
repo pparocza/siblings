@@ -1,24 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-
-    <p>Basic Text</p>
-
-    <script type="module">
-        import { InfiniteSibling } from "./infinitesibling/modules/InfiniteSibling.js";
-		const IS = new InfiniteSibling();
-
-            let buffer = IS.createBuffer(1, 1);
-            buffer.printOnOperationsComplete = true;
-            buffer.sine(1).add();
-
-            console.log(buffer);
-    </script>
-
+    <title>infinite sibling</title>
+    <link rel="stylesheet" href="styles/style.css">
 </head>
-<body>
+<body class="bodyElement">
+
+<div class="UI_DIV">
+
+    <div class="TITLE_DIV"></div>
+
+    <label>
+        <select name="SIBLING_SELECTION_MENU" class="SIBLING_SELECTION_MENU">
+            <option>--- Sibling Selection ---</option>
+        </select>
+    </label>
+
+    <p align="center"><button class="ONLINE_BUTTON">online</button> <button class="START_BUTTON">load</button></p>
+
+    <p align="center">
+        <label> Volume:
+            <span class="VOLUME_DISPLAY"></span>
+            <br>
+            <input class="VOLUME_SLIDER" type="range" min="0" max="1" step=".001" value = "0.5">
+        </label>
+    <p>
+
+    <div hidden="true" align="center" class="PROGRESS_DIV">
+        <label>Generating Buffers:</label>
+        <br>
+        <progress value="0" max="100" class="PROGRESS_BAR"></progress>
+    </div>
+
+</div>
+
+<script type="module" src="script.js"></script>
+<script type="module" src="scripts/UI.js"></script>
+<script type ="module" class="SIBLING_SCRIPT"></script>
+
+<div class="SCRIPT_DIV">
+</div>
 
 </body>
 </html>
