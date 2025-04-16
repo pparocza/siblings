@@ -1,25 +1,29 @@
-import { IS_BufferOperationQueue } from "../types/buffer/operation/operationQueue/IS_BufferOperationQueue.js";
+import { IS_BufferOperator } from "../types/buffer/operation/operationQueue/IS_BufferOperator.js";
 
 export const IS_LifeCycle =
 {
 	_loadCallbacks: [],
 	_readyCallbacks: [],
+	_beforeReadyCallbacks: [],
 	_startCallbacks: [],
 	_stopCallbacks: [],
+
+	_start: 0,
 
 	load()
 	{
 		this._doCallbacks(this._loadCallbacks);
-		this._wait();
+		this._beforeReady();
 	},
 
-	// TODO: this should be Promises and async awaits at some point
-	_wait()
+	_beforeReady()
 	{
-		if(IS_BufferOperationQueue.isOperating)
+		if(IS_BufferOperator.OperationsPending)
 		{
-			console.log("Waiting on Buffer Operation Queue!");
-			IS_BufferOperationQueue.registerWaiter(this);
+			IS_BufferOperator.registerWaiter(this);
+			console.log("Starting Buffer Operations!");
+			this._start = Date.now();
+			IS_BufferOperator.Operate();
 		}
 		else
 		{
@@ -29,15 +33,16 @@ export const IS_LifeCycle =
 
 	endWait(waitingOn)
 	{
-		if(waitingOn === IS_BufferOperationQueue)
+		if(waitingOn === IS_BufferOperator)
 		{
-			console.log("Operation Queue Finished!");
+			console.log("Operation Queue Finished!", Date.now() - this._start);
 			this._ready();
 		}
 	},
 
 	_ready()
 	{
+		this._doCallbacks(this._beforeReadyCallbacks);
 		this._doCallbacks(this._readyCallbacks);
 	},
 

@@ -1,24 +1,31 @@
-import { IS_BufferOperationQueue } from "../operationQueue/IS_BufferOperationQueue.js";
+import { IS_BufferOperator } from "../operationQueue/IS_BufferOperator.js";
+import { IS_BufferOperationWASMRequest } from "./IS_BufferOperationWASMRequest.js";
 
 export const IS_BufferOperationWorkerBridge =
 {
-	requestOperation(bufferOperationData)
+	requestOperation(operationRegistryData)
 	{
-		this._requestOperationWorker(bufferOperationData);
+		let operationWASMRequest = new IS_BufferOperationWASMRequest
+		(
+			operationRegistryData.operationRequests,
+			operationRegistryData.bufferLength,
+			operationRegistryData.bufferUUID
+		);
+
+		this._requestOperationWorker(operationWASMRequest);
 	},
 
-	_requestOperationWorker(iSBufferOperationData)
+	_requestOperationWorker(operationWASMRequest)
 	{
 		BUFFER_WORKER_CONTEXT.postMessage
 		(
-			// TODO: iSBufferOperation should be a data type
-			{ request: "operate", operationData: iSBufferOperationData }
+			{ request: "operate", operationRequests: operationWASMRequest }
 		);
 	},
 
 	ReturnCompletedOperation(completedOperationData)
 	{
-		IS_BufferOperationQueue.CompleteOperation(completedOperationData);
+		IS_BufferOperator.ReceiveCompletedOperation(completedOperationData);
 	}
 }
 
@@ -26,16 +33,10 @@ const BUFFER_WORKER_CONTEXT = initializeBufferWorkerContext();
 
 function initializeBufferWorkerContext()
 {
-	let bufferWorkerContext = new Worker
-	(
-		new URL('./IS_BufferOperationWorkerContext.js', import.meta.url),
-		{ type: 'module' }
-	);
+	const workerURL = new URL('./IS_BufferOperationWorkerContext.js', import.meta.url);
 
-	bufferWorkerContext.addEventListener
-	(
-		"message", (message) => { bufferWorkerCallback(message); }
-	);
+	let bufferWorkerContext = new Worker( workerURL, { type: 'module' } );
+	bufferWorkerContext.addEventListener( "message", (message) => { bufferWorkerCallback(message); } );
 
 	return bufferWorkerContext;
 }

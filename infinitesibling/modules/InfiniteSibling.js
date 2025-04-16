@@ -1,10 +1,11 @@
 const INFINITE_SIBLING_AUDIO_CONTEXT = new AudioContext();
 
 // core
-import { IS_NodeRegistry } from "./nodes/registry/IS_NodeRegistry.js";
 import { IS_LifeCycle } from "./utilities/IS_LifeCycle.js";
+import { IS_NodeRegistry } from "./nodes/registry/IS_NodeRegistry.js";
+import { IS_NetworkRegistry } from "./nodes/network/IS_NetworkRegistry.js"
 import { IS_Scheduler } from "./types/schedule/IS_Scheduler.js";
-import { IS_ContextConnectionManager } from "./utilities/IS_ContextConnectionManager.js";
+import { IS_ConnectionManager } from "./utilities/IS_ConnectionManager.js";
 
 // audio nodes
 import { IS_Gain } from "./nodes/core/effect/IS_Gain.js";
@@ -64,6 +65,11 @@ export class InfiniteSibling
     get NodeRegistry()  { return IS_NodeRegistry; }
 
     /*
+        NETWORK REGISTRY
+    */
+    get NetworkRegistry() { return IS_NetworkRegistry; }
+    
+    /*
         LIFE CYCLE
     */
     load()
@@ -113,7 +119,7 @@ export class InfiniteSibling
     /*
         CONNECTION
     */
-    get connect() { return IS_ContextConnectionManager; }
+    get connect() { return IS_ConnectionManager; }
 
     /*
         GLOBAL VALUES
@@ -134,6 +140,14 @@ export class InfiniteSibling
         return new IS_BiquadFilter(this, type, frequency, Q, gain, detune);
     }
 
+    // TODO: This sort of works as a constructor, but then you have to include the sibling context as an argument
+    //  -> so I guess you should have some kind of constructor class or factory that references the context?
+    get Gain()
+    {
+        return IS_Gain;
+    }
+
+    // TODO: Change to constructors, or keep consistent with WAAPI? -> probably both
     createGain(gainValue = 1)
     {
         return new IS_Gain(this, gainValue);
@@ -233,6 +247,11 @@ export class InfiniteSibling
         frequencyScale.divide(frequencyScale.value[0]);
 
         return frequencyScale;
+    }
+
+    get Mode()
+    {
+        return IS_Mode;
     }
 
     /*

@@ -2,6 +2,7 @@ import { IS_Object } from "../../types/IS_Object.js";
 import { IS_Type } from "../../enums/IS_Type.js";
 import { Utilities } from "../../utilities/Utilities.js";
 import { IS_AudioParameter } from "../../types/parameter/IS_AudioParameter.js";
+import { IS_NetworkRegistry } from "../network/IS_NetworkRegistry.js";
 
 export class IS_Node extends IS_Object
 {
@@ -11,11 +12,12 @@ export class IS_Node extends IS_Object
 
         this._siblingContext = siblingContext;
 
-        // TODO: Context wrapper so that IS_Nodes use IS_Nodes?
         this._output = new GainNode(siblingContext.AudioContext);
-        this._gain = new IS_AudioParameter(this._siblingContext, this._output.gain);
+        this._gain = new IS_AudioParameter(this._siblingContext, this, this._output.gain);
 
-        this._registryData = this._siblingContext.NodeRegistry.registerNode(this);
+        this._siblingContext.NodeRegistry.registerNode(this);
+
+        this._networkNode = IS_NetworkRegistry.HandleNodeCreated(this);
 
         this._readyCallbacks = null;
         this._analyser = null;
@@ -23,27 +25,11 @@ export class IS_Node extends IS_Object
 
     isISNode = true;
 
-    get registryData() { return this._registryData; };
-
     get gain() { return this._gain; }
     set gain(value) { this._gain.value = value; }
 
     get volume() { return Utilities.AmplitudeToDecibels(this._gain.value); }
     set volume(value) { this._gain.value = Utilities.DecibelsToAmplitude(value); }
-
-    get analyser()
-    {
-        this._initializeAnalyser();
-
-        return this._analyser;
-    }
-
-    // TODO: Something that isn't just the first value of the analysis buffer
-    get outputValue()
-    {
-        this.analyser.getFloatTimeDomainData(this._analyserData);
-        return this._analyserData[0];
-    }
 
     /*
         CONNECTION
@@ -54,26 +40,37 @@ export class IS_Node extends IS_Object
         {
             let audioNode = audioNodes[nodeIndex];
 
+            if(audioNode.isISObject && !audioNode.isISAudioParameter && !audioNode.input)
+            {
+                // TODO: Warning/Error utilities
+                console.warn
+                (
+                    "INFINITE SIBLING:", "ErrType: CONNECTION_ERR", "[" + this.iSType + "]",
+                    "Attempted to connect to:", "[" + audioNode.iSType + "]",
+                    ", which has no input."
+                )
+
+                return;
+            }
+
             if(audioNode.isISObject)
             {
-                switch (audioNode.iSType)
+                if (audioNode.isISEffect)
                 {
-                    case (IS_Type.IS_Effect):
-                        this._output.connect(audioNode.input);
-                        break;
-                    case (IS_Type.IS_AudioParameter):
-                        this._output.connect(audioNode.parameter);
-                        break;
-                    default:
-                        break;
+                    this._output.connect(audioNode.input);
                 }
+                else if(audioNode.isISAudioParameter)
+                {
+                    this._output.connect(audioNode.parameter);
+                }
+
             }
             else
             {
                 this._output.connect(audioNode);
             }
 
-            this._registryData.registerConnection(audioNode.registryData);
+            this._handleNetworkMembership(audioNode);
         }
     }
 
@@ -136,4 +133,27 @@ export class IS_Node extends IS_Object
 
         this._output.connect(this._analyser);
     }
+
+    get analyser()
+    {
+        this._initializeAnalyser();
+
+        return this._analyser;
+    }
+
+    get outputValue()
+    {
+        this.analyser.getFloatTimeDomainData(this._analyserData);
+        return Math.max(...this._analyserData);
+    }
+
+    _handleNetworkMembership(toNode)
+    {
+        if(toNode.isISNode || toNode.isISAudioParameter)
+        {
+            IS_NetworkRegistry.ResolveNetworkMembership(this, toNode);
+        }
+    }
+
+    _getNetworkNode() { return this._networkNode; }
 }

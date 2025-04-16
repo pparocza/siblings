@@ -3,9 +3,9 @@ import { OscillatingStereoReverb } from "./OscillatingStereoReverb.js";
 import { FMSynth } from "./FMSynth.js";
 
 // import { IS_Visualizer } from "../../visualizer/IS_Visualizer.js";
+// IS.onReady(IS_Visualizer.visualize);
 
 IS.onLoad(roseSequence);
-// IS.onLoad(IS_Visualizer.visualize);
 
 function roseSequence()
 {
@@ -39,12 +39,14 @@ function roseSequence()
 		let lastChord = chordIndex === nChords - 1;
 		let chordOverlap = IS.Random.Float(2, 6);
 
+		// TODO: IS_Random Object, so that you can specify random parameters that are held in a variable, and then call
+		//  that variable -> randomLengthValue = IS.Random.Float(20, 30) -> randomLengthValue.next;
 		let chordLength = lastChord ? 5 : IS.Random.Float(20, 30);
 		let startTime = previousStop > 0 ? previousStop - chordOverlap : 0;
 		let stopTime = startTime + chordLength;
 
 		let nNotes = lastChord ? 1 : IS.Random.Float(3, 5);
-		let inversion = 0 // lastChord ? 0 : IS.randomInt(0, 2);
+		let inversion =  lastChord ? 0 : IS.Random.Int(0, 2);
 
 		fundamental *= lastChord ? 0.5 : 1;
 
@@ -165,12 +167,7 @@ function theRose(startTime, endTime, chordFundamental, chord, density, reverb)
 		}
 	}
 
-	let output = IS.createParallelEffect();
-
-	output.insert
-	(
-		IS.createFilter("lowshelf", 500, 1, -8)
-	);
+	let output = IS.createFilter("lowshelf", 500, 1, -8)
 
 	output.connectToMainOutput();
 
@@ -181,17 +178,3 @@ function theRose(startTime, endTime, chordFundamental, chord, density, reverb)
 	IS.connect.series(synthBufferSource2, reverb.input);
 }
 
-// TODO: Data type or structure that distributes multiple values from a single time sequence
-// --- give the Audio Parameter, the time sequence, and the selection algorithm as arguments
-/*
-	let onsetSequence = IS.createSequenceArray();
-	let source = IS.createBufferSource();
-
-	const rateSequence = new ValueSequence
-	(
-		parameter = source.playbackRate,
-		timeSequence = onsetSequence,
-		algorithm = IS.randomFloat
-		algorithmArgs = 0.25, 0.125 (...algorithmArgs)
-	)
- */

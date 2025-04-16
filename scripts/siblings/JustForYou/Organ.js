@@ -60,15 +60,6 @@ export class Organ
 			convolverBuffer.constant(1 / nHarmonics).multiply();
 		}
 
-		/*
-		convolverBuffer.frequencyModulatedSine
-		(
-			IS.randomFloat(0.0625, 0.25),
-			IS.randomFloat(0.0625, 1),
-			1
-		).channelMerge();
-		 */
-
 		let buffer = IS.createBuffer(1, 1);
 		buffer.noise().add();
 		buffer.inverseSawtooth(3).multiply();
