@@ -1,0 +1,23 @@
+{
+  "name": "siblings",
+  "version": "1.0.0",
+  "description": "music made with infinitesibling",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pparocza/siblings.git"
+  },
+  "author": "paul paroczai",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pparocza/siblings/issues"
+  },
+  "homepage": "https://github.com/pparocza/siblings#readme",
+  "dependencies": {
+    "three": "^0.175.0",
+    "vite": "^6.3.0"
+  }
+}
