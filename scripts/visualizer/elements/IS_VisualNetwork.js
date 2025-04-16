@@ -1,7 +1,7 @@
 import { IS_VisualElement } from "./IS_VisualElement.js";
 import { IS_VisualNode } from "./IS_VisualNode.js";
 import { IS_VisualConnection } from "./IS_VisualConnection.js";
-import { IS_VisualizerParameters } from "../IS_VisualizerParameters";
+import { IS_VisualizerParameters } from "../IS_VisualizerParameters.js";
 
 let MAIN_PARAMETERS = IS_VisualizerParameters;
 

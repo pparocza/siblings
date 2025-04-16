@@ -1,6 +1,5 @@
 import { IS_VisualElement } from "./IS_VisualElement.js";
 import { IS_NodeStyles } from "../styles/IS_NodeStyles.js";
-import { CSS2DObject } from "three/addons";
 
 export class IS_VisualNode extends IS_VisualElement
 {
