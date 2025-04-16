@@ -2,10 +2,10 @@ import { IS } from "../../../script.js";
 import { OscillatingStereoReverb } from "./OscillatingStereoReverb.js";
 import { FMSynth } from "./FMSynth.js";
 
+IS.onLoad(roseSequence);
+
 import { IS_Visualizer } from "../../visualizer/IS_Visualizer.js";
 IS.onReady(IS_Visualizer.visualize);
-
-IS.onLoad(roseSequence);
 
 function roseSequence()
 {
