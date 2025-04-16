@@ -1,6 +1,6 @@
 import * as THREE from "https://cdn.skypack.dev/three@0.152.0";
 import { IS } from "../../script";
-import { CSS2DRenderer } from "three/addons";
+/*import { CSS2DRenderer } from "three/addons";*/
 import { IS_VisualNetwork } from "./elements/IS_VisualNetwork.js";
 import { IS_VisualizerParameters } from "./IS_VisualizerParameters";
 
