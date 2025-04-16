@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import * as THREE from "https://cdn.skypack.dev/three@0.152.0";
 import { IS } from "../../script";
 import { CSS2DRenderer } from "three/addons";
 import { IS_VisualNetwork } from "./elements/IS_VisualNetwork.js";
@@ -78,63 +78,13 @@ export class IS_VisualizerContext
 
 	networkVisualizer()
 	{
-		let horizontalOffset = MASTER_PARAMETERS.Context.HorizontalOffset;
-		let verticalOffset = MASTER_PARAMETERS.Context.VerticalOffset;
-
-		let horizontalFactor = MASTER_PARAMETERS.Context.ColumnWidth;
-		let verticalFactor = MASTER_PARAMETERS.Context.RowWidth;
-
-		let nodesPerRow = MASTER_PARAMETERS.Context.NodesPerRow;
-		let rowNumber = 0;
-
-		let nodeCount = 0
-
 		let networkRegistry = SIBLING_CONTEXT.NetworkRegistry;
-
-		let X_OFFSET = -1;
-		let Y_OFFSET = 3;
-
-		let X_SPACING = 1;
-
-		console.log(networkRegistry);
 
 		for(let networkIndex = 0; networkIndex < networkRegistry.nNetworks; networkIndex++)
 		{
 			let iSNetwork = networkRegistry.getNetwork(networkIndex);
-			// TODO: Automatic spacing based on heights and widths
-			let visualNetwork = new IS_VisualNetwork(iSNetwork, 0, 1.5);
+			new IS_VisualNetwork(iSNetwork, 0, 1.5);
 		}
-
-		/*
-		for(let registryIndex = 0; registryIndex < nodeRegistry.nNodes; registryIndex++)
-		{
-			let audioNodeRegistryData = nodeRegistry.getNodeData(registryIndex);
-
-			let columnNumber = nodeCount % nodesPerRow;
-			let xPosition = columnNumber * horizontalFactor + horizontalOffset;
-			let yPosition = -rowNumber * verticalFactor + verticalOffset;
-
-			let audioNode = audioNodeRegistryData.audioNode;
-
-			if(audioNode.isISBufferSource)
-			{
-				audioNode.onReady(READY_CALLBACK);
-				WAITING_FOR_READY[audioNode.uuid] =
-				{
-					audioNodeRegistryData: audioNodeRegistryData,
-					xPosition: xPosition + 0.5,
-					yPosition: yPosition + 0.3
-				}
-
-				rowNumber = columnNumber === nodesPerRow - 1 ? rowNumber + 1 : rowNumber;
-				nodeCount++;
-			}
-			else
-			{
-				// new IS_VisualNetwork(audioNodeRegistryData, xPosition, yPosition);
-			}
-		}
-		*/
 	}
 
 	addToScene(visualElement)
