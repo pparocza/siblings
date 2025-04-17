@@ -129,7 +129,8 @@ export class IS_Node extends IS_Object
         analyser.fftSize = fftSize;
 
         this._analyser = analyser;
-        this._analyserData = new Float32Array(this._analyser.fftSize);
+        this._analyserFrequencyData = new Float32Array(this._analyser.fftSize);
+        this._analyserTimeDomainData = new Float32Array(this._analyser.fftSize);
 
         this._output.connect(this._analyser);
     }
@@ -143,15 +144,15 @@ export class IS_Node extends IS_Object
 
     get frequencyBins()
     {
-        this.analyser.getFloatFrequencyData(this._analyserData);
-        return this._analyserData;
+        this.analyser.getFloatFrequencyData(this._analyserFrequencyData);
+        return this._analyserFrequencyData;
     }
 
     get outputValue()
     {
         // TODO: https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/maxDecibels
-        this.analyser.getFloatTimeDomainData(this._analyserData);
-        return Math.max(...this._analyserData);
+        this.analyser.getFloatTimeDomainData(this._analyserFrequencyData);
+        return Math.max(...this._analyserFrequencyData);
     }
 
     _handleNetworkMembership(toNode)

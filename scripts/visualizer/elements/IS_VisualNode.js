@@ -110,12 +110,6 @@ export class IS_VisualNode extends IS_VisualElement
 
 	_animationCallback()
 	{
-/*		if(this.audioNode.outputValue)
-		{
-			let value = this.audioNode.outputValue;
-			this.colorAmplitude = Math.abs(value);
-		}*/
-
 		if(this.audioNode.frequencyBins)
 		{
 			let frequencyArray = this.audioNode.frequencyBins;
@@ -136,7 +130,17 @@ export class IS_VisualNode extends IS_VisualElement
 			g = IS.Utility.DecibelsToAmplitude(g) * 1000;
 			b = IS.Utility.DecibelsToAmplitude(b) * 10000;
 
+			this._colorBase[0] = r;
+			this._colorBase[1] = g;
+			this._colorBase[2] = b;
+
 			this.RGB = [r, g, b];
+		}
+
+		if(this.audioNode.outputValue)
+		{
+			let value = this.audioNode.outputValue;
+			this.colorAmplitude = Math.abs(value);
 		}
 	}
 }
