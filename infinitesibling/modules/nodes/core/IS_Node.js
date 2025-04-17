@@ -117,7 +117,8 @@ export class IS_Node extends IS_Object
         audioNode.connect(this._output);
     }
 
-    _initializeAnalyser(fftSize = 2048)
+    // TODO: Smaller fftSize?
+    _initializeAnalyser(fftSize = 32)
     {
         if(this._analyser !== null)
         {
@@ -129,7 +130,6 @@ export class IS_Node extends IS_Object
 
         this._analyser = analyser;
         this._analyserData = new Float32Array(this._analyser.fftSize);
-        this._analyser.getFloatTimeDomainData(this._analyserData);
 
         this._output.connect(this._analyser);
     }
@@ -141,8 +141,15 @@ export class IS_Node extends IS_Object
         return this._analyser;
     }
 
+    get frequencyBins()
+    {
+        this.analyser.getFloatFrequencyData(this._analyserData);
+        return this._analyserData;
+    }
+
     get outputValue()
     {
+        // TODO: https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/maxDecibels
         this.analyser.getFloatTimeDomainData(this._analyserData);
         return Math.max(...this._analyserData);
     }

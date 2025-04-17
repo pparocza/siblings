@@ -1,5 +1,6 @@
 import { IS_VisualElement } from "./IS_VisualElement.js";
 import { IS_NodeStyles } from "../styles/IS_NodeStyles.js";
+import { IS } from "../../../script.js";
 
 export class IS_VisualNode extends IS_VisualElement
 {
@@ -86,6 +87,11 @@ export class IS_VisualNode extends IS_VisualElement
 			this._colorBase[1] * value,
 			this._colorBase[2] * value
 		);
+	};
+
+	set RGB(rbgArray)
+	{
+		this._material.color.setRGB(...rbgArray);
 	}
 
 	_displayLabel(nodeIcon)
@@ -104,10 +110,33 @@ export class IS_VisualNode extends IS_VisualElement
 
 	_animationCallback()
 	{
-		if(this.audioNode.outputValue)
+/*		if(this.audioNode.outputValue)
 		{
 			let value = this.audioNode.outputValue;
 			this.colorAmplitude = Math.abs(value);
+		}*/
+
+		if(this.audioNode.frequencyBins)
+		{
+			let frequencyArray = this.audioNode.frequencyBins;
+
+			let rArray = frequencyArray.slice(0, 5);
+			let gArray = frequencyArray.slice(5, 10);
+			let bArray = frequencyArray.slice(10, 16);
+
+			let r = rArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+			let g = gArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+			let b = bArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+
+			r /= rArray.length;
+			g /= gArray.length;
+			b /= bArray.length;
+
+			r = IS.Utility.DecibelsToAmplitude(r) * 100;
+			g = IS.Utility.DecibelsToAmplitude(g) * 1000;
+			b = IS.Utility.DecibelsToAmplitude(b) * 10000;
+
+			this.RGB = [r, g, b];
 		}
 	}
 }
