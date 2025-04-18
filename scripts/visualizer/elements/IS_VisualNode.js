@@ -53,6 +53,7 @@ export class IS_VisualNode extends IS_VisualElement
 		this.visualizerContext.addToScene(this._nodeIcon);
 	}
 
+
 	get audioNode() { return this._audioNode; }
 	get nodeIcon() { return this._nodeIcon; };
 
@@ -127,20 +128,16 @@ export class IS_VisualNode extends IS_VisualElement
 			b /= bArray.length;
 
 			r = IS.Utility.DecibelsToAmplitude(r) * 100;
-			g = IS.Utility.DecibelsToAmplitude(g) * 1000;
-			b = IS.Utility.DecibelsToAmplitude(b) * 10000;
-
-			this._colorBase[0] = r;
-			this._colorBase[1] = g;
-			this._colorBase[2] = b;
+			g = IS.Utility.DecibelsToAmplitude(g) * 10000;
+			b = IS.Utility.DecibelsToAmplitude(b) * 100000;
 
 			this.RGB = [r, g, b];
 		}
 
-		if(this.audioNode.outputValue)
+/*		if(this.audioNode.outputValue)
 		{
 			let value = this.audioNode.outputValue;
 			this.colorAmplitude = Math.abs(value);
-		}
+		}*/
 	}
 }

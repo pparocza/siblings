@@ -82,7 +82,7 @@ export class IS_VisualizerContext
 		for(let networkIndex = 0; networkIndex < networkRegistry.nNetworks; networkIndex++)
 		{
 			let iSNetwork = networkRegistry.getNetwork(networkIndex);
-			new IS_VisualNetwork(iSNetwork, 0, 1.5);
+			new IS_VisualNetwork(iSNetwork, -0.15, 1.5);
 		}
 	}
 
@@ -100,13 +100,13 @@ export class IS_VisualizerContext
 	{
 		CAMERA = new THREE.PerspectiveCamera
 		(
-			75,
+			45,
 			window.innerWidth / window.innerHeight,
-			0.1,
+			1,
 			1000
 		);
 
-		CAMERA.position.z = 5;
+		CAMERA.position.z = 10;
 	};
 
 	_createRenderer()

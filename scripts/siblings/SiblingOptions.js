@@ -17,5 +17,6 @@ export const SIBLING_OPTIONS_ARRAY =
     new SiblingOption("RollingSine", "Rolling Sine"),
     new SiblingOption("SalineAnatomy", "Saline Anatomy"),
     */
+    new SiblingOption("Flaxen", "flaxen"),
     new SiblingOption("JustForYou", "just for you")
 ]

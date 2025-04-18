@@ -52,18 +52,24 @@ body
 }
 
 
- .NODE_LABEL
- {
-     color: #FFF;
-     font-family: sans-serif;
-     padding: 2px;
-     background: rgba( 0, 0, 0, .6 );
- }
+.NODE_LABEL
+{
+    color: #FFF;
+    font-family: sans-serif;
+    padding: 2px;
+    background: rgba( 0, 0, 0, .6 );
+}
 
- .PROGRESS_DIV
- {
-     position: absolute;
-     top: 110%;
-     left: 50%;
-     transform: translateX(-50%) translateY(-50%);
- }
+.PROGRESS_DIV
+{
+    position: absolute;
+    top: 110%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}
+
+.STATS_DIV
+{
+    position: absolute;
+    font: 18px "Courier New";
+}
