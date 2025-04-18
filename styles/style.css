@@ -10,19 +10,19 @@ a
 
 button
 {
-    font: 17px Garamond, sans-serif;
+    font: 17px "Courier New";, sans-serif;
 }
 
 label
 {
-    font: 17px Courier, sans-serif;
+    font: 17px "Courier New";, sans-serif;
     color: whitesmoke;
     white-space: nowrap;
 }
 
 span
 {
-    font: 17px Courier, sans-serif;
+    font: 17px "Courier New", sans-serif;
 }
 
 div
@@ -38,7 +38,7 @@ body
 
 .TITLE_DIV
 {
-    font: 28px Brush Script MT, sans-serif;
+    font: 28px "Courier New", sans-serif;
     text-align: center;
     color: whitesmoke;
 }
@@ -72,4 +72,9 @@ body
 {
     position: absolute;
     font: 18px "Courier New";
+}
+
+.SIBLING_SELECTION_MENU
+{
+    font: 16px "Courier New";
 }
