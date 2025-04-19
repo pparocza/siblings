@@ -6,7 +6,12 @@
 </head>
 <body class="bodyElement">
 
-<div class="STATS_DIV"></div>
+<div class="CONFIG_DIV">
+    <div class="STATS_DIV"></div>
+    <input type="button" value="Download Config" class="DOWNLOAD_BUTTON" hidden="hidden"/>
+</div>
+
+
 
 <div class="UI_DIV">
 
@@ -14,10 +19,11 @@
 
     <label>
         <select name="SIBLING_SELECTION_MENU" class="SIBLING_SELECTION_MENU">
-            <option>--- Sibling Selection ---</option>
+            <option>- Sibling Selection -</option>
         </select>
     </label>
 
+    <input type="file" value="Upload" class="UPLOAD_BUTTON">
     <p align="center"><button class="ONLINE_BUTTON">online</button> <button class="START_BUTTON">load</button></p>
 
     <p align="center">
@@ -33,7 +39,6 @@
         <br>
         <progress value="0" max="100" class="PROGRESS_BAR"></progress>
     </div>
-
 </div>
 
 <script type="module" src="script.js"></script>

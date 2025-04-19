@@ -68,7 +68,7 @@ body
     transform: translateX(-50%) translateY(-50%);
 }
 
-.STATS_DIV
+.CONFIG_DIV
 {
     position: absolute;
     font: 18px "Courier New";
@@ -77,4 +77,8 @@ body
 .SIBLING_SELECTION_MENU
 {
     font: 16px "Courier New";
+}
+
+input[type="file"]{
+    color: black;
 }

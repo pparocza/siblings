@@ -1,6 +1,7 @@
 import * as main from "../script.js";
 import { IS } from "../script.js";
 import { SIBLING_OPTIONS_ARRAY } from "./siblings/SiblingOptions.js";
+import { PIECE_STATS, DOWNLOAD_BUTTON, UPLOAD_BUTTON } from "./configs.js";
 
 const START_BUTTON = document.querySelector('.START_BUTTON');
 const START_STRING = "start";
@@ -17,7 +18,7 @@ const VOLUME_SLIDER = document.querySelector('.VOLUME_SLIDER');
 const VOLUME_SLIDER_INITIAL_VALUE = 0.7;
 const VOLUME_SLIDER_DISPLAY = document.querySelector('.VOLUME_DISPLAY');
 
-const SIBLING_SELECTION_DROPDOWN = document.querySelector('.SIBLING_SELECTION_MENU');
+export const SIBLING_SELECTION_DROPDOWN = document.querySelector('.SIBLING_SELECTION_MENU');
 const SIBLING_SCRIPT = document.querySelector('.SIBLING_SCRIPT');
 const SIBLING_PATH = './scripts/siblings'
 let SCRIPT_SRC = "";
@@ -51,13 +52,13 @@ async function initializePieceSelectionDropdown()
 	SIBLING_SELECTION_DROPDOWN.oninput = handleSiblingSelection;
 }
 
-function handleSiblingSelection()
+export function handleSiblingSelection()
 {
 	requestSiblingScript();
 	setTitle();
 }
 
-async function requestSiblingScript()
+export async function requestSiblingScript()
 {
 	SCRIPT_SRC = SIBLING_PATH + "/" + SIBLING_SELECTION_DROPDOWN.value + "/script.js";
 
@@ -142,15 +143,20 @@ function handleLoad()
 	}
 }
 
-function loadOnline()
+export function loadOnline()
 {
 	SIBLING_SELECTION_DROPDOWN.disabled = true;
 	SIBLING_SCRIPT.src = SCRIPT_SRC;
 	SIBLING_SELECTION_DROPDOWN.remove();
 	TITLE_DIV.innerHTML = TITLE;
 	setStartButton(LOADING_STRING, true);
-	IS.onReady(setStartButtonReady);
+
+	hideUploadButton();
+
 	IS.onReady(hideProgressBar);
+	IS.onReady(setStartButtonReady);
+	IS.onReady(showDownloadButton);
+
 	// TODO: this is currently making sure load doesn't happen before the SCRIPT_SRC is loaded -> FIX IT!!!
 	setTimeout(()=>
 	{
@@ -216,6 +222,16 @@ function setStartButton(label, disabled)
 function setStartButtonReady()
 {
 	setStartButton(START_STRING, false);
+}
+
+function showDownloadButton()
+{
+	DOWNLOAD_BUTTON.hidden = false;
+}
+
+function hideUploadButton()
+{
+	UPLOAD_BUTTON.hidden = true;
 }
 
 function setVolume(volumeSliderValue)

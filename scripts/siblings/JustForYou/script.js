@@ -7,47 +7,6 @@ IS.onLoad(roseSequence);
 import { IS_Visualizer } from "../../visualizer/IS_Visualizer.js";
 IS.onReady(IS_Visualizer.visualize);
 
-// TODO: Page Stats -> IS.DisplayPageStats -> iterates everything in the stats and puts it in an element
-const PIECE_STATS =
-{
-	_stats: {},
-
-	addStat(name, value)
-	{
-		this._stats[name] = [value, false];
-		this.displayStats(this._stats);
-	},
-
-	displayStats(stats)
-	{
-		for(const [statName, statValue] of Object.entries(stats))
-		{
-			let statIsDisplayed = statValue[1];
-
-			if(statIsDisplayed)
-			{
-				continue;
-			}
-
-			let value = statValue[0];
-			let statElement = document.createElement('p');
-			statElement.innerHTML = statName + ": " + value.toString();
-			STATS_DIV.appendChild(statElement);
-
-			statValue[1] = true;
-		}
-	}
-};
-
-/*IS.onLoad(PIECE_STATS.displayStats);*/
-
-// TODO: hoist values into this, and then have a "remember" button on the page that writes it to a file
-//  and allows you to re-use those parameters...perhaps even re-generate the piece?
-const PARAM_MEMORY =
-{
-
-}
-
 function roseSequence()
 {
 	let fundamental = IS.Random.Float(160, 180) * 0.6;
