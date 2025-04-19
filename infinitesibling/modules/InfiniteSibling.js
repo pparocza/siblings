@@ -1,3 +1,5 @@
+import {IS_ControlParameter} from "./types/parameter/control/IS_ControlParameter";
+
 const INFINITE_SIBLING_AUDIO_CONTEXT = new AudioContext();
 
 // core
@@ -30,6 +32,7 @@ import { IS_Type } from "./enums/IS_Type.js";
 
 // types
 import { IS_Array } from "./types/array/IS_Array.js";
+import { IS_ControlParameters } from "./types/parameter/control/IS_ControlParameters.js";
 import { IS_Scale } from "./types/array/IS_Scale.js";
 import { IS_SequenceArray } from "./types/array/IS_SequenceArray.js";
 
@@ -48,6 +51,8 @@ export class InfiniteSibling
 
         this.output = this.AudioContext.createGain();
         this.output.connect(this.destination);
+
+        this._siblingName = null;
 
         this.Utility.siblingContext = this;
 
@@ -278,5 +283,37 @@ export class InfiniteSibling
     get MessageBus()
     {
         return IS_MessageBus;
+    }
+
+    /*
+        PARAMETERS
+     */
+    get ControlParameters()
+    {
+        return IS_ControlParameters;
+    }
+
+    /*
+        SIBLING NAME
+    */
+    get SiblingName()
+    {
+        return this._siblingName;
+    }
+
+    set SiblingName(value)
+    {
+        this._siblingName = value;
+    }
+
+    /*
+        SIBLING CONFIG
+    */
+    get SiblingConfig()
+    {
+        let json = IS_ControlParameters.JSON;
+        json["Name"] = this._siblingName;
+
+        return json;
     }
 }

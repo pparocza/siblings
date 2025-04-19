@@ -1,7 +1,15 @@
 import * as main from "../script.js";
-import { IS } from "../script.js";
+import { IS, load } from "../script.js";
 import { SIBLING_OPTIONS_ARRAY } from "./siblings/SiblingOptions.js";
-import { PIECE_STATS, DOWNLOAD_BUTTON, UPLOAD_BUTTON } from "./configs.js";
+
+export const UPLOAD_BUTTON = document.querySelector('.UPLOAD_BUTTON');
+export const DOWNLOAD_BUTTON = document.querySelector('.DOWNLOAD_BUTTON');
+import { downloadButtonCallback } from "./parameterConfigs.js";
+DOWNLOAD_BUTTON.addEventListener('click', downloadButtonCallback);
+DOWNLOAD_BUTTON.hidden = true;
+
+export const TITLE_DIV = document.querySelector('.TITLE_DIV');
+let TITLE = "";
 
 const START_BUTTON = document.querySelector('.START_BUTTON');
 const START_STRING = "start";
@@ -23,8 +31,7 @@ const SIBLING_SCRIPT = document.querySelector('.SIBLING_SCRIPT');
 const SIBLING_PATH = './scripts/siblings'
 let SCRIPT_SRC = "";
 
-const TITLE_DIV = document.querySelector('.TITLE_DIV');
-let TITLE = "";
+const PARAMETER_DISPLAY_DIV = document.querySelector('.CONTROL_PARAMETER_DISPLAY_DIV');
 
 const PROGRESS_DIV = document.querySelector('.PROGRESS_DIV');
 const PROGRESS_BAR = document.querySelector('.PROGRESS_BAR');
@@ -52,7 +59,13 @@ async function initializePieceSelectionDropdown()
 	SIBLING_SELECTION_DROPDOWN.oninput = handleSiblingSelection;
 }
 
-export function handleSiblingSelection()
+export function handleConfigLoaded()
+{
+	handleSiblingSelection();
+	handleLoad();
+}
+
+function handleSiblingSelection()
 {
 	requestSiblingScript();
 	setTitle();
@@ -143,12 +156,13 @@ function handleLoad()
 	}
 }
 
-export function loadOnline()
+function loadOnline()
 {
 	SIBLING_SELECTION_DROPDOWN.disabled = true;
 	SIBLING_SCRIPT.src = SCRIPT_SRC;
 	SIBLING_SELECTION_DROPDOWN.remove();
 	TITLE_DIV.innerHTML = TITLE;
+
 	setStartButton(LOADING_STRING, true);
 
 	hideUploadButton();
@@ -160,6 +174,7 @@ export function loadOnline()
 	// TODO: this is currently making sure load doesn't happen before the SCRIPT_SRC is loaded -> FIX IT!!!
 	setTimeout(()=>
 	{
+		displayControlParameters();
 		main.load();
 	}, 500);
 
@@ -267,6 +282,31 @@ class ValueListener
 		}
 
 		this._progressBar.value = value * 100;
+	}
+}
+
+function displayControlParameters()
+{
+	let siblingConfig = IS.SiblingConfig;
+
+	for(const [parameterDisplayName, parameterValue] of Object.entries(siblingConfig))
+	{
+		if(parameterDisplayName === "Name")
+		{
+			continue;
+		}
+
+		let displayValue = parameterValue;
+
+		if(typeof parameterValue === "number")
+		{
+			displayValue = Math.round(displayValue * 100);
+			displayValue /= 100;
+		}
+
+		let parameterElement = document.createElement('p');
+		parameterElement.innerHTML = parameterDisplayName + ": " + displayValue.toString();
+		PARAMETER_DISPLAY_DIV.appendChild(parameterElement);
 	}
 }
 

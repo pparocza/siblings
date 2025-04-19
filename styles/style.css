@@ -68,10 +68,24 @@ body
     transform: translateX(-50%) translateY(-50%);
 }
 
+
 .CONFIG_DIV
 {
     position: absolute;
+    /*
+    Why is this not applying to CONTROL_PARAMETER_DISPLAY_DIV and DOWNLOAD_BUTTON?
+     */
     font: 18px "Courier New";
+}
+
+.CONTROL_PARAMETER_DISPLAY_DIV
+{
+    font: 18px "Courier New";
+}
+
+.DOWNLOAD_BUTTON
+{
+    font: 16px "Courier New";
 }
 
 .SIBLING_SELECTION_MENU

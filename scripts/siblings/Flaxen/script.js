@@ -1,57 +1,24 @@
 import { IS } from "../../../script.js";
-import { PIECE_STATS, LOADED_STATS } from "../../configs";
+import { Parameters } from "./parameters.js";
 
 IS.onLoad(test);
 
 import { IS_Visualizer } from "../../visualizer/IS_Visualizer.js";
 IS.onReady(IS_Visualizer.visualize);
 
-const N_HARMONICS = 2;
-
-let FUNDAMENTAL = IS.Random.Float(210, 230);
-let TIME_LIMIT = IS.Random.Float(60, 100);
-let N_DELAY_CHAINS = IS.Random.Int(4, 9);
-let RATE = IS.Random.Float(0.75, 1.25);
-let N_CHORDS = IS.Random.Int(4, 8);
-let CHORD_LENGTH = TIME_LIMIT / N_CHORDS;
-
 function test()
 {
-	initStats();
 	delayTap();
-
-	// TODO: this is where the schedule data is
-	// console.log("SCHEDULE:", IS.Scheduler.contextSchedule);
 }
 
-function initStats()
+function replay()
 {
-	if(LOADED_STATS[0])
-	{
-		let stats = LOADED_STATS[0];
-
-		console.log(stats);
-
-		FUNDAMENTAL = stats["Fundamental (Hz)"];
-		TIME_LIMIT = stats["Time Limit (s)"];
-		N_DELAY_CHAINS = stats["Delay Chains"];
-		RATE = stats["Rate"];
-		N_CHORDS = stats["Number of Chords"];
-		CHORD_LENGTH = stats["Chord Length (s)"];
-	}
-
-	PIECE_STATS.addStat("Fundamental (Hz)", Math.round(FUNDAMENTAL));
-	PIECE_STATS.addStat("Time Limit (s)", Math.round(TIME_LIMIT));
-	PIECE_STATS.addStat("Delay Chains", N_DELAY_CHAINS);
-	PIECE_STATS.addStat("Rate", Math.round(RATE * 100) / 100);
-	PIECE_STATS.addStat("Number of Chords", N_CHORDS);
-	PIECE_STATS.addStat("Chord Length (s)", Math.round(CHORD_LENGTH));
+	// console.log("SCHEDULE:", IS.Scheduler.contextSchedule);
 }
 
 function delayTap()
 {
 	let buffer = IS.createBuffer(1, 1);
-	buffer.printOnOperationsComplete = true;
 
 	let reverbBuffer = IS.createBuffer(2, 3);
 	reverbBuffer.noise().add();
@@ -61,11 +28,11 @@ function delayTap()
 	IS.output.connect(reverb.input);
 	reverb.connectToAudioDestination();
 
-	for(let harmonicIndex = 0; harmonicIndex < N_HARMONICS; harmonicIndex++)
+	for(let harmonicIndex = 0; harmonicIndex < Parameters.NHarmonics; harmonicIndex++)
 	{
 		let harmonicRatio = harmonicIndex + 1;
-		let harmonicGain = (N_HARMONICS - harmonicIndex) / N_HARMONICS;
-		let frequency = FUNDAMENTAL * harmonicRatio * IS.Random.Float(1, 1.001);
+		let harmonicGain = (Parameters.NHarmonics - harmonicIndex) / Parameters.NHarmonics;
+		let frequency = Parameters.Fundamental * harmonicRatio * IS.Random.Float(1, 1.001);
 
 		buffer.suspendOperations();
 
@@ -83,7 +50,7 @@ function delayTap()
 		buffer.applySuspendedOperations().add();
 	}
 
-	buffer.constant(1 / N_HARMONICS).multiply();
+	buffer.constant(1 / Parameters.NHarmonics).multiply();
 
 	let bufferSource = IS.createBufferSource(buffer);
 	bufferSource.playbackRate = 1;
@@ -94,10 +61,10 @@ function delayTap()
 
 	let chains = [];
 
-	for(let chainIndex = 0; chainIndex < N_DELAY_CHAINS; chainIndex++)
+	for(let chainIndex = 0; chainIndex < Parameters.NDelayChains; chainIndex++)
 	{
 		let delayLengthRatio = IS.Random.Select(...possibleDelayLengthRatios);
-		let delayAmount = delayLengthRatio * RATE;
+		let delayAmount = delayLengthRatio * Parameters.Rate;
 		let nDelays = IS.Random.Int(3, 8);
 
 		let chain = new DelayChain(delayAmount, nDelays);
@@ -124,10 +91,10 @@ function delayTap()
 	let changeChord = false;
 	let tonicOffset = 0;
 
-	while(previousOnset < TIME_LIMIT)
+	while(previousOnset < Parameters.TimeLimit)
 	{
 		let noteLengthRatio = firstNote ? 0 : IS.Random.Select(...possibleNoteLengthRatios);
-		let noteLength = noteLengthRatio * RATE;
+		let noteLength = noteLengthRatio * Parameters.Rate;
 		let onset = previousOnset + noteLength;
 		let ratioIndex = IS.Random.Int(0, ratioScale.value.length);
 
@@ -149,7 +116,7 @@ function delayTap()
 		{
 			let nextTonic = 0;
 
-			if(currentChord !== N_CHORDS)
+			if(currentChord !== Parameters.NChords)
 			{
 				nextTonic = IS.Random.Int(0, ratioScale.value.length);
 
@@ -187,7 +154,7 @@ function delayTap()
 
 		currentChordDuration += noteLength;
 
-		if(currentChordDuration > CHORD_LENGTH)
+		if(currentChordDuration > Parameters.ChordLength)
 		{
 			currentChordDuration = 0;
 			changeChord = true;
