@@ -1,5 +1,3 @@
-import {IS_ControlParameter} from "./types/parameter/control/IS_ControlParameter";
-
 const INFINITE_SIBLING_AUDIO_CONTEXT = new AudioContext();
 
 // core
