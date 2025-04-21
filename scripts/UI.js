@@ -1,11 +1,19 @@
-import * as main from "../script.js";
-import { IS, load } from "../script.js";
+import * as MAIN from "../script.js";
+import * as CONFIG_HANDLER from "./siblingConfigs.js";
 import { SIBLING_OPTIONS_ARRAY } from "./siblings/SiblingOptions.js";
+export let UPLOADED_CONFIG = null;
 
 export const UPLOAD_BUTTON = document.querySelector('.UPLOAD_BUTTON');
+UPLOAD_BUTTON.addEventListener('change', function (event)
+{
+	CONFIG_HANDLER.uploadButtonCallback(event, SIBLING_SELECTION_DROPDOWN);
+});
+
 export const DOWNLOAD_BUTTON = document.querySelector('.DOWNLOAD_BUTTON');
-import { downloadButtonCallback } from "./parameterConfigs.js";
-DOWNLOAD_BUTTON.addEventListener('click', downloadButtonCallback);
+DOWNLOAD_BUTTON.addEventListener('click', function (event)
+{
+	CONFIG_HANDLER.downloadButtonCallback(TITLE_DIV.innerHTML);
+});
 DOWNLOAD_BUTTON.hidden = true;
 
 export const TITLE_DIV = document.querySelector('.TITLE_DIV');
@@ -59,8 +67,10 @@ async function initializePieceSelectionDropdown()
 	SIBLING_SELECTION_DROPDOWN.oninput = handleSiblingSelection;
 }
 
-export function handleConfigLoaded()
+export function handleConfigLoaded(configJSON)
 {
+	UPLOADED_CONFIG = configJSON;
+
 	handleSiblingSelection();
 	handleLoad();
 }
@@ -71,7 +81,7 @@ function handleSiblingSelection()
 	setTitle();
 }
 
-export async function requestSiblingScript()
+export async function requestSiblingScript(siblingName)
 {
 	SCRIPT_SRC = SIBLING_PATH + "/" + SIBLING_SELECTION_DROPDOWN.value + "/script.js";
 
@@ -167,15 +177,15 @@ function loadOnline()
 
 	hideUploadButton();
 
-	IS.onReady(hideProgressBar);
-	IS.onReady(setStartButtonReady);
-	IS.onReady(showDownloadButton);
+	MAIN.IS.onReady(hideProgressBar);
+	MAIN.IS.onReady(setStartButtonReady);
+	MAIN.IS.onReady(showDownloadButton);
 
 	// TODO: this is currently making sure load doesn't happen before the SCRIPT_SRC is loaded -> FIX IT!!!
 	setTimeout(()=>
 	{
 		displayControlParameters();
-		main.load();
+		MAIN.load();
 	}, 500);
 
 }
@@ -185,8 +195,8 @@ function loadOffline()
 	SIBLING_SELECTION_DROPDOWN.disabled = true;
 	SIBLING_SCRIPT.src = SCRIPT_SRC;
 	setStartButton(LOADING_STRING, true);
-	IS.onReady(setStartButtonReady);
-	main.load();
+	MAIN.IS.onReady(setStartButtonReady);
+	MAIN.load();
 }
 
 function handleStart()
@@ -209,7 +219,7 @@ function handleStart()
 function startOnline()
 {
 	setStartButton(STOP_STRING, false);
-	main.start();
+	MAIN.start();
 }
 
 function startOffline()
@@ -224,7 +234,7 @@ function handleReset()
 
 function handleStop()
 {
-	main.stop();
+	MAIN.stop();
 	setStartButton(RESET_STRING, false);
 }
 
@@ -252,14 +262,14 @@ function hideUploadButton()
 function setVolume(volumeSliderValue)
 {
 	let amplitudeScaler = Math.pow(volumeSliderValue, 2);
-	let amplitudeToDecibels = IS.Utility.AmplitudeToDecibels(amplitudeScaler);
-	IS.outputVolume = amplitudeToDecibels;
+	let amplitudeToDecibels = MAIN.IS.Utility.AmplitudeToDecibels(amplitudeScaler);
+	MAIN.IS.outputVolume = amplitudeToDecibels;
 	VOLUME_SLIDER_DISPLAY.innerHTML = parseInt(amplitudeToDecibels) + " dB";
 }
 
 function initializeProgressBar()
 {
-	IS.MessageBus.addListener.BufferOperationQueue.Progress = new ValueListener(PROGRESS_BAR);
+	MAIN.IS.MessageBus.addListener.BufferOperationQueue.Progress = new ValueListener(PROGRESS_BAR);
 }
 
 function hideProgressBar()
@@ -287,7 +297,7 @@ class ValueListener
 
 function displayControlParameters()
 {
-	let siblingConfig = IS.SiblingConfig;
+	let siblingConfig = MAIN.IS.SiblingConfig;
 
 	for(const [parameterDisplayName, parameterValue] of Object.entries(siblingConfig))
 	{

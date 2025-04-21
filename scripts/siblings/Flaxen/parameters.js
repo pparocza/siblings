@@ -1,6 +1,8 @@
 import { IS } from "../../../script.js";
+import { UPLOADED_CONFIG } from "../../UI.js";
 
-export const Parameters =
+// TODO: Seems likely this can be refactored to be a bit less janky
+export const Parameters = UPLOADED_CONFIG !== null ? UPLOADED_CONFIG :
 {
 	NHarmonics: 2,
 	Fundamental: IS.Random.Float(210, 230),

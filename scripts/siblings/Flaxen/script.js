@@ -24,6 +24,9 @@ function delayTap()
 	reverbBuffer.noise().add();
 	reverbBuffer.inverseSawtooth(4).multiply();
 
+	let filter = IS.createFilter("highpass", 100);
+	filter.connectToMainOutput();
+
 	let reverb = IS.createConvolver(reverbBuffer);
 	IS.output.connect(reverb.input);
 	reverb.connectToAudioDestination();
