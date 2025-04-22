@@ -4,66 +4,64 @@
     <title>infinite sibling</title>
     <link rel="stylesheet" href="styles/style.css">
 </head>
-<body class="bodyElement">
+    <body class="bodyElement">
 
-<div class="CONFIG_DIV">
-    <div class="CONTROL_PARAMETER_DISPLAY_DIV"></div>
-    <input type="button" value="Download Config" class="DOWNLOAD_BUTTON" hidden="hidden"/>
-</div>
-
-<div class="UI_DIV">
-
-    <div class="TITLE_DIV"></div>
-
-    <div class="SELECTION_DIV">
-        <label>
-            <select name="SIBLING_SELECTION_MENU" class="SIBLING_SELECTION_MENU">
-                <option>- Select Sibling -</option>
-            </select>
-        </label>
-
-        <button class="LOAD_BUTTON">load</button>
-
-        <p align="center">-- OR --</p>
-
-        <div class="DRAG_AND_DROP">
-            <div class="DND_TEXT">
-                <p align="center">Drag and drop .sibling file</p>
-            </div>
+        <div class="CONFIG_DIV">
+            <div class="CONTROL_PARAMETER_DISPLAY_DIV"></div>
+            <input type="button" value="Download Config" class="DOWNLOAD_BUTTON" hidden="hidden"/>
         </div>
-    </div>
 
-    <input type="file" value="Upload" class="UPLOAD_BUTTON" hidden="hidden">
+        <div class="UI_DIV">
 
-    <br>
+            <div class="TITLE_DIV"></div>
 
-    <div align="center" class="PLAYBACK_CONTROLS" hidden="hidden">
-        <button class="START_BUTTON">start</button>
+            <div class="SELECTION_DIV">
+                <label>
+                    <select name="SIBLING_SELECTION_MENU" class="SIBLING_SELECTION_MENU">
+                        <option>- Select Sibling -</option>
+                    </select>
+                </label>
 
-        <p align="center">
-            <label> Volume:
-                <span class="VOLUME_DISPLAY"></span>
+                <button class="LOAD_BUTTON">load</button>
+
+                <p align="center">-- OR --</p>
+
+                <div class="DRAG_AND_DROP">
+                    <div class="DND_TEXT">
+                        <p align="center">Drag and drop .sibling file</p>
+                    </div>
+                </div>
+            </div>
+
+            <input type="file" value="Upload" class="UPLOAD_BUTTON" hidden="hidden">
+
+            <br>
+
+            <div align="center" class="PLAYBACK_CONTROLS" hidden="hidden">
+                <button class="START_BUTTON">start</button>
+
+                <p align="center">
+                    <label> Volume:
+                        <span class="VOLUME_DISPLAY"></span>
+                        <br>
+                        <input class="VOLUME_SLIDER" type="range" min="0" max="1" step=".001" value = "0.5">
+                    </label>
+                <p>
+            </div>
+
+            <div hidden="true" align="center" class="PROGRESS_DIV">
+                <label>Generating Buffers:</label>
                 <br>
-                <input class="VOLUME_SLIDER" type="range" min="0" max="1" step=".001" value = "0.5">
-            </label>
-        <p>
-    </div>
+                <progress value="0" max="100" class="PROGRESS_BAR"></progress>
+            </div>
+            
+        </div>
 
+        <script type="module" src="script.js"></script>
+        <script type="module" src="scripts/UI.js"></script>
+        <script type ="module" class="SIBLING_SCRIPT"></script>
 
+        <div class="SCRIPT_DIV"></div>
 
-    <div hidden="true" align="center" class="PROGRESS_DIV">
-        <label>Generating Buffers:</label>
-        <br>
-        <progress value="0" max="100" class="PROGRESS_BAR"></progress>
-    </div>
-</div>
-
-<script type="module" src="script.js"></script>
-<script type="module" src="scripts/UI.js"></script>
-<script type ="module" class="SIBLING_SCRIPT"></script>
-
-<div class="SCRIPT_DIV">
-</div>
-
-</body>
+    </body>
 </html>
