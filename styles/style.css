@@ -93,6 +93,19 @@ body
     font: 16px "Courier New";
 }
 
+.DRAG_AND_DROP
+{
+    font: 18px "Courier New";
+    border-style: dashed;
+}
+
+.DND_TEXT
+{
+    margin-left: 10px;
+    margin-right: 10px;
+    font: 16px "Courier New";
+}
+
 input[type="file"]{
     color: black;
 }

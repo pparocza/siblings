@@ -15,22 +15,41 @@
 
     <div class="TITLE_DIV"></div>
 
-    <label>
-        <select name="SIBLING_SELECTION_MENU" class="SIBLING_SELECTION_MENU">
-            <option>- Sibling Selection -</option>
-        </select>
-    </label>
-
-    <input type="file" value="Upload" class="UPLOAD_BUTTON">
-    <p align="center"><button class="ONLINE_BUTTON">online</button> <button class="START_BUTTON">load</button></p>
-
-    <p align="center">
-        <label> Volume:
-            <span class="VOLUME_DISPLAY"></span>
-            <br>
-            <input class="VOLUME_SLIDER" type="range" min="0" max="1" step=".001" value = "0.5">
+    <div class="SELECTION_DIV">
+        <label>
+            <select name="SIBLING_SELECTION_MENU" class="SIBLING_SELECTION_MENU">
+                <option>- Select Sibling -</option>
+            </select>
         </label>
-    <p>
+
+        <button class="LOAD_BUTTON">load</button>
+
+        <p align="center">-- OR --</p>
+
+        <div class="DRAG_AND_DROP">
+            <div class="DND_TEXT">
+                <p align="center">Drag and drop .sibling file</p>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" value="Upload" class="UPLOAD_BUTTON" hidden="hidden">
+
+    <br>
+
+    <div align="center" class="PLAYBACK_CONTROLS" hidden="hidden">
+        <button class="START_BUTTON">start</button>
+
+        <p align="center">
+            <label> Volume:
+                <span class="VOLUME_DISPLAY"></span>
+                <br>
+                <input class="VOLUME_SLIDER" type="range" min="0" max="1" step=".001" value = "0.5">
+            </label>
+        <p>
+    </div>
+
+
 
     <div hidden="true" align="center" class="PROGRESS_DIV">
         <label>Generating Buffers:</label>

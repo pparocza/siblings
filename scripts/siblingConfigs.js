@@ -1,11 +1,21 @@
 import * as MAIN from "../script.js";
 import * as UI from "./UI.js";
 
-export function uploadButtonCallback(event, siblingSelectionDropdown)
+export function configUploadCallback(event, siblingSelectionDropdown)
 {
-	let file = event.target.files[0];
-
 	let reader = new FileReader();
+	let file = null;
+
+	if (event.dataTransfer.items)
+	{
+		[...event.dataTransfer.items].forEach((item, i) =>
+		{
+			if (item.kind === "file")
+			{
+				file = item.getAsFile();
+			}
+		});
+	}
 
 	reader.onload = function (event)
 	{

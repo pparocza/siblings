@@ -3,10 +3,30 @@ import * as CONFIG_HANDLER from "./siblingConfigs.js";
 import { SIBLING_OPTIONS_ARRAY } from "./siblings/SiblingOptions.js";
 export let UPLOADED_CONFIG = null;
 
+const LOAD_BUTTON = document.querySelector('.LOAD_BUTTON');
+LOAD_BUTTON.disabled = true;
+LOAD_BUTTON.onclick = handleLoad;
+
+const SELECTION_DIV = document.querySelector('.SELECTION_DIV');
+const PLAYBACK_CONTROLS = document.querySelector('.PLAYBACK_CONTROLS');
+
+const DRAG_AND_DROP = document.querySelector('.DRAG_AND_DROP');
+DRAG_AND_DROP.ondrop = function (event)
+{
+	event.preventDefault();
+	CONFIG_HANDLER.configUploadCallback(event, SIBLING_SELECTION_DROPDOWN);
+};
+
+DRAG_AND_DROP.ondragover = function (event)
+{
+	// TODO: color change on drag-over
+	event.preventDefault();
+}
+
 export const UPLOAD_BUTTON = document.querySelector('.UPLOAD_BUTTON');
 UPLOAD_BUTTON.addEventListener('change', function (event)
 {
-	CONFIG_HANDLER.uploadButtonCallback(event, SIBLING_SELECTION_DROPDOWN);
+	CONFIG_HANDLER.configUploadCallback(event, SIBLING_SELECTION_DROPDOWN);
 });
 
 export const DOWNLOAD_BUTTON = document.querySelector('.DOWNLOAD_BUTTON');
@@ -26,10 +46,6 @@ const LOAD_STRING = "load";
 const LOADING_STRING = "...loading";
 const RESET_STRING = "reset";
 
-const ONLINE_BUTTON = document.querySelector('.ONLINE_BUTTON');
-const ONLINE_STRING = "online";
-const OFFLINE_STRING = "offline";
-
 const VOLUME_SLIDER = document.querySelector('.VOLUME_SLIDER');
 const VOLUME_SLIDER_INITIAL_VALUE = 0.7;
 const VOLUME_SLIDER_DISPLAY = document.querySelector('.VOLUME_DISPLAY');
@@ -47,7 +63,6 @@ const PROGRESS_BAR = document.querySelector('.PROGRESS_BAR');
 function initializeUI()
 {
 	initializePieceSelectionDropdown();
-	initializeOnlineButton();
 	initializeStartButton();
 	initializeVolumeSlider()
 	initializeProgressBar();
@@ -90,11 +105,7 @@ export async function requestSiblingScript(siblingName)
 
 	if (scriptRequest.ok)
 	{
-		setStartButton(LOAD_STRING, false);
-	}
-	else
-	{
-		setStartButton(LOAD_STRING, true);
+		LOAD_BUTTON.disabled = false;
 	}
 }
 
@@ -102,16 +113,6 @@ function setTitle()
 {
 	let selectedIndex = SIBLING_SELECTION_DROPDOWN.selectedIndex;
 	TITLE = SIBLING_SELECTION_DROPDOWN.options[selectedIndex].text;
-}
-
-function initializeOnlineButton()
-{
-	ONLINE_BUTTON.onclick = function()
-	{
-		ONLINE_BUTTON.innerHTML === ONLINE_STRING ?
-			ONLINE_BUTTON.innerHTML = OFFLINE_STRING :
-			ONLINE_BUTTON.innerHTML = ONLINE_STRING;
-	}
 }
 
 function initializeStartButton()
@@ -122,9 +123,6 @@ function initializeStartButton()
 	{
 		switch (START_BUTTON.innerHTML)
 		{
-			case (LOAD_STRING):
-				handleLoad();
-				break;
 			case (START_STRING):
 				handleStart();
 				break;
@@ -153,17 +151,7 @@ function initializeVolumeSlider()
 
 function handleLoad()
 {
-	switch(ONLINE_BUTTON.innerHTML)
-	{
-		case (ONLINE_STRING):
-			loadOnline();
-			break;
-		case (OFFLINE_STRING):
-			loadOffline();
-			break;
-		default:
-			break;
-	}
+	loadOnline();
 }
 
 function loadOnline()
@@ -173,9 +161,10 @@ function loadOnline()
 	SIBLING_SELECTION_DROPDOWN.remove();
 	TITLE_DIV.innerHTML = TITLE;
 
-	setStartButton(LOADING_STRING, true);
+	SELECTION_DIV.hidden = true;
+	PLAYBACK_CONTROLS.hidden = false;
 
-	hideUploadButton();
+	setStartButton(LOADING_STRING, true);
 
 	MAIN.IS.onReady(hideProgressBar);
 	MAIN.IS.onReady(setStartButtonReady);
@@ -190,29 +179,9 @@ function loadOnline()
 
 }
 
-function loadOffline()
-{
-	SIBLING_SELECTION_DROPDOWN.disabled = true;
-	SIBLING_SCRIPT.src = SCRIPT_SRC;
-	setStartButton(LOADING_STRING, true);
-	MAIN.IS.onReady(setStartButtonReady);
-	MAIN.load();
-}
-
 function handleStart()
 {
-	switch(ONLINE_BUTTON.innerHTML)
-	{
-		case (ONLINE_STRING):
-			startOnline();
-			break;
-		case (OFFLINE_STRING):
-			startOffline();
-			break;
-		default:
-			break;
-	}
-
+	startOnline();
 	setStartButton(STOP_STRING, false);
 }
 
@@ -220,11 +189,6 @@ function startOnline()
 {
 	setStartButton(STOP_STRING, false);
 	MAIN.start();
-}
-
-function startOffline()
-{
-	setStartButton(STOP_STRING, false);
 }
 
 function handleReset()
