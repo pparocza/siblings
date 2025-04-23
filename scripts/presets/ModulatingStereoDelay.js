@@ -1,4 +1,4 @@
-import { IS_Effect } from "infinitesibling";
+import { IS_Effect } from "../../infinitesibling";
 
 export class ModulatingStereoDelay extends IS_Effect
 {
@@ -11,27 +11,29 @@ export class ModulatingStereoDelay extends IS_Effect
         let delay = IS.createStereoDelay();
 
         let delayModulatorBuffer = IS.createBuffer();
-        delayModulatorBuffer.noise().amplitude(0.004).add();
+        delayModulatorBuffer.noise().add();
+        delayModulatorBuffer.constant(0.004).multiply();
 
         let delayModulatorBuffer2 = IS.createBuffer();
-        delayModulatorBuffer2.noise().amplitude(0.004).add();
+        delayModulatorBuffer2.noise().add();
+        delayModulatorBuffer2.constant(0.004).multiply();
 
         let delayModulator = IS.createBufferSource(delayModulatorBuffer);
         delayModulator.connect(delay.delayTimeLeft);
-        delayModulator.playbackRate = IS.randomFloat(0.00025, 0.000125) * 0.5;
+        delayModulator.playbackRate = IS.Random.Float(0.00025, 0.000125) * 0.5;
         delayModulator.loop = true;
 
         let delayModulator2 = IS.createBufferSource(delayModulatorBuffer);
         delayModulator2.connect(delay.delayTimeRight);
-        delayModulator2.playbackRate = IS.randomFloat(0.00025, 0.000125) * 0.5;
+        delayModulator2.playbackRate = IS.Random.Float(0.00025, 0.000125) * 0.5;
         delayModulator2.loop = true;
 
         this.delay = delay;
         this.delayModulator = delayModulator;
         this.delayModulator2 = delayModulator2;
 
-        this.configureInput(this.delay);
-        this.configureOutput(this.delay);
+        this.configureInput(this.delay.input);
+        this._configureOutput(this.delay);
     }
 
     start()

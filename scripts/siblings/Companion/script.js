@@ -1,5 +1,6 @@
 import { IS } from "../../../script.js";
-import { BufferPresets } from "../../presets/BufferPresets.js";
+import { BufferPresets } from "../../presets/BufferPresets.js"
+import { ModulatingStereoDelay } from "../../presets/ModulatingStereoDelay.js";
 
 let convolutionBuffer = IS.createBuffer(1, 1);
 
@@ -19,11 +20,11 @@ function companionStandard()
     reverb.gain = 0.5;
     reverb.connectToMainOutput();
 
-    let modulatingDelay = new C_ModulatingStereoDelay(IS);
+    let modulatingDelay = new ModulatingStereoDelay(IS);
     let delayHighPass = IS.createFilter("highpass", 1000);
 
-    IS.connectSeries(reverb, modulatingDelay, delayHighPass, IS.output);
-    IS.connectSeries(delayHighPass, delay, IS.output);
+    IS.connect.series(reverb, modulatingDelay, delayHighPass, IS.output);
+    IS.connect.series(delayHighPass, delay, IS.output);
     modulatingDelay.start();
     modulatingDelay.volume = 12;
 
@@ -37,10 +38,10 @@ function companionStandard()
     let tonicOptions = IS.array("A", "B", "Bb", "C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#");
     let modeOptions = IS.array("minor");
     let scale = IS.ratioScale(tonicOptions.random(), modeOptions.random());
-    const fundamental = IS.randomFloat(25, 35);
+    const fundamental = IS.Random.Float(25, 35);
     let divArray = IS.array(1, 0.5, 1.5);
 
-    let speed = IS.randomFloat(2, 2);
+    let speed = IS.Random.Float(2, 2);
 
     let chords =
     [
@@ -120,7 +121,7 @@ function companionStandard()
         pitchVoice.connect(reverb);
         pitchVoice.connect(delay);
 
-        IS.connectSeries(pitchVoice, IS.output);
+        IS.connect.series(pitchVoice, IS.output);
 
         // Playing indeterminately noisey sources (gnarly fm) through tuned convolvers
 
@@ -167,48 +168,48 @@ function pitchSource(nVoices, nPitches, fundamental, scale, nOnsets, speed, divA
         let octave = octaveOptions.random();
 
         let carrierFrequency = fundamental * scale.urn();
-        let modulatorFrequency = IS.randomFloat(5, 10);
-        let modulationGain = IS.randomFloat(0.125, 0.25);
+        let modulatorFrequency = IS.Random.Float(5, 10);
+        let modulationGain = IS.Random.Float(0.125, 0.25);
         voiceBuffer.frequencyModulatedSine(carrierFrequency, modulatorFrequency, modulationGain).add();
         voiceBuffer.frequencyModulatedSine
         (
-            carrierFrequency * IS.randomFloat(1.001, 1.007),
-            modulatorFrequency * IS.randomFloat(1.001, 1.007),
-            modulationGain * IS.randomFloat(1.001, 1.007)
+            carrierFrequency * IS.Random.Float(1.001, 1.007),
+            modulatorFrequency * IS.Random.Float(1.001, 1.007),
+            modulationGain * IS.Random.Float(1.001, 1.007)
         ).add();
 
-        let rampPeakPercent = IS.randomFloat(0.001, 0.003);
+        let rampPeakPercent = IS.Random.Float(0.001, 0.003);
 
-        if (IS.coinToss())
+        if (IS.Random.CoinToss())
         {
             voiceBuffer.frequencyModulatedSine
             (
-                carrierFrequency * IS.randomFloat(0.000625, 0.0003125),
-                modulatorFrequency * IS.randomFloat(0.000625, 0.0003125),
-                modulationGain * IS.randomFloat(0.000625, 0.0003125),
+                carrierFrequency * IS.Random.Float(0.000625, 0.0003125),
+                modulatorFrequency * IS.Random.Float(0.000625, 0.0003125),
+                modulationGain * IS.Random.Float(0.000625, 0.0003125),
             ).multiply();
 
-            if(IS.coinToss())
+            if(IS.Random.CoinToss())
             {
                 rampPeakPercent = 1 - rampPeakPercent;
-                voiceBuffer.attenuate(-6);
+                voiceBuffer.constant(0.5).multiply();
             }
             else
             {
-                voiceBuffer.attenuate(6);
+                voiceBuffer.constant(2).multiply();
             }
         }
 
-        let upExp = IS.randomFloat(0.005, 0.02);
-        let downExp = IS.randomFloat(3, 6);
+        let upExp = IS.Random.Float(0.005, 0.02);
+        let downExp = IS.Random.Float(3, 6);
         voiceBuffer.ramp(0, 1, rampPeakPercent, rampPeakPercent, upExp, downExp).multiply();
 
         let voiceSource = IS.createBufferSource(voiceBuffer);
         voiceSource.playbackRate = 1 / octave;
 
-        let panner = IS.createStereoPanner(IS.randomFloat(-1, 1));
+        let panner = IS.createStereoPanner(IS.Random.Float(-1, 1));
 
-        IS.connectSeries(voiceSource, panner, voiceOutput);
+        IS.connect.series(voiceSource, panner, voiceOutput);
 
         voiceArray.push(voiceSource);
 
@@ -226,10 +227,10 @@ function pitchSource(nVoices, nPitches, fundamental, scale, nOnsets, speed, divA
 
         for (let voice = 0; voice < nVoices; voice++)
         {
-            if(IS.coinToss(0.7))
+            if(IS.Random.CoinToss(0.7))
             {
                 let voiceSource = voiceArray.urn();
-                voiceSource.scheduleStart(onsetTime + IS.randomFloat(-0.02, 0.02));
+                voiceSource.scheduleStart(onsetTime + IS.Random.Float(-0.02, 0.02));
             }
         }
 

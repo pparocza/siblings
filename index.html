@@ -15,25 +15,29 @@
 
             <div class="TITLE_DIV"></div>
 
-            <div class="SELECTION_DIV">
+            <div align="center" class="SELECTION_DIV">
                 <label>
                     <select name="SIBLING_SELECTION_MENU" class="SIBLING_SELECTION_MENU">
-                        <option>- Select Sibling -</option>
+                        <option>--- Select Sibling ---</option>
                     </select>
                 </label>
 
                 <button class="LOAD_BUTTON">load</button>
 
-                <p align="center">-- OR --</p>
+                <p align="center">-- or --</p>
 
-                <div class="DRAG_AND_DROP">
-                    <div class="DND_TEXT">
-                        <p align="center">Drag and drop .sibling file</p>
+                    <div class="DRAG_AND_DROP">
+                        <div class="DND_TEXT">
+                            <p align="center">
+                                Drag and drop /
+                                <input type="file" id="FILE_INPUT" hidden="hidden" class="UPLOAD_BUTTON"/>
+                                <u><label for="FILE_INPUT">Upload</label></u>
+                                .sibling file
+                            </p>
                     </div>
+
                 </div>
             </div>
-
-            <input type="file" value="Upload" class="UPLOAD_BUTTON" hidden="hidden">
 
             <br>
 

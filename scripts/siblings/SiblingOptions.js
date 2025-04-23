@@ -9,14 +9,12 @@ class SiblingOption
 
 export const SIBLING_OPTIONS_ARRAY =
 [
-    /*
-    new SiblingOption("Companion", "Companion"),
-    new SiblingOption("RollForHope", "roll for hope"),
-    new SiblingOption("InkblotSentiment", "Inkblot Sentiment"),
-    new SiblingOption("OneNote", "One Note"),
-    new SiblingOption("RollingSine", "Rolling Sine"),
-    new SiblingOption("SalineAnatomy", "Saline Anatomy"),
-    */
     new SiblingOption("Flaxen", "flaxen"),
-    new SiblingOption("JustForYou", "just for you")
+    new SiblingOption("JustForYou", "just for you"),
+    new SiblingOption("Companion", "companion"),
+    new SiblingOption("RollForHope", "roll for hope"),
+    new SiblingOption("InkblotSentiment", "inkblot sentiment"),
+    new SiblingOption("OneNote", "one note"),
+    new SiblingOption("RollingSine", "rolling sine"),
+    new SiblingOption("SalineAnatomy", "saline anatomy")
 ]

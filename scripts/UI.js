@@ -21,6 +21,14 @@ DRAG_AND_DROP.ondragover = function (event)
 {
 	// TODO: color change on drag-over
 	event.preventDefault();
+	DRAG_AND_DROP.style.background = "rgba(100, 100, 100, 0.6)";
+}
+
+DRAG_AND_DROP.ondragleave = function (event)
+{
+	// TODO: color change on drag-over
+	event.preventDefault();
+	DRAG_AND_DROP.style.background = "rgba(100, 100, 100, 0)";
 }
 
 export const UPLOAD_BUTTON = document.querySelector('.UPLOAD_BUTTON');
@@ -96,9 +104,17 @@ function handleSiblingSelection()
 	setTitle();
 }
 
-export async function requestSiblingScript(siblingName)
+export async function requestSiblingScript()
 {
 	SCRIPT_SRC = SIBLING_PATH + "/" + SIBLING_SELECTION_DROPDOWN.value + "/script.js";
+
+	let isSelectSibling = SIBLING_SELECTION_DROPDOWN.value === SIBLING_SELECTION_DROPDOWN[0].value;
+
+	if(isSelectSibling)
+	{
+		LOAD_BUTTON.disabled = true;
+		return;
+	}
 
 	const scriptRequest = await fetch(SCRIPT_SRC);
 	scriptRequest.async = false;
@@ -106,6 +122,10 @@ export async function requestSiblingScript(siblingName)
 	if (scriptRequest.ok)
 	{
 		LOAD_BUTTON.disabled = false;
+	}
+	else
+	{
+		LOAD_BUTTON.disabled = true;
 	}
 }
 

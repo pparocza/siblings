@@ -6,7 +6,7 @@ export function configUploadCallback(event, siblingSelectionDropdown)
 	let reader = new FileReader();
 	let file = null;
 
-	if (event.dataTransfer.items)
+	if (event.dataTransfer && event.dataTransfer.items)
 	{
 		[...event.dataTransfer.items].forEach((item, i) =>
 		{
@@ -15,6 +15,10 @@ export function configUploadCallback(event, siblingSelectionDropdown)
 				file = item.getAsFile();
 			}
 		});
+	}
+	else if(event.target.files[0])
+	{
+		file = event.target.files[0]
 	}
 
 	reader.onload = function (event)
