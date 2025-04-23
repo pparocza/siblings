@@ -18,22 +18,22 @@ export class ConvolverVoice
             let octave = octaveOptions.random();
 
             let carrierFrequency = fundamental * scale.urn() * octave;
-            let modulatorFrequency = siblingContext.randomFloat(5, 10);
-            let modulationGain = siblingContext.randomFloat(0.125, 0.25);
+            let modulatorFrequency = siblingContext.Random.Float(5, 10);
+            let modulationGain = siblingContext.Random.Float(0.125, 0.25);
 
             carrierFrequencyArray.push
             (
-                carrierFrequency, carrierFrequency * siblingContext.randomFloat(detuneRangeMin, detuneRangeMax)
+                carrierFrequency, carrierFrequency * siblingContext.Random.Float(detuneRangeMin, detuneRangeMax)
             );
 
             modulatorFrequencyArray.push
             (
-                modulatorFrequency, modulatorFrequency * siblingContext.randomFloat(detuneRangeMin, detuneRangeMax)
+                modulatorFrequency, modulatorFrequency * siblingContext.Random.Float(detuneRangeMin, detuneRangeMax)
             );
 
             modulatorGainArray.push
             (
-                modulationGain, modulationGain * siblingContext.randomFloat(detuneRangeMin, detuneRangeMax)
+                modulationGain, modulationGain * siblingContext.Random.Float(detuneRangeMin, detuneRangeMax)
             );
         }
 

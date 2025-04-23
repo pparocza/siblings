@@ -5,8 +5,8 @@ export const OutputBus =
 {
     Initialize()
     {
-        IS.connectSeries(this.Reverb, this.DelayHighPass, this.MainOutput);
-        IS.connectSeries(this.DelayHighPass, this.Delay, this.MainOutput);
+        IS.connect.series(this.Reverb, this.DelayHighPass, this.MainOutput);
+        IS.connect.series(this.DelayHighPass, this.Delay, this.MainOutput);
 
         this.ConfigureGridOutputBus();
         this.ConfigureKeyOutputBus();

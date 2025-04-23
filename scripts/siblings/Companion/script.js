@@ -6,6 +6,9 @@ let convolutionBuffer = IS.createBuffer(1, 1);
 
 IS.onLoad(companionStandard);
 
+import { IS_Visualizer } from "../../visualizer/IS_Visualizer.js";
+IS.onReady(IS_Visualizer.visualize);
+
 function companionStandard()
 {
     let companionOutput = IS.createGain();
@@ -130,10 +133,10 @@ function companionStandard()
 
     IS.outputVolume = -32;
 
-/*  let fmPadSource = IS.createBufferSource();
+    let fmPadSource = IS.createBufferSource();
     fmPadSource.playbackRate = 0.25;
     fmPadSource.buffer = BufferPresets.randomFMPad(IS);
-    fmPadSource.loopEnd = fmPadSource.buffer.length;
+    fmPadSource.loopEnd = 20; // fmPadSource.buffer.length;
     fmPadSource.loop = true;
     fmPadSource.volume = 6;
     let fmPadFilter = IS.createFilter("lowpass", 1000);
@@ -151,7 +154,6 @@ function companionStandard()
     fmPadSource.connect(convolver);
     convolver.connectToMainOutput();
     convolver.connect(delay, reverb);
-*/
 }
 
 function pitchSource(nVoices, nPitches, fundamental, scale, nOnsets, speed, divArray, startOffset = 0)
@@ -213,7 +215,7 @@ function pitchSource(nVoices, nPitches, fundamental, scale, nOnsets, speed, divA
 
         voiceArray.push(voiceSource);
 
-        convolutionBuffer.addBuffer(voiceBuffer);
+        convolutionBuffer.add(voiceBuffer);
     }
 
     let speedFactor = 1 / speed;

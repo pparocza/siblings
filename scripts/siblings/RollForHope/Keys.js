@@ -43,13 +43,13 @@ export function Keys(nLayers, fundamental, chord)
 
 			let keyFilter = IS.createFilter("lowshelf", 500, 1, -8);
 
-			let panValue = i % 2 === 0 ? IS.randomFloat(0.6, 1) : -1 * IS.randomFloat(0.6, 1);
+			let panValue = i % 2 === 0 ? IS.Random.Float(0.6, 1) : -1 * IS.Random.Float(0.6, 1);
 			let convolutionPanner = IS.createStereoPanner(panValue);
-			IS.connectSeries(fmKeyBufferSource, convolution, keyFilter, convolutionPanner, OutputBus.KeyOutput);
+			IS.connect.series(fmKeyBufferSource, convolution, keyFilter, convolutionPanner, OutputBus.KeyOutput);
 			keyFilter.connect(OutputBus.Delay, OutputBus.Reverb);
 			convolutionPanner.connectToMainOutput();
 
-			let sequence = IS.array()
+			let sequence = IS.sequenceArray()
 			sequence.timeSequence
 			(
 				possibleDurations, startTime, i === 0,

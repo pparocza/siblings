@@ -8,7 +8,7 @@ export const BufferPresets =
 
         let buffer = IS.createBuffer(1, 1);
 
-        buffer.frequencyModulatedSine(carrierFrequency, modulatorFrequency, modulationGain).fill();
+        buffer.frequencyModulatedSine(carrierFrequency, modulatorFrequency, modulationGain).add();
 
         let rampUpEnd = IS.Random.Float(0.05, 0.15);
         let rampDownExponent = IS.Random.Float(2, 5);
@@ -30,7 +30,7 @@ export const BufferPresets =
         let modulatorFrequency = IS.Random.Float(20, 1000);
         let modulationGain = IS.Random.Float(1, 10);
 
-        buffer.frequencyModulatedSine(carrierFrequency, modulatorFrequency, modulationGain).fill();
+        buffer.frequencyModulatedSine(carrierFrequency, modulatorFrequency, modulationGain).add();
 
         let rampPeakPercent = IS.Random.Float(0.005, 0.015);
         let upExp = IS.Random.Float(0.005, 0.2);
@@ -50,7 +50,7 @@ export const BufferPresets =
         let modulatorFrequency = carrierFrequency * IS.array(1, 2, 3, 4, 8).random();
         let modulationGain = carrierFrequency * IS.array(1, 2, 3, 4, 0.125, 0.25).random();
 
-        buffer.frequencyModulatedSine(carrierFrequency, modulatorFrequency, modulationGain).fill();
+        buffer.frequencyModulatedSine(carrierFrequency, modulatorFrequency, modulationGain).add();
 
         let rampPeakPercent = IS.Random.Float(0.005, 0.015);
         let upExp = IS.Random.Float(0.005, 0.2);
@@ -73,7 +73,7 @@ export const BufferPresets =
             let modulatorFrequency = IS.Random.Float(500, 7000);
             let modulationGain = IS.Random.Float(1, 300);
 
-            tempBuffer.frequencyModulatedSine(carrierFrequency, modulatorFrequency, modulationGain).fill();
+            tempBuffer.frequencyModulatedSine(carrierFrequency, modulatorFrequency, modulationGain).add();
 
             let rampPeakPercent = IS.Random.Float(0.3, 0.8);
             let upExp = IS.Random.Float(1, 2);
@@ -84,7 +84,7 @@ export const BufferPresets =
 
             tempBuffer.constant(1 / nLayers).multiply();
 
-            buffer.addBuffer(tempBuffer);
+            buffer.add(tempBuffer);
         }
 
         return buffer;
@@ -104,7 +104,7 @@ export const BufferPresets =
             let modulatorFrequency = carrierFrequency * IS.array(1, 2, 3, 4, 8).random();
             let modulationGain = carrierFrequency * IS.array(1, 2, 3, 4, 0.125, 0.25).random();
 
-            tempBuffer.frequencyModulatedSine(carrierFrequency, modulatorFrequency, modulationGain).fill();
+            tempBuffer.frequencyModulatedSine(carrierFrequency, modulatorFrequency, modulationGain).add();
 
             let rampPeakPercent = IS.Random.Float(0.3, 0.8);
             let upExp = IS.Random.Float(1, 2);
@@ -127,7 +127,7 @@ export const BufferPresets =
 
         let buffer = IS.createBuffer(1, 1);
 
-        buffer.noise().fill();
+        buffer.noise().add();
         buffer.inverseSawtooth(4).multiply();
 
         return buffer;
@@ -142,12 +142,12 @@ export const BufferPresets =
         // Create noiseBuffer
         let noiseBuffer = IS.createBuffer(nChannels, length);
 
-        noiseBuffer.noise().fill();
+        noiseBuffer.noise().add();
         noiseBuffer.inverseSawtooth(4).multiply();
 
         // Create fmBuffer
         let fmBuffer = IS.createBuffer(nChannels, length);
-        fmBuffer.frequencyModulatedSine(IS.Random.Float(2, 6), IS.Random.Float(2, 6), IS.Random.Float(1, 3)).fill();
+        fmBuffer.frequencyModulatedSine(IS.Random.Float(2, 6), IS.Random.Float(2, 6), IS.Random.Float(1, 3)).add();
 
         let rampUpEnd = IS.Random.Float(0.05, 0.15);
         let rampDownExponent = IS.Random.Float(2, 5);
@@ -161,7 +161,7 @@ export const BufferPresets =
 
         // Create lowNoise
         let lowNoise = IS.createBuffer(nChannels, length);
-        lowNoise.noise().fill();
+        lowNoise.noise().add();
         lowNoise.ramp(0, 1, 0.3, 0.4, 3, 3).multiply();
         lowNoise.constant(0.125).multiply();
 

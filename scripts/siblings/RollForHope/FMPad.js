@@ -1,5 +1,5 @@
 import { BufferPresets } from "../../presets/BufferPresets.js";
-import { IS_Node } from "../../../node_modules/infinitesibling";
+import { IS_Node } from "../../../infinitesibling";
 import { ConvolverVoice } from "./ConvolverVoice.js";
 
 export class FMPad extends IS_Node
@@ -14,7 +14,7 @@ export class FMPad extends IS_Node
         );
 
         fmPadSource.playbackRate = 0.25;
-        fmPadSource.loopEnd = fmPadSource.buffer.duration;
+        fmPadSource.loopEnd = 20; // fmPadSource.buffer.duration;
         fmPadSource.volume = 6;
 
         let convolver = siblingContext.createConvolver

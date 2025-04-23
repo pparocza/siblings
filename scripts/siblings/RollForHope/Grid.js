@@ -112,15 +112,15 @@ function gridSection
 		// Create Buffer
 		let fmKeyBuffer = IS.createBuffer(1, 1);
 		fmKeyBuffer.sine(fundamental * chord.random() * octave).add();
-		fmKeyBuffer.inverseSawtooth(IS.randomFloat(3, 8)).multiply();
+		fmKeyBuffer.inverseSawtooth(IS.Random.Float(3, 8)).multiply();
 
 		let fmKeyBufferSource = IS.createBufferSource(fmKeyBuffer);
 
 		// TODO: pan "width" - .4 means panned within -0.2 to 0.2, -0.4 means [-1.0:-0.4]/[0.4-1.0]
-		let panValue = voice % 2 === 0 ? IS.randomFloat(0.6, 1) : -1 * IS.randomFloat(0.6, 1);
+		let panValue = voice % 2 === 0 ? IS.Random.Float(0.6, 1) : -1 * IS.Random.Float(0.6, 1);
 		let panner = IS.createStereoPanner(panValue);
 
-		IS.connectSeries(fmKeyBufferSource, panner, OutputBus.GridOutput);
+		IS.connect.series(fmKeyBufferSource, panner, OutputBus.GridOutput);
 
 		fmKeyBufferSource.playbackRate = 1;
 
@@ -130,7 +130,7 @@ function gridSection
 			fmKeyBufferSource.scheduleStart(0);
 		}
 
-		let sequence = IS.array()
+		let sequence = IS.sequenceArray();
 
 		if(pitched && referenceMemory)
 		{

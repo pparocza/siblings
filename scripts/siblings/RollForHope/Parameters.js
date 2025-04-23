@@ -87,7 +87,7 @@ export const Parameters =
         {
             if(this._fundamental == null)
             {
-                this._fundamental = IS.randomFloat(19, 25);
+                this._fundamental = IS.Random.Float(19, 25);
             }
 
             return this._fundamental;

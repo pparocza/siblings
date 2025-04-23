@@ -24,17 +24,11 @@ export function Pads(nLayers, fundamental, chord)
 	fmPadSourceFilter.connect(OutputBus.Delay, OutputBus.Reverb, OutputBus.MainOutput);
 	fmPadConvolverFilter.connect(OutputBus.Delay, OutputBus.Reverb, OutputBus.MainOutput);
 
-	fmPadConvolverFilter.connectToInput
-	(
-		fmPadSource.convolverOutput,
-		fmPadSource2.convolverOutput
-	);
+	fmPadSource.convolverOutput.connect(fmPadConvolverFilter);
+	fmPadSource2.convolverOutput.connect(fmPadConvolverFilter);
 
-	fmPadSourceFilter.connectToInput
-	(
-		fmPadSource.sourceOutput,
-		fmPadSource2.sourceOutput
-	);
+	fmPadSource.sourceOutput.connect(fmPadConvolverFilter);
+	fmPadSource2.sourceOutput.connect(fmPadConvolverFilter);
 
 	let sectionStartTimes = Parameters.Structure.SectionStartTime.Pads;
 
