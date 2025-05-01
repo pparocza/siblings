@@ -42,7 +42,13 @@ export const OutputBus =
     {
         if(this._reverb == null)
         {
-            this._reverb = IS.createConvolver();
+            let reverbBuffer = IS.createBuffer(2, 3);
+
+            reverbBuffer.noise().add();
+            reverbBuffer.inverseSawtooth(3).multiply();
+
+            this._reverb = IS.createConvolver(reverbBuffer);
+
             this._reverb.gain = Parameters.OutputBus.ReverbGainValue;
             this._reverb.connectToMainOutput();
         }
@@ -85,11 +91,11 @@ export const OutputBus =
         gridFilter.connect(gridDirectOut, gridFXOut);
 
         gridDirectOut.connectToMainOutput();
-        gridDirectOut.volume = -22;
+        gridDirectOut.volume = -12;
 
         gridFXOut.connect(this.Reverb, this.Delay);
 
-        gridFXOut.volume = -8;
+        gridFXOut.volume = -12;
     },
 
     _keyOutput: null,

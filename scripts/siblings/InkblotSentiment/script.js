@@ -5,11 +5,11 @@ IS.onLoad(load);
 
 function load()
 {
-    let fundamental = IS.randomFloat(15, 20);
+    let fundamental = IS.Random.Float(15, 20);
     let baseDuration = 0.25;
 
     let scale = IS.ratioScale("C", "Major");
-    let density = IS.randomFloat(0.5, 1.1);
+    let density = IS.Random.Float(0.5, 1.1);
 
     let section1 = new SequenceBufferSection
     (

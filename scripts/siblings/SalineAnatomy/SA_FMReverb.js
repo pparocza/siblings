@@ -4,67 +4,69 @@ export class SA_FMReverb
     {
         let IS = siblingContext;
 
-        let fmReverbTempBuffer = IS.createBuffer(2, 8);
         let fmReverbBuffer = IS.createBuffer(2, 8);
         let reverbFundamental = fundamental * 16;
         let nReverbTones = 5;
 
         for (let i = 0; i < nReverbTones; i++)
         {
-            let randomRampCenter = IS.randomFloat(0.25, 0.75);
+            let randomRampCenter = IS.Random.Float(0.25, 0.75);
             let carrierFrequency = reverbFundamental * scale.random();
-            let modulatorFrequency = carrierFrequency * IS.randomFloat(0.99, 1.001)
+            let modulatorFrequency = carrierFrequency * IS.Random.Float(0.99, 1.001)
 
-            fmReverbTempBuffer
-                .frequencyModulatedSine
+            fmReverbBuffer.suspendOperations();
+
+                fmReverbBuffer.operationChannel = 0;
+
+                fmReverbBuffer.frequencyModulatedSine
                 (
                     carrierFrequency,
                     modulatorFrequency,
-                    IS.randomFloat(0.25, 8)
-                )
-                .fill(0);
-            fmReverbTempBuffer
-                .ramp(0, 1, randomRampCenter, randomRampCenter, IS.randomFloat(1, 3), IS.randomFloat(1, 3))
-                .multiply(0);
-            fmReverbTempBuffer
-                .constant(1 / nReverbTones)
-                .multiply(0);
-            fmReverbTempBuffer
-                .sine(IS.randomFloat(1, 10))
-                .multiply();
+                    IS.Random.Float(0.25, 8)
+                ).add();
 
-            carrierFrequency = reverbFundamental * scale.random();
-            modulatorFrequency = carrierFrequency * IS.randomFloat(0.99, 1.001)
+                fmReverbBuffer.ramp
+                (
+                    0, 1,
+                    randomRampCenter, randomRampCenter,
+                    IS.Random.Float(1, 3), IS.Random.Float(1, 3)
+                ).multiply();
 
-            fmReverbTempBuffer
-                .frequencyModulatedSine
+                fmReverbBuffer.constant(1 / nReverbTones).multiply();
+                fmReverbBuffer.sine(IS.Random.Float(1, 10)).multiply();
+
+                carrierFrequency = reverbFundamental * scale.random();
+                modulatorFrequency = carrierFrequency * IS.Random.Float(0.99, 1.001)
+
+                fmReverbBuffer.operationChannel = 1;
+
+                fmReverbBuffer.frequencyModulatedSine
                 (
                     carrierFrequency,
                     modulatorFrequency,
-                    IS.randomFloat(0.25, 8)
-                )
-                .fill(1);
-            fmReverbTempBuffer
-                .ramp(0, 1, randomRampCenter, randomRampCenter, IS.randomFloat(1, 3), IS.randomFloat(1, 3))
-                .multiply(1);
-            fmReverbTempBuffer
-                .constant(1 / nReverbTones)
-                .multiply(1);
-            fmReverbTempBuffer
-                .sine(IS.randomFloat(1, 10))
-                .multiply();
+                    IS.Random.Float(0.25, 8)
+                ).add();
 
-            fmReverbBuffer.addBuffer(fmReverbTempBuffer);
+                fmReverbBuffer.ramp
+                (
+                    0, 1,
+                    randomRampCenter, randomRampCenter,
+                    IS.Random.Float(1, 3), IS.Random.Float(1, 3)
+                ).multiply();
+
+                fmReverbBuffer.constant(1 / nReverbTones).multiply();
+                fmReverbBuffer.sine(IS.Random.Float(1, 10)).multiply();
+
+            fmReverbBuffer.applySuspendedOperations().add();
         }
 
-        let fmReverb = IS.createConvolver();
+        let fmReverb = IS.createConvolver(fmReverbBuffer);
         fmReverb.wetMix = 1;
-        fmReverb.buffer = fmReverbBuffer;
 
         this.node = fmReverb;
         this.fmReverb = fmReverb;
         this.wetMix = fmReverb.wetMix;
-        this.gain = fmReverb.gain;
+        this.gain = fmReverb.gain.value;
     }
 
     set wetMix(value)

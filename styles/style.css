@@ -81,6 +81,7 @@ body
 .CONTROL_PARAMETER_DISPLAY_DIV
 {
     font: 18px "Courier New";
+    white-space: pre-line;
 }
 
 .DOWNLOAD_BUTTON

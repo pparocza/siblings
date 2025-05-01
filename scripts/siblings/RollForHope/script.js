@@ -7,6 +7,9 @@ import { Keys } from "./Keys.js";
 
 IS.onLoad(roll);
 
+import { IS_Visualizer } from "../../visualizer/IS_Visualizer.js";
+IS.onReady(IS_Visualizer.visualize);
+
 function roll()
 {
     OutputBus.Initialize();
@@ -14,8 +17,6 @@ function roll()
     let nLayers = Parameters.Structure.nLayers;
     let Fundamental = Parameters.Tuning.Fundamental;
     let Chord = Parameters.Tuning.Chord;
-
-    console.log(Fundamental, Parameters.Tuning.Tonic, Parameters.Tuning.Mode);
 
     Pads(nLayers, Fundamental, Chord);
     Keys(nLayers, Fundamental, Chord);

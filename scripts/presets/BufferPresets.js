@@ -65,26 +65,27 @@ export const BufferPresets =
         let IS = siblingContext;
 
         let buffer = IS.createBuffer(1, 20);
-        let tempBuffer = IS.createBuffer(1, 20);
 
         for(let layer = 0; layer < nLayers; layer++)
         {
-            let carrierFrequency = IS.Random.Float(500, 7000);
-            let modulatorFrequency = IS.Random.Float(500, 7000);
-            let modulationGain = IS.Random.Float(1, 300);
+            buffer.suspendOperations();
 
-            tempBuffer.frequencyModulatedSine(carrierFrequency, modulatorFrequency, modulationGain).add();
+                let carrierFrequency = IS.Random.Float(500, 7000);
+                let modulatorFrequency = IS.Random.Float(500, 7000);
+                let modulationGain = IS.Random.Float(1, 300);
 
-            let rampPeakPercent = IS.Random.Float(0.3, 0.8);
-            let upExp = IS.Random.Float(1, 2);
-            let downExp = IS.Random.Float(1, 2);
-            let startPercent = IS.Random.Float(0, 0.4);
-            let endPercent = IS.Random.Float(startPercent, 1);
-            tempBuffer.ramp(startPercent, endPercent, rampPeakPercent, rampPeakPercent, upExp, downExp).multiply();
+                buffer.frequencyModulatedSine(carrierFrequency, modulatorFrequency, modulationGain).add();
 
-            tempBuffer.constant(1 / nLayers).multiply();
+                let rampPeakPercent = IS.Random.Float(0.3, 0.8);
+                let upExp = IS.Random.Float(1, 2);
+                let downExp = IS.Random.Float(1, 2);
+                let startPercent = IS.Random.Float(0, 0.4);
+                let endPercent = IS.Random.Float(startPercent, 1);
+                buffer.ramp(startPercent, endPercent, rampPeakPercent, rampPeakPercent, upExp, downExp).multiply();
 
-            buffer.add(tempBuffer);
+                buffer.constant(1 / nLayers).multiply();
+
+            buffer.applySuspendedOperations().add();
         }
 
         return buffer;
