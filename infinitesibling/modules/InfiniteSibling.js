@@ -71,7 +71,7 @@ export class InfiniteSibling
         NETWORK REGISTRY
     */
     get NetworkRegistry() { return IS_NetworkRegistry; }
-    
+
     /*
         LIFE CYCLE
     */

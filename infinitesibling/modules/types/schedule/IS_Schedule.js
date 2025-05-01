@@ -12,9 +12,9 @@ export class IS_Schedule extends IS_Object
     {
         super(IS_Type.IS_Data.IS_Schedule);
 
-        this._scheduleItems = [];
-        this._offset = 0;
-        this._duration = null;
+        this.scheduleItems = [];
+        this.offset = 0;
+        this.duration = -1;
     }
 
     generateSchedule()
@@ -35,7 +35,7 @@ export class IS_Schedule extends IS_Object
             schedulable, IS_ScheduleAction.Start, startTime, duration
         );
 
-        this._scheduleItems.push(scheduleItem);
+        this.scheduleItems.push(scheduleItem);
     }
 
     scheduleStop(schedulable, stopTime)
@@ -45,7 +45,7 @@ export class IS_Schedule extends IS_Object
             schedulable, IS_ScheduleAction.Stop, stopTime
         );
 
-        this._scheduleItems.push(scheduleItem);
+        this.scheduleItems.push(scheduleItem);
     }
 
     scheduleValue(schedulable, value, time, transitionTime = null)
@@ -55,31 +55,31 @@ export class IS_Schedule extends IS_Object
             schedulable, IS_ScheduleAction.SetValue, time, 0, value, transitionTime
         );
 
-        this._scheduleItems.push(scheduleItem);
+        this.scheduleItems.push(scheduleItem);
     }
 
     schedule()
     {
-        while(this._scheduleItems.length > 0)
+        for (let scheduleItemIndex = 0; scheduleItemIndex < this.scheduleItems.length; scheduleItemIndex++)
         {
-            let scheduleItem = this._scheduleItems.shift();
+            let scheduleItem = this.scheduleItems[scheduleItemIndex];
 
-            if (this._duration !== null)
+            if (this.duration > 0)
             {
-                scheduleItem.duration = Math.max(this._duration - scheduleItem.startTime, 0);
+                scheduleItem.duration = Math.max(this.duration - scheduleItem.startTime, 0);
             }
 
-            scheduleItem.startTime = this._offset + scheduleItem.startTime;
+            scheduleItem.startTime = this.offset + scheduleItem.startTime;
 
-            scheduleItem.schedule(this._offset, this._duration);
+            this.scheduleItems[scheduleItemIndex].schedule(this.offset, this.duration);
         }
     }
 
     stop()
     {
-        for (let scheduleItemIndex = 0; scheduleItemIndex < this._scheduleItems.length; scheduleItemIndex++)
+        for (let scheduleItemIndex = 0; scheduleItemIndex < this.scheduleItems.length; scheduleItemIndex++)
         {
-            this._scheduleItems[scheduleItemIndex].stop();
+            this.scheduleItems[scheduleItemIndex].stop();
         }
     }
 }

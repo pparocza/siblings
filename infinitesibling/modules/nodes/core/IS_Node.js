@@ -74,6 +74,15 @@ export class IS_Node extends IS_Object
         }
     }
 
+    connectToInput(...audioNodes)
+    {
+        for(let nodeIndex = 0; nodeIndex < audioNodes.length; nodeIndex++)
+        {
+            let node = audioNodes[nodeIndex];
+            node.connect(this.input);
+        }
+    }
+
     connectToMainOutput()
     {
         this._output.connect(this._siblingContext.output);
