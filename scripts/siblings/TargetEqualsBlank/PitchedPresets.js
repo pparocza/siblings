@@ -59,6 +59,7 @@ export class PitchedPresets
 
 		bufferSource.connect(this.output);
 
+		this.b1Buffer = buffer;
 		this.b1 = bufferSource;
 		this.startArray = [this.b1];
 

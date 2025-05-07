@@ -121,9 +121,9 @@ export class Piece
         pitchedPresetSequenceSpliceDelay( this.div*7 , this.div*8.5 ,  IS.Random.Float( 1 , 2 ) , this.rate ,  this.div * 0.33 ,  this.fund ,  this.currentChord , this.pAHigh1 , this.gainVal );
         pitchedPresetSequenceSpliceDelay( this.div*8 , this.div*9.7 ,  IS.Random.Float( 1 , 2 ) , this.rate ,  this.div * 0.33 ,  this.fund ,  this.currentChord , this.pAHigh1 , this.gainVal );
         
-        pitchedPresetSequenceSpliceDelay( this.div*8 , this.endTime ,  IS.Random.Float( 1 , 2 ) , IS.Random.Float( 0.5 , 1.5 ) ,  this.div * randomArrayValue( [ 0.25 ] ) ,   this.fund*0.5  ,  this.currentChord , this.pAHigh1 , this.gainVal );
-        pitchedPresetSequenceSpliceDelay( this.div*8 , this.endTime ,  IS.Random.Float( 1 , 2 ) , IS.Random.Float( 0.5 , 1.5 ) ,  this.div * randomArrayValue( [ 0.25 ] ) ,   this.fund*0.5  ,  this.currentChord , this.pAHigh1 , this.gainVal );
-        pitchedPresetSequenceSpliceDelay( this.div*8 , this.endTime ,  IS.Random.Float( 1 , 2 ) , IS.Random.Float( 0.5 , 1.5 ) ,  this.div * randomArrayValue( [ 0.25 ] ) ,   this.fund*0.5  ,  this.currentChord , this.pAHigh1 , this.gainVal );
+        pitchedPresetSequenceSpliceDelay( this.div*8 , this.endTime ,  IS.Random.Float( 1 , 2 ) , IS.Random.Float( 0.5 , 1.5 ) ,  this.div * IS.Random.Select( [ 0.25 ] ) ,   this.fund*0.5  ,  this.currentChord , this.pAHigh1 , this.gainVal );
+        pitchedPresetSequenceSpliceDelay( this.div*8 , this.endTime ,  IS.Random.Float( 1 , 2 ) , IS.Random.Float( 0.5 , 1.5 ) ,  this.div * IS.Random.Select( [ 0.25 ] ) ,   this.fund*0.5  ,  this.currentChord , this.pAHigh1 , this.gainVal );
+        pitchedPresetSequenceSpliceDelay( this.div*8 , this.endTime ,  IS.Random.Float( 1 , 2 ) , IS.Random.Float( 0.5 , 1.5 ) ,  this.div * IS.Random.Select( [ 0.25 ] ) ,   this.fund*0.5  ,  this.currentChord , this.pAHigh1 , this.gainVal );
         
         pitchedPresetSequenceSpliceDelay( this.div*8 , this.div*9.75 ,  IS.Random.Float( 1 , 2 ) , this.rate ,  this.div * 2 ,  this.fund * 2  ,  this.currentChord , this.pA , this.gainVal * 0.5 );
        
@@ -185,7 +185,6 @@ function pitchedPresetSequenceSpliceDelay
 
     // CREATE BUFFERS
     const convolverBuffer = IS.createBuffer(1, bufferLength);
-    const convolver = IS.createConvolver(convolverBuffer);
 
     const impulseBuffer = IS.createBuffer(1, 1);
     impulseBuffer.impulse().add();
@@ -206,27 +205,26 @@ function pitchedPresetSequenceSpliceDelay
 
         pitchedPresets[IS.Random.Select(...pitchArray)](fundamental * IS.Random.Select(...chordArray));
 
-        convolverBuffer.spliceBuffer
+        convolverBuffer.splice
         (
-            pitchedPresets.b1.buffer,
+            pitchedPresets.b1Buffer,
             splicePositionPercent,
             splicePositionPercent + (1 / spliceDiv),
             spliceIndex / spliceDiv
-        );
+        ).add();
     }
 
-    // TODO: restore in IS_Buffer
     convolverBuffer.constant(1 / spliceDiv).multiply();
     // TODO: restore in IS_Buffer
     convolverBuffer.movingAverage(36);
+
     convolverBuffer.ramp
     (
         0 , 1 , 0.0125 , 0.9875 , 0.5 , 0.5
-    ).multiply(0);
+    ).multiply();
 
-    convolver.setBuffer(convolverBuffer.buffer);
-
-    const filter = new MyBiquad("highpass", 10, 1);
+    const filter = IS.createFilter("highpass", 10, 1);
+    const convolver = IS.createConvolver(convolverBuffer);
 
     impulseBufferSource.connect(convolver);
     convolver.connect(filter);
@@ -238,10 +236,10 @@ function pitchedPresetSequenceSpliceDelay
     output.connectToMainOutput();
 
     impulseBufferSource.scheduleStart(startTime);
-    delayLFOBuffer.scheduleStart(startTime);
-
-    output.gain.gain.setTargetAtTime(0, stopTime, 0.1);
+    delayLFOSource.scheduleStart(startTime);
 
     impulseBufferSource.scheduleStop(stopTime);
     delayLFOSource.scheduleStop(stopTime);
+
+    // convolverBuffer.printOnOperationsComplete = true;
 }

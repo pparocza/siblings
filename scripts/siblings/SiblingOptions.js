@@ -14,5 +14,5 @@ export const SIBLING_OPTIONS_ARRAY =
     new SiblingOption("RollForHope", "roll for hope"),
     new SiblingOption("InkblotSentiment", "inkblot sentiment"),
     new SiblingOption("SalineAnatomy", "saline anatomy"),
-    new SiblingOption("LivingInTheMouth", "living in the mouth")
+    new SiblingOption("TargetEqualsBlank", "target equals blank")
 ]
