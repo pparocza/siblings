@@ -26,7 +26,7 @@ export function configUploadCallback(event)
 	{
 		let config = event.target.result.toString();
 		const json = JSON.parse(config);
-		const siblingName = json.Name;
+		const siblingName = json.Name.replace(/\s/g, "");
 
 		for(let optionIndex = 0; optionIndex < DROPDOWN.length; optionIndex++)
 		{
