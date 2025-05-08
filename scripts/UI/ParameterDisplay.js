@@ -6,6 +6,9 @@ const PARAMETER_DISPLAY_DIV = document.querySelector('.CONTROL_PARAMETER_DISPLAY
 
 export function displayControlParameters()
 {
+	console.log("Display control parameters!");
+	console.log(MAIN.IS.SiblingConfig);
+
 	if(MAIN.IS.SiblingName === null)
 	{
 		MAIN.IS.SiblingName = TITLE.TITLE;

@@ -2,11 +2,17 @@ import * as CONFIG_HANDLER from "../siblingConfigs.js";
 import * as UI from "./UI.js";
 import * as TITLE from "./Title.js";
 
-export const START_BUTTON = document.querySelector('.START_BUTTON');
-
 export const LOAD_BUTTON = document.querySelector('.LOAD_BUTTON');
 LOAD_BUTTON.disabled = true;
 LOAD_BUTTON.onclick = UI.handleLoad;
+
+export const START_BUTTON = document.querySelector('.START_BUTTON');
+
+export const RESET_BUTTON = document.querySelector('.RESET_BUTTON');
+RESET_BUTTON.addEventListener('click', function(event)
+{
+	window.location.reload();
+});
 
 export const UPLOAD_BUTTON = document.querySelector('.UPLOAD_BUTTON');
 UPLOAD_BUTTON.addEventListener('change', function (event)
@@ -21,10 +27,10 @@ DOWNLOAD_BUTTON.addEventListener('click', function (event)
 });
 DOWNLOAD_BUTTON.hidden = true;
 
+
 export const START_STRING = "start";
 export const STOP_STRING = "stop";
-export const LOADING_STRING = "...loading";
-export const RESET_STRING = "reset";
+export const RELOAD_STRING = "reload";
 
 export function showDownloadButton()
 {
@@ -46,9 +52,6 @@ export function initialize()
 		{
 			case (START_STRING):
 				UI.handleStart();
-				break;
-			case (RESET_STRING):
-				UI.handleReset();
 				break;
 			case (STOP_STRING):
 				UI.handleStop();

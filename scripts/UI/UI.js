@@ -15,6 +15,7 @@ export const PROGRESS_DIV = document.querySelector('.PROGRESS_DIV');
 
 const SIBLING_PATH = './scripts/siblings'
 export let SCRIPT_SRC = ""
+let SCRIPT_ELEMENT = null;
 
 export function initialize()
 {
@@ -42,38 +43,45 @@ export function handleSiblingSelection()
 export function handleLoad()
 {
 	loadScript();
+	loadMain();
 }
 
 function loadScript()
 {
+	SIBLING_SELECTION_DROPDOWN.disable();
+	SIBLING_SELECTION_DROPDOWN.remove();
+	SELECTION_DIV.hidden = true;
+
+	TITLE.setTitle("...loading sibling...");
+
 	let script  = document.createElement('script'),
 		head = document.head || document.getElementsByTagName('head')[0];
 	script.src = SCRIPT_SRC;
 	script.type = "module";
 	script.async = false;
 	script.defer = true;
-	script.onload = onScriptLoaded;
+	script.onload = loadMain;
+
+	SCRIPT_ELEMENT = script;
 
 	head.insertBefore(script, head.firstChild);
 }
 
-function onScriptLoaded()
+function loadMain()
 {
-	SIBLING_SELECTION_DROPDOWN.disable();
+	MAIN.load();
+	MAIN.IS.onReady(onSiblingLoaded);
+}
 
-	SIBLING_SELECTION_DROPDOWN.remove();
+function onSiblingLoaded()
+{
+	PROGRESS_BAR.hide();
 	TITLE.setTitle();
 
-	SELECTION_DIV.hidden = true;
-	PLAYBACK_CONTROLS_DIV.hidden = false;
-
-	BUTTONS.setStartButton(BUTTONS.LOADING_STRING, true);
-
-	MAIN.IS.onReady(PROGRESS_BAR.hide);
-	MAIN.IS.onReady(BUTTONS.setStartButtonReady);
-
 	PARAMETER_DISPLAY.displayControlParameters();
-	MAIN.load();
+
+	PLAYBACK_CONTROLS_DIV.hidden = false;
+	BUTTONS.setStartButtonReady();
 }
 
 export function handleStart()
@@ -85,12 +93,7 @@ export function handleStart()
 export function handleStop()
 {
 	MAIN.stop();
-	BUTTONS.setStartButton(BUTTONS.RESET_STRING, false);
-}
-
-export function handleReset()
-{
-	location.reload();
+	BUTTONS.START_BUTTON.hidden = true;
 }
 
 function start()

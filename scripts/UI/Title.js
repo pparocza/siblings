@@ -9,7 +9,7 @@ export function getTitleFromDropdown()
 	TITLE = SIBLING_SELECTION_DROPDOWN.DROPDOWN.options[selectedIndex].text;
 }
 
-export function setTitle()
+export function setTitle(text = TITLE)
 {
-	TITLE_DIV.innerHTML = TITLE;
+	TITLE_DIV.innerHTML = text;
 }
