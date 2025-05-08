@@ -1,4 +1,5 @@
 import { IS } from "../../../script.js";
+import { UPLOADED_CONFIG } from "../../UI/UI.js";
 
 export const Parameters =
 {
@@ -87,7 +88,14 @@ export const Parameters =
         {
             if(this._fundamental == null)
             {
-                this._fundamental = 180; // IS.Random.Float(220, 330);
+                if(UPLOADED_CONFIG !== null)
+                {
+                    this._fundamental = UPLOADED_CONFIG.Fundamental;
+                }
+                else
+                {
+                    this._fundamental = IS.Random.Float(140, 190);
+                }
             }
 
             return this._fundamental;
@@ -99,7 +107,14 @@ export const Parameters =
         {
             if(this._mode == null)
             {
-                this._mode = IS.Random.Select(...this._modeOptions);
+                if(UPLOADED_CONFIG !== null)
+                {
+                    this._mode = UPLOADED_CONFIG.Mode;
+                }
+                else
+                {
+                    this._mode = IS.Random.Select(...this._modeOptions);
+                }
             }
 
             return this._mode;
