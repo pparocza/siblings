@@ -209,7 +209,6 @@ function onSiblingLoaded()
 	hideProgressBar();
 	setStartButtonReady();
 	displayControlParameters();
-	showDownloadButton();
 
 	PLAYBACK_CONTROLS.hidden = false;
 
@@ -300,25 +299,36 @@ class ValueListener
 
 function displayControlParameters()
 {
+	if(MAIN.IS.SiblingName === null)
+	{
+		MAIN.IS.SiblingName = TITLE;
+	}
+
 	let siblingConfig = MAIN.IS.SiblingConfig;
 
-	for(const [parameterDisplayName, parameterValue] of Object.entries(siblingConfig))
+	if(Object.keys(siblingConfig).length === 1)
 	{
-		if(parameterDisplayName === "Name")
+		return;
+	}
+
+	showDownloadButton();
+
+	for(const [key, value] of Object.entries(siblingConfig))
+	{
+		if(key.toLowerCase() === "name")
 		{
 			continue;
 		}
 
-		let displayValue = parameterValue;
+		let roundedValue = value;
 
-		if(typeof parameterValue === "number")
+		if(Number(value) === value && value % 1 !== 0)
 		{
-			displayValue = Math.round(displayValue * 100);
-			displayValue /= 100;
+			roundedValue = Math.round(value * 100) / 100;
 		}
 
 		let parameterElement = document.createElement('p');
-		parameterElement.innerHTML = parameterDisplayName + ": " + displayValue.toString();
+		parameterElement.innerHTML = key + ": " + roundedValue.toString();
 		PARAMETER_DISPLAY_DIV.appendChild(parameterElement);
 	}
 }
