@@ -200,14 +200,16 @@ function loadMain()
 {
 	MAIN.load();
 	MAIN.IS.onReady(onSiblingLoaded);
-	MAIN.IS.onReady(showDownloadButton);
 }
 
 function onSiblingLoaded()
 {
+	TITLE_DIV.innerHTML = TITLE;
+
 	hideProgressBar();
 	setStartButtonReady();
 	displayControlParameters();
+	showDownloadButton();
 
 	PLAYBACK_CONTROLS.hidden = false;
 
