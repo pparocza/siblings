@@ -31,7 +31,7 @@ export const IS_VisualizerParameters =
 	{
 		Width: 1.3,
 		Height: 0.5,
-		Scale: 0.3
+		Scale: 0.15
 	},
 
 	VisualNetwork:
