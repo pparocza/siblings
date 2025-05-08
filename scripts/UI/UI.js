@@ -13,12 +13,10 @@ const SELECTION_DIV = document.querySelector('.SELECTION_DIV');
 const PLAYBACK_CONTROLS_DIV = document.querySelector('.PLAYBACK_CONTROLS_DIV');
 export const PROGRESS_DIV = document.querySelector('.PROGRESS_DIV');
 
-
 const SIBLING_PATH = './scripts/siblings'
-const SIBLING_SCRIPT_ELEMENT = document.querySelector('.SIBLING_SCRIPT');
 export let SCRIPT_SRC = ""
 
-function initializeUI()
+export function initialize()
 {
 	SIBLING_SELECTION_DROPDOWN.initialize();
 	BUTTONS.initialize();
@@ -43,13 +41,26 @@ export function handleSiblingSelection()
 
 export function handleLoad()
 {
-	load();
+	loadScript();
 }
 
-function load()
+function loadScript()
+{
+	let script  = document.createElement('script'),
+		head = document.head || document.getElementsByTagName('head')[0];
+	script.src = SCRIPT_SRC;
+	script.type = "module";
+	script.async = false;
+	script.defer = true;
+	script.onload = onScriptLoaded;
+
+	head.insertBefore(script, head.firstChild);
+}
+
+function onScriptLoaded()
 {
 	SIBLING_SELECTION_DROPDOWN.disable();
-	SIBLING_SCRIPT_ELEMENT.src = SCRIPT_SRC;
+
 	SIBLING_SELECTION_DROPDOWN.remove();
 	TITLE.setTitle();
 
@@ -61,13 +72,8 @@ function load()
 	MAIN.IS.onReady(PROGRESS_BAR.hide);
 	MAIN.IS.onReady(BUTTONS.setStartButtonReady);
 
-	// TODO: this is currently making sure load doesn't happen before the SCRIPT_SRC is loaded -> FIX IT!!!
-	setTimeout(()=>
-	{
-		PARAMETER_DISPLAY.displayControlParameters();
-		MAIN.load();
-	}, 500);
-
+	PARAMETER_DISPLAY.displayControlParameters();
+	MAIN.load();
 }
 
 export function handleStart()
@@ -118,6 +124,4 @@ export async function requestSiblingScript()
 		BUTTONS.LOAD_BUTTON.disabled = true;
 	}
 }
-
-initializeUI();
 

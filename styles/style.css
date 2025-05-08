@@ -109,6 +109,7 @@ body
     font: 16px "Courier New";
 }
 
-input[type="file"]{
+input[type="file"]
+{
     color: black;
 }

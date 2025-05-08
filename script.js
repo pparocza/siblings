@@ -1,19 +1,20 @@
 import { InfiniteSibling } from "./infinitesibling/modules/InfiniteSibling.js";
 export const IS = new InfiniteSibling();
+import * as UI from "./scripts/UI/UI.js"
 
-function load()
+UI.initialize();
+
+export function load()
 {
 	IS.load();
 }
 
-function start()
+export function start()
 {
 	IS.start();
 }
 
-function stop()
+export function stop()
 {
 	IS.stop();
 }
-
-export { load, start, stop };
