@@ -43,7 +43,6 @@ export function handleSiblingSelection()
 export function handleLoad()
 {
 	loadScript();
-	loadMain();
 }
 
 function loadScript()
