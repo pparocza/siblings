@@ -252,7 +252,6 @@ function setStartButtonReady()
 
 function showDownloadButton()
 {
-	console.log("Show Download Button!");
 	DOWNLOAD_BUTTON.hidden = false;
 }
 
