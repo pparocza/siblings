@@ -1,5 +1,6 @@
 import * as MAIN from "../../script.js";
 import * as TITLE from "./Title.js";
+import * as BUTTONS from "./Buttons.js";
 
 const PARAMETER_DISPLAY_DIV = document.querySelector('.CONTROL_PARAMETER_DISPLAY_DIV');
 
@@ -11,6 +12,13 @@ export function displayControlParameters()
 	}
 
 	let siblingConfig = MAIN.IS.SiblingConfig;
+
+	if(Object.keys(siblingConfig).length === 1)
+	{
+		return;
+	}
+
+	BUTTONS.showDownloadButton();
 
 	for(const [key, value] of Object.entries(siblingConfig))
 	{

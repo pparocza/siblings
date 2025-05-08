@@ -60,7 +60,6 @@ function load()
 
 	MAIN.IS.onReady(PROGRESS_BAR.hide);
 	MAIN.IS.onReady(BUTTONS.setStartButtonReady);
-	MAIN.IS.onReady(BUTTONS.showDownloadButton);
 
 	// TODO: this is currently making sure load doesn't happen before the SCRIPT_SRC is loaded -> FIX IT!!!
 	setTimeout(()=>
