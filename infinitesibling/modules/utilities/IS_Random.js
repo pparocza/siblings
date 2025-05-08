@@ -36,7 +36,7 @@ export const IS_Random =
 	 */
 	CoinToss: function(probabilityOfTrue = 0.5)
 	{
-		return Math.random() > Math.min(probabilityOfTrue, 1.0);
+		return Math.random() < Math.min(probabilityOfTrue, 1.0);
 	},
 
 	Envelope: function

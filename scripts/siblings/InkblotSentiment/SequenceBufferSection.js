@@ -23,28 +23,28 @@ export class SequenceBufferSection
 
     createSequenceBuffersSequential(startTime, fundamental, baseDuration, scale, density)
     {
-        let sequenceBuffer1 = new SequenceBuffer(this.IS, this.IS.randomInt(25, 34), baseDuration, fundamental, scale, density);
+        let sequenceBuffer1 = new SequenceBuffer(this.IS, this.IS.Random.Int(25, 34), baseDuration, fundamental, scale, density);
         sequenceBuffer1.scheduleStart(startTime);
 
-        let sequenceBuffer2 = new SequenceBuffer(this.IS, this.IS.randomInt(19, 27), baseDuration, fundamental * 0.25, scale, density);
+        let sequenceBuffer2 = new SequenceBuffer(this.IS, this.IS.Random.Int(19, 27), baseDuration, fundamental * 0.25, scale, density);
         sequenceBuffer2.scheduleStart(startTime + sequenceBuffer1.length);
 
-        let sequenceBuffer3 = new SequenceBuffer(this.IS, this.IS.randomInt(21, 30), baseDuration, fundamental * 0.125, scale, density);
+        let sequenceBuffer3 = new SequenceBuffer(this.IS, this.IS.Random.Int(21, 30), baseDuration, fundamental * 0.125, scale, density);
         sequenceBuffer3.scheduleStart(startTime + sequenceBuffer1.length + sequenceBuffer2.length);
 
-        let sequenceBuffer4 = new SequenceBuffer(this.IS, this.IS.randomInt(15, 24), baseDuration * 3, fundamental * 0.375, scale, density);
+        let sequenceBuffer4 = new SequenceBuffer(this.IS, this.IS.Random.Int(15, 24), baseDuration * 3, fundamental * 0.375, scale, density);
         sequenceBuffer4.scheduleStart(startTime + sequenceBuffer1.length + sequenceBuffer2.length + sequenceBuffer3.length);
 
-        let sequenceBuffer5 = new SequenceBuffer(this.IS, this.IS.randomInt(23, 32), baseDuration * 6, fundamental * 0.75, scale, density);
+        let sequenceBuffer5 = new SequenceBuffer(this.IS, this.IS.Random.Int(23, 32), baseDuration * 6, fundamental * 0.75, scale, density);
         sequenceBuffer5.scheduleStart(startTime + sequenceBuffer1.length + sequenceBuffer2.length + sequenceBuffer3.length + sequenceBuffer4.length);
 
-        let sequenceBuffer6 = new SequenceBuffer(this.IS, this.IS.randomInt(18, 27), baseDuration * 1.5, fundamental * 0.75, scale, density);
+        let sequenceBuffer6 = new SequenceBuffer(this.IS, this.IS.Random.Int(18, 27), baseDuration * 1.5, fundamental * 0.75, scale, density);
         sequenceBuffer6.scheduleStart(startTime + sequenceBuffer1.length + sequenceBuffer2.length + sequenceBuffer3.length + sequenceBuffer4.length);
 
-        let sequenceBuffer7 = new SequenceBuffer(this.IS, this.IS.randomInt(18, 27) * 3, baseDuration * 0.5, fundamental * 0.5, scale, density * 0.5);
+        let sequenceBuffer7 = new SequenceBuffer(this.IS, this.IS.Random.Int(18, 27) * 3, baseDuration * 0.5, fundamental * 0.5, scale, density * 0.5);
         sequenceBuffer7.scheduleStart(startTime + sequenceBuffer1.length + sequenceBuffer2.length + sequenceBuffer3.length + sequenceBuffer4.length + sequenceBuffer6.length);
 
-        let sequenceBuffer8 = new SequenceBuffer(this.IS, this.IS.randomInt(18, 27) * 4, baseDuration * 0.5, fundamental * 1, scale, density * 0.25);
+        let sequenceBuffer8 = new SequenceBuffer(this.IS, this.IS.Random.Int(18, 27) * 4, baseDuration * 0.5, fundamental * 1, scale, density * 0.25);
         sequenceBuffer8.scheduleStart(startTime + sequenceBuffer1.length + sequenceBuffer2.length + sequenceBuffer3.length + sequenceBuffer4.length + sequenceBuffer6.length);
 
         this.sequenceBuffers =
@@ -56,28 +56,28 @@ export class SequenceBufferSection
 
     createSequenceBuffersSimultaneous(startTime, fundamental, baseDuration, scale, density)
     {
-        let sequenceBuffer1 = new SequenceBuffer(this.IS, this.IS.randomInt(25, 34), baseDuration, fundamental, scale, density);
+        let sequenceBuffer1 = new SequenceBuffer(this.IS, this.IS.Random.Int(25, 34), baseDuration, fundamental, scale, density);
         sequenceBuffer1.scheduleStart(startTime);
 
-        let sequenceBuffer2 = new SequenceBuffer(this.IS, this.IS.randomInt(19, 27), baseDuration, fundamental * 0.25, scale, density);
+        let sequenceBuffer2 = new SequenceBuffer(this.IS, this.IS.Random.Int(19, 27), baseDuration, fundamental * 0.25, scale, density);
         sequenceBuffer2.scheduleStart(startTime);
 
-        let sequenceBuffer3 = new SequenceBuffer(this.IS, this.IS.randomInt(21, 30), baseDuration, fundamental * 0.125, scale, density);
+        let sequenceBuffer3 = new SequenceBuffer(this.IS, this.IS.Random.Int(21, 30), baseDuration, fundamental * 0.125, scale, density);
         sequenceBuffer3.scheduleStart(startTime);
 
-        let sequenceBuffer4 = new SequenceBuffer(this.IS, this.IS.randomInt(15, 24), baseDuration * 3, fundamental * 0.375, scale, density);
+        let sequenceBuffer4 = new SequenceBuffer(this.IS, this.IS.Random.Int(15, 24), baseDuration * 3, fundamental * 0.375, scale, density);
         sequenceBuffer4.scheduleStart(startTime);
 
-        let sequenceBuffer5 = new SequenceBuffer(this.IS, this.IS.randomInt(23, 32), baseDuration * 6, fundamental * 0.75, scale, density);
+        let sequenceBuffer5 = new SequenceBuffer(this.IS, this.IS.Random.Int(23, 32), baseDuration * 6, fundamental * 0.75, scale, density);
         sequenceBuffer5.scheduleStart(startTime);
 
-        let sequenceBuffer6 = new SequenceBuffer(this.IS, this.IS.randomInt(18, 27), baseDuration * 1.5, fundamental * 0.75, scale, density);
+        let sequenceBuffer6 = new SequenceBuffer(this.IS, this.IS.Random.Int(18, 27), baseDuration * 1.5, fundamental * 0.75, scale, density);
         sequenceBuffer6.scheduleStart(startTime);
 
-        let sequenceBuffer7 = new SequenceBuffer(this.IS, this.IS.randomInt(18, 27) * 3, baseDuration * 0.5, fundamental * 0.5, scale, density * 0.5);
+        let sequenceBuffer7 = new SequenceBuffer(this.IS, this.IS.Random.Int(18, 27) * 3, baseDuration * 0.5, fundamental * 0.5, scale, density * 0.5);
         sequenceBuffer7.scheduleStart(startTime);
 
-        let sequenceBuffer8 = new SequenceBuffer(this.IS, this.IS.randomInt(18, 27) * 4, baseDuration * 0.5, fundamental * 1, scale, density * 0.25);
+        let sequenceBuffer8 = new SequenceBuffer(this.IS, this.IS.Random.Int(18, 27) * 4, baseDuration * 0.5, fundamental * 1, scale, density * 0.25);
         sequenceBuffer8.scheduleStart(startTime);
 
         this.sequenceBuffers =

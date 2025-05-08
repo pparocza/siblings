@@ -20,7 +20,6 @@ export function Pads(nLayers, fundamental, chord)
 	let fmPadSourceFilter = IS.createFilter("lowpass", Parameters.Mixing.Pad.FMPadLowpassFilterCutoff);
 	let fmPadConvolverFilter = IS.createFilter("highpass", 300);
 
-	//
 	fmPadSourceFilter.connect(OutputBus.Delay, OutputBus.Reverb, OutputBus.MainOutput);
 	fmPadConvolverFilter.connect(OutputBus.Delay, OutputBus.Reverb, OutputBus.MainOutput);
 

@@ -8,10 +8,7 @@ export class FMPad extends IS_Node
     {
         super(siblingContext);
 
-        let fmPadSource = siblingContext.createBufferSource
-        (
-            BufferPresets.randomFMPad(siblingContext)
-        );
+        let fmPadSource = siblingContext.createBufferSource(BufferPresets.randomFMPad(siblingContext));
 
         fmPadSource.playbackRate = 0.25;
         fmPadSource.loopEnd = 20; // fmPadSource.buffer.duration;

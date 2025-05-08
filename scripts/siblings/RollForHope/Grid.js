@@ -87,7 +87,7 @@ function percussionSections
 
 	gridSection
 	(
-		sectionStartTimes.Two, sectionStartTimes.Three,
+		sectionStartTimes.Three, sectionStartTimes.Four,
 		speeds.One, possibleDurations.One,
 		nVoices,
 		fundamental, chord, possibleOctaves.Two,
@@ -99,15 +99,19 @@ function gridSection
 (
 	startTime, timeLimit, speed, possibleDurations,
 	nVoices,
-	fundamental, chord, possibleOctaves,
+	fundamental, chordArray, possibleOctaves,
 	density, densityRamp,
 	playAtStart,
 	pitched, referenceMemory
 )
 {
+	// TODO: you should be able to do this by changing the playback rate instead of having a buffer for each note
 	for(let voice = 0; voice < nVoices; voice++)
 	{
-		let octave = possibleOctaves.random();
+		let octave = IS.Random.Select(...possibleOctaves);
+		octave *= pitched ? 1 : 0.25;
+
+		let chord = IS.array(...chordArray);
 
 		// Create Buffer
 		let fmKeyBuffer = IS.createBuffer(1, 1);
@@ -169,21 +173,19 @@ function gridSection
 				rampedDensity = density;
 			}
 
-			if(!IS.coinToss(rampedDensity))
+			if(!IS.Random.CoinToss(rampedDensity))
 			{
 				continue;
 			}
+
+			let octave = IS.Random.Select(...possibleOctaves);
 
 			if(pitched)
 			{
 				onset = sequence.value[sequenceIndex];
 				fmKeyBufferSource.scheduleStart(onset);
-				/*
-				 NOTE THAT THE ARGUMENTS FOR setValueAtTime HERE ARE BACKWARDS, BUT SOMEHOW THIS IS THE SECRET
-				 SAUCE OF THESE SOUNDS, HENCE SUBTRACTION OF IS.now FROM THE possibleOctaves.random() "startTime"
-				 TO COMPENSATE FOR THE ADDITION OF this.siblingContext.now TO IS_AudioParameter.setValueAtTime()
-				 */
-				fmKeyBufferSource.playbackRate.setValueAtTime(onset, possibleOctaves.random() - IS.now);
+
+				fmKeyBufferSource.playbackRate.setValueAtTime(octave - IS.now, onset);
 			}
 			else
 			{
@@ -192,7 +194,7 @@ function gridSection
 				/*
 				 REVERSING THE FIX FROM gridSection IN THE COMMENT ABOVE CREATES AN AMAZING HIGH PERCUSSION SOUND
 				 */
-				fmKeyBufferSource.playbackRate.setValueAtTime(onset, possibleOctaves.random() * 0.25);
+				fmKeyBufferSource.playbackRate.setValueAtTime(onset, octave * 0.25);
 			}
 		}
 	}

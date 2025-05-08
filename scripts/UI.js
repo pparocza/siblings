@@ -8,8 +8,11 @@ const LOAD_BUTTON = document.querySelector('.LOAD_BUTTON');
 LOAD_BUTTON.disabled = true;
 LOAD_BUTTON.onclick = handleLoad;
 
+const RESET_BUTTON = document.querySelector('.RESET_BUTTON');
+RESET_BUTTON.onclick = handleReset;
+
 const SELECTION_DIV = document.querySelector('.SELECTION_DIV');
-const PLAYBACK_CONTROLS = document.querySelector('.PLAYBACK_CONTROLS');
+const PLAYBACK_CONTROLS = document.querySelector('.PLAYBACK_CONTROLS_DIV');
 
 const DRAG_AND_DROP = document.querySelector('.DRAG_AND_DROP');
 DRAG_AND_DROP.ondrop = function (event)
@@ -147,9 +150,6 @@ function initializeStartButton()
 			case (START_STRING):
 				handleStart();
 				break;
-			case (RESET_STRING):
-				handleReset();
-				break;
 			case (STOP_STRING):
 				handleStop();
 				break;
@@ -209,7 +209,6 @@ function onSiblingLoaded()
 	hideProgressBar();
 	setStartButtonReady();
 	displayControlParameters();
-	showDownloadButton();
 
 	PLAYBACK_CONTROLS.hidden = false;
 
@@ -236,7 +235,8 @@ function handleReset()
 function handleStop()
 {
 	MAIN.stop();
-	setStartButton(RESET_STRING, false);
+	START_BUTTON.hidden = true;
+	// setStartButton(RESET_STRING, false);
 }
 
 function setStartButton(label, disabled)
@@ -299,25 +299,36 @@ class ValueListener
 
 function displayControlParameters()
 {
+	if(MAIN.IS.SiblingName === null)
+	{
+		MAIN.IS.SiblingName = TITLE;
+	}
+
 	let siblingConfig = MAIN.IS.SiblingConfig;
 
-	for(const [parameterDisplayName, parameterValue] of Object.entries(siblingConfig))
+	if(Object.keys(siblingConfig).length === 1)
 	{
-		if(parameterDisplayName === "Name")
+		return;
+	}
+
+	showDownloadButton();
+
+	for(const [key, value] of Object.entries(siblingConfig))
+	{
+		if(key.toLowerCase() === "name")
 		{
 			continue;
 		}
 
-		let displayValue = parameterValue;
+		let roundedValue = value;
 
-		if(typeof parameterValue === "number")
+		if(Number(value) === value && value % 1 !== 0)
 		{
-			displayValue = Math.round(displayValue * 100);
-			displayValue /= 100;
+			roundedValue = Math.round(value * 100) / 100;
 		}
 
 		let parameterElement = document.createElement('p');
-		parameterElement.innerHTML = parameterDisplayName + ": " + displayValue.toString();
+		parameterElement.innerHTML = key + ": " + roundedValue.toString();
 		PARAMETER_DISPLAY_DIV.appendChild(parameterElement);
 	}
 }

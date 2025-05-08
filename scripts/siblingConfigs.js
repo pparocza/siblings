@@ -1,7 +1,8 @@
 import * as MAIN from "../script.js";
 import * as UI from "./UI.js";
+import { SIBLING_SELECTION_DROPDOWN } from "./UI.js";
 
-export function configUploadCallback(event, siblingSelectionDropdown)
+export function configUploadCallback(event)
 {
 	let reader = new FileReader();
 	let file = null;
@@ -25,16 +26,16 @@ export function configUploadCallback(event, siblingSelectionDropdown)
 	{
 		let config = event.target.result.toString();
 		const json = JSON.parse(config);
-		const siblingName = json.Name;
+		const siblingName = json.Name.replace(/\s/g, "");
 
-		for(let optionIndex = 0; optionIndex < siblingSelectionDropdown.length; optionIndex++)
+		for(let optionIndex = 0; optionIndex < SIBLING_SELECTION_DROPDOWN.length; optionIndex++)
 		{
-			let option = siblingSelectionDropdown[optionIndex];
+			let option = SIBLING_SELECTION_DROPDOWN[optionIndex];
 
 			if(option.value.toLowerCase() === siblingName.toLowerCase())
 			{
 				// TODO: managing these values through UI is janky
-				siblingSelectionDropdown.value = option.value;
+				SIBLING_SELECTION_DROPDOWN.value = option.value;
 				UI.handleConfigLoaded(json);
 				break;
 			}

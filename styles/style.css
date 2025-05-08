@@ -81,6 +81,7 @@ body
 .CONTROL_PARAMETER_DISPLAY_DIV
 {
     font: 18px "Courier New";
+    white-space: pre-line;
 }
 
 .DOWNLOAD_BUTTON
@@ -108,6 +109,7 @@ body
     font: 16px "Courier New";
 }
 
-input[type="file"]{
+input[type="file"]
+{
     color: black;
 }

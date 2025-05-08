@@ -33,7 +33,7 @@ export class ModulatingStereoDelay extends IS_Effect
         this.delayModulator2 = delayModulator2;
 
         this.configureInput(this.delay.input);
-        this._configureOutput(this.delay);
+        this.configureOutput(this.delay);
     }
 
     start()

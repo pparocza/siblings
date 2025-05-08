@@ -79,6 +79,7 @@ export class IS_Buffer extends IS_Object
         this._buffer.duration = this._duration;
     }
 
+    // TODO: lengthInSamples and lengthInSeconds
     get length() { return this._length; }
     set length(value)
     {
@@ -136,7 +137,7 @@ export class IS_Buffer extends IS_Object
 
     _requestOperationForAllChannels()
     {
-        for(let channelIndex = 0; channelIndex < this.numberOfChannels; channelIndex++)
+        for(let channelIndex = 0; channelIndex < this._numberOfChannels; channelIndex++)
         {
             let operationData = this._createOperationRequest(channelIndex);
             IS_BufferOperator.requestOperation(this, operationData);
@@ -509,6 +510,38 @@ export class IS_Buffer extends IS_Object
         return this;
     }
 
+    splice(otherBuffer, cropStartPercent, cropEndPercent, insertPercent)
+    {
+        let cropStartSample = Math.round(otherBuffer.length * cropStartPercent);
+        let cropEndSample = Math.round(otherBuffer.length * cropEndPercent);
+        let insertStartSample = Math.round(this._length * insertPercent);
+
+        this._setOperationRequestFunctionData
+        (
+            IS_BufferFunctionType.Splice,
+            otherBuffer, cropStartSample, cropEndSample, insertStartSample
+        );
+
+        return this;
+    }
+
+
+    movingAverage(windowSize = 36)
+    {
+        this._setOperationRequestFunctionData(IS_BufferFunctionType.MovingAverage, windowSize);
+        this._setOperationRequestOperatorData(IS_BufferOperatorType.Replace);
+
+        this._requestOperation();
+    }
+
+    normalize(targetMax = 1)
+    {
+        this._setOperationRequestFunctionData(IS_BufferFunctionType.Normalize, targetMax);
+        this._setOperationRequestOperatorData(IS_BufferOperatorType.Replace);
+
+        this._requestOperation();
+    }
+
     // UTILITY
     amplitude(value)
     {
@@ -650,57 +683,6 @@ export class IS_Buffer extends IS_Object
     }
 
     /!**
-     * place portion of one buffer in another buffer
-     * @param buffer
-     * @param cropStartPercent
-     * @param cropEndPercent
-     * @param insertPercent
-     *!/
-    spliceBuffer(buffer, cropStartPercent, cropEndPercent, insertPercent)
-    {
-        let otherBuffer = null;
-        let nowBuffering = null;
-        let otherNowBuffering = null;
-
-        if(buffer.iSType !== undefined && buffer.iSType === IS_Type.IS_Buffer)
-        {
-            otherBuffer = buffer.buffer;
-        }
-        else
-        {
-            otherBuffer = buffer;
-        }
-
-        let cropStartSample = Math.round(otherBuffer.length * cropStartPercent);
-        let cropEndSample = Math.round(otherBuffer.length * cropEndPercent);
-
-        let cropLength = cropEndSample - cropStartSample;
-
-        let cropArray = [];
-
-        for (let channel= 0; channel < this.numberOfChannels; channel++)
-        {
-            nowBuffering = this.buffer.getChannelData(channel);
-            otherNowBuffering = otherBuffer.getChannelData(channel);
-
-            // crop the buffer values
-            for (let cropSample= 0; cropSample < cropLength; cropSample++)
-            {
-                cropArray[cropSample] = otherNowBuffering[cropSample + cropStartSample];
-            }
-
-            // reinsert the cropped values at the new position
-            for (let insertSample= 0; insertSample < cropLength; insertSample++)
-            {
-                if (insertSample + insertSample <= nowBuffering.length)
-                {
-                    nowBuffering[insertSample + insertSample] += cropArray[insertSample];
-                }
-            }
-        }
-    }
-
-    /!**
      *
      * @param buffer
      * @param insertPercent
@@ -742,72 +724,6 @@ export class IS_Buffer extends IS_Object
                         break;
                 }
             }
-        }
-    }
-
-    /!**
-     * Normalize buffer contents to specified range
-     * @param min
-     * @param max
-     *!/
-    normalize(min = 0, max = 1)
-    {
-        let range = min - max;
-        let offset = min;
-        let bufferArray = new IS_Array();
-        let bufferArrayMax = 0;
-        let bufferArrayMin = 0;
-        let normalizedValue = 0;
-
-        for (let channel= 0; channel < this.buffer.numberOfChannels; channel++)
-        {
-            bufferArray.value = this.buffer.getChannelData(channel);
-            bufferArrayMax = bufferArray.max;
-            bufferArrayMin = bufferArray.min;
-
-            for (let sample= 0; sample < this.buffer.length; sample++)
-            {
-                normalizedValue = (bufferArray.value[sample] - bufferArrayMin) / (bufferArrayMax - bufferArrayMin);
-                bufferArray.value[sample] = (range * normalizedValue) + offset;
-            }
-        }
-    }
-
-    /!**
-     *
-     * @param windowSize
-     *!/
-    movingAverage(windowSize)
-    {
-        let newBuffers = [];
-        let accumulator = 0;
-
-        let hanningWindow = Math.round(windowSize * 0.5);
-
-        for (let channel= 0; channel < this.buffer.numberOfChannels; channel++)
-        {
-            let nowBuffering = this.buffer.getChannelData(channel);
-            newBuffers[channel] = new Float32Array(this.buffer.length);
-
-            for (let sample= 0; sample < this.buffer.length; sample++)
-            {
-                for (let offset= 0; offset < windowSize; offset++)
-                {
-                    let index = (sample + offset) - hanningWindow;
-                    if (index > 0)
-                    {
-                        accumulator += nowBuffering[index % this.buffer.length];
-                    }
-                    else if (index < 0)
-                    {
-                        accumulator += nowBuffering[this.buffer.length + index];
-                    }
-                }
-                newBuffers[channel][sample] = accumulator / windowSize;
-                accumulator = 0;
-            }
-
-            this.buffer.copyToChannel(newBuffers[channel], channel);
         }
     }
 

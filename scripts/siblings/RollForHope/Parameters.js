@@ -1,4 +1,5 @@
 import { IS } from "../../../script.js";
+import { UPLOADED_CONFIG } from "../../UI.js";
 
 export const Parameters =
 {
@@ -45,9 +46,9 @@ export const Parameters =
 
             PossibleOctaves:
             {
-                One: IS.array(1, 0.5, 2, 0.25),
-                Two: IS.array(1, 0.5, 2, 0.25),
-                Three: IS.array(1, 0.5, 2, 0.25)
+                One: [1, 0.5, 2],
+                Two: [1, 0.5, 2],
+                Three: [1, 0.5, 2]
             },
 
             Speed:
@@ -87,31 +88,33 @@ export const Parameters =
         {
             if(this._fundamental == null)
             {
-                this._fundamental = IS.Random.Float(19, 25);
+                if(UPLOADED_CONFIG !== null)
+                {
+                    this._fundamental = UPLOADED_CONFIG.Fundamental;
+                }
+                else
+                {
+                    this._fundamental = IS.Random.Float(140, 190);
+                }
             }
 
             return this._fundamental;
         },
 
-        _tonicOptions: IS.array("A", "B", "Bb", "C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#"),
-        _tonic: null,
-        get Tonic()
-        {
-            if(this._tonic == null)
-            {
-                this._tonic = this._tonicOptions.random();
-            }
-
-            return this._tonic;
-        },
-
-        _modeOptions: IS.array("minor", "dorian", "phrygian", "mixolydian"),
+        _modeOptions: [IS.Mode.Minor, IS.Mode.Dorian, IS.Mode.Phrygian, IS.Mode.Mixolydian],
         _mode: null,
         get Mode()
         {
             if(this._mode == null)
             {
-                this._mode = this._modeOptions.random();
+                if(UPLOADED_CONFIG !== null)
+                {
+                    this._mode = UPLOADED_CONFIG.Mode;
+                }
+                else
+                {
+                    this._mode = IS.Random.Select(...this._modeOptions);
+                }
             }
 
             return this._mode;
@@ -122,12 +125,11 @@ export const Parameters =
         {
             if(this._chord == null)
             {
-                let scale = IS.ratioScale(this.Tonic, this.Mode);
-                this._chord = IS.array
-                (
-                    scale.value[0], scale.value[2], scale.value[3], scale.value[4],
-                    scale.value[5], scale.value[6], scale.value[7]
-                );
+                let scale = IS.ratioScale(this.Mode);
+                this._chord =
+                [
+                    scale.value[0], scale.value[2], scale.value[3], scale.value[4], scale.value[5], scale.value[6]
+                ];
             }
             return this._chord;
         }
@@ -137,17 +139,24 @@ export const Parameters =
     {
         Pad:
         {
-            FMPadSourceDirectOutputVolume: -11,
-            FMPadSourceConvolverOutputVolume: 4,
+            FMPadSourceDirectOutputVolume: -26,
+            FMPadSourceConvolverOutputVolume: -4,
             FMPadLowpassFilterCutoff: 1500
         }
     },
 
     OutputBus:
     {
-        ImitationOutputVolumeValue: -12,
+        ImitationOutputVolumeValue: 0,
         DelayGainValue: 0.125,
-        ReverbGainValue: 0.5,
+        ReverbGainValue: 1,
         DelayHighPassCutoff: 100
     }
 }
+
+const PieceConfig =
+{
+    Fundamental: Parameters.Tuning.Fundamental,
+    Mode: Parameters.Tuning.Mode
+}
+IS.ControlParameters.createParametersFromObject(PieceConfig);

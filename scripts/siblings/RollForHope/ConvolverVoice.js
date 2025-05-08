@@ -1,14 +1,13 @@
+import { IS } from "../../../script.js";
+
 export class ConvolverVoice
 {
-    constructor(siblingContext, nLayers, fundamental, scale)
+    constructor(siblingContext, nLayers, fundamental, scaleArray)
     {
         let convolutionBuffer = siblingContext.createBuffer(1, 1);
+        let scale = IS.array(...scaleArray);
 
-        const octaveOptions = siblingContext.array(1, 0.5, 2);
-
-        let carrierFrequencyArray = [];
-        let modulatorFrequencyArray = [];
-        let modulatorGainArray = [];
+        const octaveOptions = siblingContext.array(1, 0.5, 2, 4, 8);
 
         let detuneRangeMin = 1.001;
         let detuneRangeMax = 1.007;
@@ -21,29 +20,35 @@ export class ConvolverVoice
             let modulatorFrequency = siblingContext.Random.Float(5, 10);
             let modulationGain = siblingContext.Random.Float(0.125, 0.25);
 
-            carrierFrequencyArray.push
-            (
-                carrierFrequency, carrierFrequency * siblingContext.Random.Float(detuneRangeMin, detuneRangeMax)
-            );
+            convolutionBuffer.suspendOperations();
 
-            modulatorFrequencyArray.push
-            (
-                modulatorFrequency, modulatorFrequency * siblingContext.Random.Float(detuneRangeMin, detuneRangeMax)
-            );
+                convolutionBuffer.frequencyModulatedSine
+                (
+                    carrierFrequency, modulatorFrequency, modulationGain
+                ).add();
 
-            modulatorGainArray.push
-            (
-                modulationGain, modulationGain * siblingContext.Random.Float(detuneRangeMin, detuneRangeMax)
-            );
+                convolutionBuffer.frequencyModulatedSine
+                (
+                    carrierFrequency * siblingContext.Random.Float(detuneRangeMin, detuneRangeMax),
+                    modulatorFrequency * siblingContext.Random.Float(detuneRangeMin, detuneRangeMax),
+                    modulationGain * siblingContext.Random.Float(detuneRangeMin, detuneRangeMax)
+                ).add();
+
+                if(octave === 4)
+                {
+                    convolutionBuffer.constant(0.5).multiply();
+                }
+
+                if(octave === 8)
+                {
+                    convolutionBuffer.constant(0.25).multiply();
+                }
+
+            convolutionBuffer.applySuspendedOperations().add();
         }
 
-        convolutionBuffer.frequencyModulatedSine
-        (
-            carrierFrequencyArray, modulatorFrequencyArray, modulatorGainArray
-        ).add();
+        convolutionBuffer.constant(1 / nLayers).multiply();
 
-        this._convolutionBuffer = convolutionBuffer;
-
-        return this._convolutionBuffer;
+        return convolutionBuffer;
     }
 }
