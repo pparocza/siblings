@@ -170,34 +170,48 @@ function initializeVolumeSlider()
 	}
 }
 
-function handleLoad()
+export function handleLoad()
 {
-	loadOnline();
+	loadScript();
 }
 
-function loadOnline()
+function loadScript()
 {
 	SIBLING_SELECTION_DROPDOWN.disabled = true;
-	SIBLING_SCRIPT.src = SCRIPT_SRC;
 	SIBLING_SELECTION_DROPDOWN.remove();
-	TITLE_DIV.innerHTML = TITLE;
-
 	SELECTION_DIV.hidden = true;
+
+	TITLE_DIV.innerHTML = "...loading sibling...";
+
+	let script  = document.createElement('script'),
+		head = document.head || document.getElementsByTagName('head')[0];
+	script.src = SCRIPT_SRC;
+	script.type = "module";
+	script.async = false;
+	script.defer = true;
+	script.onload = loadMain;
+
+	SCRIPT_ELEMENT = script;
+
+	head.insertBefore(script, head.firstChild);
+}
+
+function loadMain()
+{
+	MAIN.load();
+	MAIN.IS.onReady(onSiblingLoaded);
+	MAIN.IS.onReady(showDownloadButton);
+}
+
+function onSiblingLoaded()
+{
+	hideProgressBar();
+	setStartButtonReady();
+	displayControlParameters();
+
 	PLAYBACK_CONTROLS.hidden = false;
 
-	setStartButton(LOADING_STRING, true);
-
-	MAIN.IS.onReady(hideProgressBar);
-	MAIN.IS.onReady(setStartButtonReady);
-	MAIN.IS.onReady(showDownloadButton);
-
-	// TODO: this is currently making sure load doesn't happen before the SCRIPT_SRC is loaded -> FIX IT!!!
-	setTimeout(()=>
-	{
-		displayControlParameters();
-		MAIN.load();
-	}, 500);
-
+	setStartButtonReady();
 }
 
 function handleStart()
@@ -236,6 +250,7 @@ function setStartButtonReady()
 
 function showDownloadButton()
 {
+	console.log("Show Download Button!");
 	DOWNLOAD_BUTTON.hidden = false;
 }
 
