@@ -1,5 +1,5 @@
 import { BufferPresets } from "../../presets/BufferPresets.js";
-import { IS_Node } from "../../../infinitesibling";
+import { IS_Node } from "../../../infinitesibling/modules/nodes/core/IS_Node.js";
 import { ConvolverVoice } from "./ConvolverVoice.js";
 
 export class FMPad extends IS_Node
