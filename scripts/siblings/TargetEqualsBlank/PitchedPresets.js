@@ -80,19 +80,27 @@ export class PitchedPresets
 		this.uEA = [1, 2, 4];
 		this.dEA = [1.1, 2.1, 1.7];
 
-		this.b1 = new MyBuffer(1, 1, audioCtx.sampleRate);
-		this.b2 = new MyBuffer(1, 1, audioCtx.sampleRate);
-		this.b1.playbackRate = this.rate;
+		this.b1Buffer = IS.createBuffer(1, 1);
 
-		for(var i=0; i<this.cFA.length; i++){
-			this.b2.makeFm(this.fund*this.cFA[i], this.fund*this.mFA[i], this.gVA[i]);
-			this.b2.applyRamp(0, 1, this.pPA[i], this.pPA[i], this.uEA[i], this.dEA[i]);
-			this.b2.multiply(this.mGA[i]);
+		for(var i=0; i<this.cFA.length; i++)
+		{
+			this.b1Buffer.suspendOperations();
 
-			this.b1.addBuffer(this.b2.buffer);
+				this.b1Buffer.frequencyModulatedSine
+				(
+					this.fund*this.cFA[i], this.fund*this.mFA[i], this.gVA[i]
+				).add();
+
+				this.b1Buffer.ramp(0, 1, this.pPA[i], this.pPA[i], this.uEA[i], this.dEA[i]).multiply();
+				this.b1Buffer.constant(this.mGA[i]).multiply();
+
+			this.b1Buffer.applySuspendedOperations().add();
 		}
 
-		this.b1.normalize(-1, 1);
+		this.b1Buffer.normalize();
+
+		this.b1 = IS.createBufferSource(this.b1Buffer);
+		this.b1.playbackRate = this.rate;
 
 		this.b1.connect(this.output);
 
@@ -114,25 +122,36 @@ export class PitchedPresets
 		this.uEA = [1, 1, 1, 1];
 		this.dEA = [1, 1, 1, 1];
 
-		this.b1 = new MyBuffer(1, 1, audioCtx.sampleRate);
-		this.b2 = new MyBuffer(1, 1, audioCtx.sampleRate);
-		this.f = new MyBiquad("notch", this.fund, 5);
-		this.b1.playbackRate = this.rate;
+		this.b1Buffer = IS.createBuffer(1, 1);
 
-		for(var i=0; i<this.cFA.length; i++){
-			this.b2.makeFm(this.fund*this.cFA[i], this.fund*this.mFA[i], this.gVA[i]);
-			this.b2.applyRamp(0, 1, this.pPA[i], this.pPA[i], this.uEA[i], this.dEA[i]);
-			this.b2.multiply(this.mGA[i]);
+		for(var i=0; i<this.cFA.length; i++)
+		{
+			this.b1Buffer.suspendOperations();
 
-			this.b1.addBuffer(this.b2.buffer);
+				this.b1Buffer.frequencyModulatedSine
+				(
+					this.fund*this.cFA[i], this.fund*this.mFA[i], this.gVA[i]
+				).add();
+
+				this.b1Buffer.ramp
+				(
+					0, 1, this.pPA[i], this.pPA[i], this.uEA[i], this.dEA[i]
+				).multiply();
+
+				this.b1Buffer.constant(this.mGA[i]).multiply();
+
+			this.b1Buffer.applySuspendedOperations().add();
 		}
 
-		this.b1.normalize(-1, 1);
+		this.b1Buffer.normalize();
 
-		this.f = new MyBiquad("lowpass", 5000, 1);
+		this.b1 = IS.createBufferSource(this.b1Buffer);
+		this.b1.playbackRate = this.rate;
 
-		this.b1.connect(this.f);
-		this.f.connect(this.output);
+		this.filter = IS.createFilter("lowpass", 5000, 1);
+
+		this.b1.connect(this.filter);
+		this.filter.connect(this.output);
 
 		this.startArray = [this.b1];
 	};
@@ -151,21 +170,31 @@ export class PitchedPresets
 		this.uEA = [0.1, 0.1, 0.1];
 		this.dEA = [16, 16, 16];
 
-		this.b1 = new MyBuffer(1, 1, audioCtx.sampleRate);
-		this.b2 = new MyBuffer(1, 1, audioCtx.sampleRate);
-		this.f = new MyBiquad("notch", this.fund, 5);
-		this.b1.playbackRate = this.rate;
+		this.b1Buffer = IS.createBuffer(1, 1);
 
-		for(let i=0; i<this.cFA.length; i++)
+		for(let i=0; i < this.cFA.length; i++)
 		{
-			this.b2.makeFm(this.fund * this.cFA[i], this.fund * this.mFA[i], this.gVA[i]);
-			this.b2.applyRamp(0, 1, this.pPA[i], this.pPA[i], this.uEA[i], this.dEA[i]);
-			this.b2.multiply(this.mGA[i]);
+			this.b1Buffer.suspendOperations();
 
-			this.b1.addBuffer(this.b2.buffer);
+				this.b1Buffer.frequencyModulatedSine
+				(
+					this.fund * this.cFA[i], this.fund * this.mFA[i], this.gVA[i]
+				).add();
+
+				this.b1Buffer.ramp
+				(
+					0, 1, this.pPA[i], this.pPA[i], this.uEA[i], this.dEA[i]
+				).multiply();
+
+				this.b1Buffer.constant(this.mGA[i]).multiply();
+
+			this.b1Buffer.applySuspendedOperations().add();
 		}
 
-		this.b1.normalize(-1, 1);
+		this.b1Buffer.normalize();
+
+		this.b1 = IS.createBufferSource(this.b1Buffer);
+		this.b1.playbackRate = this.rate;
 
 		this.b1.connect(this.output);
 
@@ -187,20 +216,31 @@ export class PitchedPresets
 		this.uEA = [0.1, 0.1, 0.1];
 		this.dEA = [16, 16, 16];
 
-		this.b1 = new MyBuffer(1, 1, audioCtx.sampleRate);
-		this.b2 = new MyBuffer(1, 1, audioCtx.sampleRate);
-		this.f = new MyBiquad("notch", this.fund, 5);
-		this.b1.playbackRate = this.rate;
+		this.b1Buffer = IS.createBuffer(1, 1);
 
-		for(var i=0; i<this.cFA.length; i++){
-			this.b2.makeFm(this.fund*this.cFA[i], this.fund*this.mFA[i], this.gVA[i]);
-			this.b2.applyRamp(0, 1, this.pPA[i], this.pPA[i], this.uEA[i], this.dEA[i]);
-			this.b2.multiply(this.mGA[i]);
+		for(var i=0; i<this.cFA.length; i++)
+		{
+			this.b1Buffer.suspendOperations();
 
-			this.b1.addBuffer(this.b2.buffer);
+				this.b1Buffer.frequencyModulatedSine
+				(
+					this.fund*this.cFA[i], this.fund*this.mFA[i], this.gVA[i]
+				).add();
+
+				this.b1Buffer.ramp
+				(
+					0, 1, this.pPA[i], this.pPA[i], this.uEA[i], this.dEA[i]
+				).multiply();
+
+				this.b1Buffer.constant(this.mGA[i]).multiply();
+
+			this.b1Buffer.applySuspendedOperations().add();
 		}
 
-		this.b1.normalize(-1, 1);
+		this.b1Buffer.normalize();
+
+		this.b1 = IS.createBufferSource(this.b1Buffer);
+		this.b1.playbackRate = this.rate;
 
 		this.b1.connect(this.output);
 
@@ -214,14 +254,13 @@ export class PitchedPresets
 
 		this.fund = fund;
 
-		this.b1 = new MyBuffer(1, 1, audioCtx.sampleRate);
-		this.b2 = new MyBuffer(1, 1, audioCtx.sampleRate);
+		this.b1Buffer = IS.createBuffer(1, 1);
+
+		this.b1Buffer.frequencyModulatedSine(this.fund, this.fund, 1*0.25).add();
+		this.b1Buffer.ramp(0, 1, 0.1, 0.1, 4, 8).multiply();
+
+		this.b1 = IS.createBufferSource(this.b1Buffer);
 		this.b1.playbackRate = 1;
-
-		this.b2.makeFm(this.fund, this.fund, 1*0.25);
-		this.b2.applyRamp(0, 1, 0.1, 0.1, 4, 8);
-
-		this.b1.addBuffer(this.b2.buffer);
 
 		this.b1.connect(this.output);
 
@@ -235,32 +274,21 @@ export class PitchedPresets
 
 		this.fund = fund;
 
-		this.b1 = new MyBuffer(1, 1, audioCtx.sampleRate);
-		this.b2 = new MyBuffer(1, 1, audioCtx.sampleRate);
+		this.b1Buffer = IS.createBuffer(1, 1);
+
+		this.b1Buffer.frequencyModulatedSine(this.fund, this.fund, 1*0.25).add();
+		this.b1Buffer.ramp(0, 1, 0.01, 0.01, 4, 8).multiply();
+
+		this.b1Buffer.suspendOperations();
+
+			this.b1Buffer.amplitudeModulatedSine(this.fund*1, 10, 1).add();
+			this.b1Buffer.ramp(0, 1, 0.01, 0.01, 0.1, 16).multiply();
+			this.b1Buffer.constant(0.125).multiply();
+
+		this.b1Buffer.applySuspendedOperations().add();
+
+		this.b1 = IS.createBufferSource(this.b1Buffer);
 		this.b1.playbackRate = 1;
-
-		this.b2.addSine(this.fund*4, 1);
-		this.b2.applyRamp(0, 1, 0.01, 0.01, 0.1, 8);
-		this.b2.multiply(0.125);
-
-		// this.b1.addBuffer(this.b2.buffer);
-
-		this.b2.addSine(this.fund*8, 1);
-		this.b2.applyRamp(0, 1, 0.01, 0.01, 0.1, 8);
-		this.b2.multiply(0);
-
-		this.b1.addBuffer(this.b2.buffer);
-
-		this.b2.makeFm(this.fund, this.fund, 1*0.25);
-		this.b2.applyRamp(0, 1, 0.01, 0.01, 4, 8);
-
-		this.b1.addBuffer(this.b2.buffer);
-
-		this.b2.makeAm(this.fund*1, 10, 1);
-		this.b2.applyRamp(0, 1, 0.01, 0.01, 0.1, 16);
-		this.b2.multiply(0.125);
-
-		this.b1.addBuffer(this.b2.buffer);
 
 		this.b1.connect(this.output);
 
@@ -275,27 +303,30 @@ export class PitchedPresets
 		this.fund = fund;
 		this.rate = 1;
 
-		this.b1 = new MyBuffer(1, 1, audioCtx.sampleRate);
-		this.b2 = new MyBuffer(1, 1, audioCtx.sampleRate);
-
-		this.b1.playbackRate = this.rate;
+		this.b1Buffer = IS.createBuffer(1, 1);
 
 		this.iArray = [1, 2, 4];
 
-		for(var i=0; i<this.iArray.length; i++){
-			this.b1.addSine(this.fund*this.iArray[i], 1);
+		for(var i=0; i<this.iArray.length; i++)
+		{
+			this.b1Buffer.sine(this.fund*this.iArray[i], 1).add();
 		}
 
-		for(var i=0; i<this.iArray.length; i++){
-			this.b2.addSine(this.fund*this.iArray[i]*randomFloat(0.99, 1.01), 1);
-		}
+		this.b1Buffer.suspendOperations();
 
-		this.b1.subtractBuffer(this.b2.buffer);
+			for(var i=0; i<this.iArray.length; i++)
+			{
+				this.b1Buffer.sine(this.fund*this.iArray[i]*IS.Random.Float(0.99, 1.01), 1).add();
+			}
 
-		this.b1.applyRamp(0, 1, 0.5, 0.5, 1, 1);
+		this.b1Buffer.applySuspendedOperations().subtract();
 
-		this.b1.normalize(-1, 1);
+		this.b1Buffer.ramp(0, 1, 0.5, 0.5, 1, 1).multiply();
 
+		this.b1Buffer.normalize();
+
+		this.b1 = IS.createBufferSource(this.b1Buffer);
+		this.b1.playbackRate = this.rate;
 		this.b1.connect(this.output);
 
 		this.startArray = [this.b1];
@@ -308,28 +339,27 @@ export class PitchedPresets
 
 		this.rate = 1;
 
-		this.b1 = new MyBuffer(1, 1, audioCtx.sampleRate);
-		this.b1.playbackRate = this.rate;
+		this.b1Buffer = IS.createBuffer(1, 1);
 
 		this.fund = fund;
 
 		this.intA = [1, 1.5];
 		this.nHA =  [1, 4];
 
-		for(var i=0; i<this.intA.length; i++){
-
-			for(var j=0; j<this.nHA[i]+1; j++){
-
-				this.b1.addSine(this.fund*(this.intA[i]*j), 1/j);
-
+		for(var i=0; i<this.intA.length; i++)
+		{
+			for(var j=0; j<this.nHA[i]+1; j++)
+			{
+				this.b1Buffer.sine(this.fund*(this.intA[i]*j), 1/j).add();
 			}
-
 		}
 
-		this.b1.normalize(-1, 1);
+		this.b1Buffer.normalize();
 
-		this.b1.applyRamp(0, 1, 0.01, 0.02, 0.1, 1);
+		this.b1Buffer.ramp(0, 1, 0.01, 0.02, 0.1, 1).multiply();
 
+		this.b1 = IS.createBufferSource(this.b1Buffer);
+		this.b1.playbackRate = this.rate;
 		this.b1.connect(this.output);
 
 		this.startArray = [this.b1];
@@ -342,8 +372,7 @@ export class PitchedPresets
 
 		this.rate = 0.25;
 
-		this.b1 = new MyBuffer(1, 1, audioCtx.sampleRate);
-		this.b1.playbackRate = this.rate;
+		this.b1Buffer = IS.createBuffer(1, 1);
 
 		this.fund = fund;
 
@@ -355,15 +384,17 @@ export class PitchedPresets
 		{
 			for(let j=0; j<this.nHA[i]+1; j++)
 			{
-				this.b1.addSine(this.fund*(this.intA[i]*j), this.gA[i]/j);
-				this.b1.addSine(this.fund*(this.intA[i]*j)*randomFloat(0.99, 1.01), this.gA[i]/j);
+				this.b1Buffer.sine(this.fund*(this.intA[i]*j), this.gA[i]/j).add();
+				this.b1Buffer.sine(this.fund*(this.intA[i]*j)*IS.Random.Float(0.99, 1.01), this.gA[i]/j);
 			}
 		}
 
-		this.b1.normalize(-1, 1);
+		this.b1Buffer.normalize();
 
-		this.b1.applyRamp(0, 1, 0.5, 0.5, 1, 1);
+		this.b1Buffer.ramp(0, 1, 0.5, 0.5, 1, 1).multiply();
 
+		this.b1 = IS.createBufferSource(this.b1Buffer);
+		this.b1.playbackRate = this.rate;
 		this.b1.connect(this.output);
 
 		this.startArray = [this.b1];

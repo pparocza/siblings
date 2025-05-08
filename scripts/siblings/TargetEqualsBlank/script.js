@@ -46,3 +46,4 @@ function runPatch()
 	const piece = new Piece();
 	piece.start();
 }
+
