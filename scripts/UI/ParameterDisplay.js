@@ -3,11 +3,14 @@ import * as TITLE from "./Title.js";
 import * as BUTTONS from "./Buttons.js";
 
 const PARAMETER_DISPLAY_DIV = document.querySelector('.CONTROL_PARAMETER_DISPLAY_DIV');
+let PARAMETERS_DISPLAYED = false;
 
 export function displayControlParameters()
 {
-	console.log("Display control parameters!");
-	console.log(MAIN.IS.SiblingConfig);
+	if(PARAMETERS_DISPLAYED)
+	{
+		return;
+	}
 
 	if(MAIN.IS.SiblingName === null)
 	{
@@ -18,6 +21,7 @@ export function displayControlParameters()
 
 	if(Object.keys(siblingConfig).length === 1)
 	{
+		PARAMETERS_DISPLAYED = true;
 		return;
 	}
 
@@ -41,4 +45,6 @@ export function displayControlParameters()
 		parameterElement.innerHTML = key + ": " + roundedValue.toString();
 		PARAMETER_DISPLAY_DIV.appendChild(parameterElement);
 	}
+
+	PARAMETERS_DISPLAYED = true;
 }
