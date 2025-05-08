@@ -1,6 +1,6 @@
 import * as MAIN from "../script.js";
-import * as UI from "./UI/UI.js";
-import { DROPDOWN } from "./UI/SelectionDropdown.js";
+import * as UI from "./UI.js";
+import { SIBLING_SELECTION_DROPDOWN } from "./UI.js";
 
 export function configUploadCallback(event)
 {
@@ -28,14 +28,14 @@ export function configUploadCallback(event)
 		const json = JSON.parse(config);
 		const siblingName = json.Name.replace(/\s/g, "");
 
-		for(let optionIndex = 0; optionIndex < DROPDOWN.length; optionIndex++)
+		for(let optionIndex = 0; optionIndex < SIBLING_SELECTION_DROPDOWN.length; optionIndex++)
 		{
-			let option = DROPDOWN[optionIndex];
+			let option = SIBLING_SELECTION_DROPDOWN[optionIndex];
 
 			if(option.value.toLowerCase() === siblingName.toLowerCase())
 			{
 				// TODO: managing these values through UI is janky
-				DROPDOWN.value = option.value;
+				SIBLING_SELECTION_DROPDOWN.value = option.value;
 				UI.handleConfigLoaded(json);
 				break;
 			}

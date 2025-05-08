@@ -1,5 +1,5 @@
 import { IS } from "../../../script.js";
-import { UPLOADED_CONFIG } from "../../UI/UI.js";
+import { UPLOADED_CONFIG } from "../../UI.js";
 
 // TODO: Seems likely this can be refactored to be a bit less janky
 export const Parameters = UPLOADED_CONFIG !== null ? UPLOADED_CONFIG :
