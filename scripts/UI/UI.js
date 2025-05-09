@@ -29,28 +29,8 @@ DRAG_AND_DROP.ondragleave = function (event)
 	DRAG_AND_DROP.style.background = "rgba(100, 100, 100, 0)";
 }
 
-export const UPLOAD_BUTTON = document.querySelector('.UPLOAD_BUTTON');
-UPLOAD_BUTTON.addEventListener('change', function (event)
-{
-	CONFIG_HANDLER.configUploadCallback(event, SIBLING_SELECTION_DROPDOWN);
-});
-
-export const DOWNLOAD_BUTTON = document.querySelector('.DOWNLOAD_BUTTON');
-DOWNLOAD_BUTTON.addEventListener('click', function (event)
-{
-	CONFIG_HANDLER.downloadButtonCallback(TITLE_DIV.innerHTML);
-});
-DOWNLOAD_BUTTON.hidden = true;
-
 export const TITLE_DIV = document.querySelector('.TITLE_DIV');
 let TITLE = "";
-
-const START_BUTTON = document.querySelector('.START_BUTTON');
-const START_STRING = "start";
-const STOP_STRING = "stop";
-const LOAD_STRING = "load";
-const LOADING_STRING = "...loading";
-const RESET_STRING = "reset";
 
 const VOLUME_SLIDER = document.querySelector('.VOLUME_SLIDER');
 const VOLUME_SLIDER_INITIAL_VALUE = 0.7;
@@ -69,7 +49,7 @@ const PROGRESS_BAR = document.querySelector('.PROGRESS_BAR');
 function initializeUI()
 {
 	initializePieceSelectionDropdown();
-	initializeStartButton();
+	BUTTONS.initializeStartButton();
 	initializeVolumeSlider()
 	initializeProgressBar();
 }
@@ -133,26 +113,6 @@ function setTitle()
 	TITLE = SIBLING_SELECTION_DROPDOWN.options[selectedIndex].text;
 }
 
-function initializeStartButton()
-{
-	START_BUTTON.disabled = true;
-
-	START_BUTTON.onclick = function()
-	{
-		switch (START_BUTTON.innerHTML)
-		{
-			case (START_STRING):
-				handleStart();
-				break;
-			case (STOP_STRING):
-				handleStop();
-				break;
-			default:
-				break;
-		}
-	}
-}
-
 function initializeVolumeSlider()
 {
 	VOLUME_SLIDER.value = VOLUME_SLIDER_INITIAL_VALUE;
@@ -201,23 +161,21 @@ function onSiblingLoaded()
 	TITLE_DIV.innerHTML = TITLE;
 
 	hideProgressBar();
-	setStartButtonReady();
 	displayControlParameters();
 
 	PLAYBACK_CONTROLS.hidden = false;
-
-	setStartButtonReady();
+	BUTTONS.setStartButtonReady();
 }
 
-function handleStart()
+export function handleStart()
 {
 	startOnline();
-	setStartButton(STOP_STRING, false);
+	BUTTONS.setStartButton(BUTTONS.STOP_STRING, false);
 }
 
-function startOnline()
+export function startOnline()
 {
-	setStartButton(STOP_STRING, false);
+	BUTTONS.setStartButton(BUTTONS.STOP_STRING, false);
 	MAIN.start();
 }
 
@@ -226,32 +184,11 @@ export function handleReset()
 	location.reload();
 }
 
-function handleStop()
+export function handleStop()
 {
 	MAIN.stop();
-	START_BUTTON.hidden = true;
+	BUTTONS.START_BUTTON.hidden = true;
 	// setStartButton(RESET_STRING, false);
-}
-
-function setStartButton(label, disabled)
-{
-	START_BUTTON.innerHTML = label;
-	START_BUTTON.disabled = disabled;
-}
-
-function setStartButtonReady()
-{
-	setStartButton(START_STRING, false);
-}
-
-function showDownloadButton()
-{
-	DOWNLOAD_BUTTON.hidden = false;
-}
-
-function hideUploadButton()
-{
-	UPLOAD_BUTTON.hidden = true;
 }
 
 function setVolume(volumeSliderValue)
@@ -304,7 +241,7 @@ function displayControlParameters()
 		return;
 	}
 
-	showDownloadButton();
+	BUTTONS.showDownloadButton();
 
 	for(const [key, value] of Object.entries(siblingConfig))
 	{
