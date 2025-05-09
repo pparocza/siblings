@@ -1,15 +1,9 @@
 import * as MAIN from "../../script.js";
+import * as BUTTONS from "./Buttons.js";
 import * as CONFIG_HANDLER from "../siblingConfigs.js";
 import { SIBLING_OPTIONS_ARRAY } from "../siblings/SiblingOptions.js";
 export let UPLOADED_CONFIG = null;
 let SCRIPT_ELEMENT = null;
-
-const LOAD_BUTTON = document.querySelector('.LOAD_BUTTON');
-LOAD_BUTTON.disabled = true;
-LOAD_BUTTON.onclick = handleLoad;
-
-const RESET_BUTTON = document.querySelector('.RESET_BUTTON');
-RESET_BUTTON.onclick = handleReset;
 
 const SELECTION_DIV = document.querySelector('.SELECTION_DIV');
 const PLAYBACK_CONTROLS = document.querySelector('.PLAYBACK_CONTROLS_DIV');
@@ -116,7 +110,7 @@ export async function requestSiblingScript()
 
 	if(isSelectSibling)
 	{
-		LOAD_BUTTON.disabled = true;
+		BUTTONS.LOAD_BUTTON.disabled = true;
 		return;
 	}
 
@@ -125,11 +119,11 @@ export async function requestSiblingScript()
 
 	if (scriptRequest.ok)
 	{
-		LOAD_BUTTON.disabled = false;
+		BUTTONS.LOAD_BUTTON.disabled = false;
 	}
 	else
 	{
-		LOAD_BUTTON.disabled = true;
+		BUTTONS.LOAD_BUTTON.disabled = true;
 	}
 }
 
@@ -227,7 +221,7 @@ function startOnline()
 	MAIN.start();
 }
 
-function handleReset()
+export function handleReset()
 {
 	location.reload();
 }
