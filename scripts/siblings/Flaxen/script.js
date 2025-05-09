@@ -19,6 +19,7 @@ function replay()
 function delayTap()
 {
 	let buffer = IS.createBuffer(1, 1);
+	buffer.printOnOperationsComplete = true;
 
 	let reverbBuffer = IS.createBuffer(2, 3);
 	reverbBuffer.noise().add();
@@ -46,8 +47,8 @@ function delayTap()
 		buffer.ramp
 		(
 			0, 1,
-			0.05, 0.05,
-			0.15, 3
+			0.075, 0.05,
+			0.25, 3
 		).multiply();
 
 		buffer.applySuspendedOperations().add();
@@ -66,7 +67,7 @@ function delayTap()
 
 	for(let chainIndex = 0; chainIndex < Parameters.NDelayChains; chainIndex++)
 	{
-		let delayLengthRatio = IS.Random.Select(...possibleDelayLengthRatios);
+		let delayLengthRatio = IS.Random.Select(...possibleDelayLengthRatios) * IS.Random.Float(0.999, 1.001);
 		let delayAmount = delayLengthRatio * Parameters.Rate;
 		let nDelays = IS.Random.Int(3, 8);
 

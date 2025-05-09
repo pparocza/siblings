@@ -1,5 +1,5 @@
 import { IS } from "../../../script.js";
-import { UPLOADED_CONFIG } from "../../UI.js";
+import { UPLOADED_CONFIG } from "../../UI/UI.js";
 
 export const Parameters =
 {
