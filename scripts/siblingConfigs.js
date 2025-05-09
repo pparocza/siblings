@@ -1,6 +1,6 @@
 import * as MAIN from "../script.js";
-import * as UI from "./UI.js";
-import { SIBLING_SELECTION_DROPDOWN } from "./UI.js";
+import * as UI from "./UI/UI.js";
+import { SIBLING_SELECTION_DROPDOWN } from "./UI/UI.js";
 
 export function configUploadCallback(event)
 {

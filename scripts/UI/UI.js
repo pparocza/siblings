@@ -1,6 +1,6 @@
-import * as MAIN from "../script.js";
-import * as CONFIG_HANDLER from "./siblingConfigs.js";
-import { SIBLING_OPTIONS_ARRAY } from "./siblings/SiblingOptions.js";
+import * as MAIN from "../../script.js";
+import * as CONFIG_HANDLER from "../siblingConfigs.js";
+import { SIBLING_OPTIONS_ARRAY } from "../siblings/SiblingOptions.js";
 export let UPLOADED_CONFIG = null;
 let SCRIPT_ELEMENT = null;
 
