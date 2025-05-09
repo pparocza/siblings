@@ -19,10 +19,13 @@ export class IS_VisualNode extends IS_VisualElement
 
 		const geometry = new this.visualizerContext.three.BoxGeometry(width, height, 0);
 		const material = new this.visualizerContext.three.MeshBasicMaterial();
+		material.transparent = true;
+		material.opacity = 1;
 
 		// TODO: generalize to getters and setters for IS_VisualElement
 		let colorBase = this._style.colorRGB;
 		material.color.set(...colorBase);
+
 
 		let nodeIcon = new this.visualizerContext.three.Mesh(geometry, material);
 		nodeIcon.position.x = xPosition;
@@ -127,11 +130,19 @@ export class IS_VisualNode extends IS_VisualElement
 			g /= gArray.length;
 			b /= bArray.length;
 
-			r = IS.Utility.DecibelsToAmplitude(r) * 100;
-			g = IS.Utility.DecibelsToAmplitude(g) * 10000;
-			b = IS.Utility.DecibelsToAmplitude(b) * 100000;
+			let rAmplitude = IS.Utility.DecibelsToAmplitude(r);
+			let gAmplitude = IS.Utility.DecibelsToAmplitude(g);
+			let bAmplitude = IS.Utility.DecibelsToAmplitude(b);
 
-			this.RGB = [r, g, b];
+			let averageAmplitude = (rAmplitude + gAmplitude + bAmplitude) / 3;
+
+			this._material.opacity = averageAmplitude > 0.0001 ? 1 : 0;
+
+			let rValue = rAmplitude * 100;
+			let gValue = gAmplitude * 10000;
+			let bValue = bAmplitude * 100000
+
+			this.RGB = [rValue, gValue, bValue];
 		}
 
 /*		if(this.audioNode.outputValue)
