@@ -73,8 +73,8 @@ Effect.prototype = {
 	},
 
 	// preset 3
-	noiseAM: function(min, max, rate, lpFreq){
-
+	noiseAM: function(min, max, rate, lpFreq)
+	{
 		this.min = min;
 		this.max = max;
 		this.rate = rate;
@@ -89,12 +89,11 @@ Effect.prototype = {
 		this.g.connect(this.output);
 
 		this.startArray = [this.l];
-
 	},
 
 	// preset 4
-	fmShaper: function(cFreq, mFreq, bW, mGain){
-
+	fmShaper: function(cFreq, mFreq, bW, mGain)
+	{
 		this.cFreq = cFreq;
 		this.mFreq = mFreq;
 		this.bW = bW;
@@ -110,7 +109,6 @@ Effect.prototype = {
 		this.wG.connect(this.w);
 		this.w.connect(this.f);
 		this.f.connect(this.output);
-
 	},
 
 	// preset 5

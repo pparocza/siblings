@@ -995,23 +995,3 @@ function tuner(modeIdx, tonicIdx){
 
 	return scale;
 }
-
-//--------------------------------------------------------------
-
-// VALUES
-
-//--------------------------------------------------------------
-
-// global variables for easy access to common values
-
-var m2 = 25/24;
-var M2 = 9/8;
-var m3 = 6/5;
-var M3 = 5/4;
-var P4 = 4/3;
-var d5 = 45/32;
-var P5 = 3/2;
-var m6 = 8/5;
-var M6 = 5/3;
-var m7 = 9/5;
-var M7 = 15/8;

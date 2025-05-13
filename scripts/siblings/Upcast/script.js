@@ -1,23 +1,23 @@
-var offlineBuffer;
-var piece;
+import { IS } from "../../../script.js";
+import { Piece } from "./parts.js";
 
-setTimeout(function(){bufferLoaded();}, 1000);
+const piece = new Piece();
 
-function bufferLoaded()
+IS.onLoad(load);
+IS.onStart(runPatch);
+
+import { IS_Visualizer } from "../../visualizer/IS_Visualizer.js";
+IS.onReady(IS_Visualizer.visualize);
+
+function load()
 {
-
-	piece = new Piece();
-	piece.initMasterChannel();
+	piece.initMainChannel();
 	piece.initFXChannels();
 	piece.load();
+	piece.start();
 }
 
 function runPatch()
 {
-		piece.start();
-}
-
-function stopPatch()
-{
-	piece.stop();
+	// piece.start();
 }

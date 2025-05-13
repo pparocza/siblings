@@ -136,7 +136,7 @@ export class IS_VisualNode extends IS_VisualElement
 
 			let averageAmplitude = (rAmplitude + gAmplitude + bAmplitude) / 3;
 
-			this._material.opacity = averageAmplitude > 0.0001 ? 1 : 0;
+			this._material.opacity = averageAmplitude > 0.0 ? 1 : 0;
 
 			let rValue = rAmplitude * 100;
 			let gValue = gAmplitude * 10000;

@@ -2,6 +2,7 @@ import * as THREE from "https://cdn.skypack.dev/three@0.152.0";
 import { IS } from "../../script.js";
 import { IS_VisualNetwork } from "./elements/IS_VisualNetwork.js";
 import { IS_VisualizerParameters } from "./IS_VisualizerParameters.js";
+import * as Visualizers from "./visualizers/IS_Visualizers.js";
 
 export let SIBLING_CONTEXT = IS;
 let WAITING_FOR_READY = {}
@@ -42,7 +43,7 @@ export class IS_VisualizerContext
 		this._visualElementRegistry = [];
 		VISUAL_ELEMENT_REGISTRY = this._visualElementRegistry;
 
-		VISUALIZER_FUNCTION = this.networkVisualizer;
+		VISUALIZER_FUNCTION = Visualizers.Line.visualize;
 	}
 
 	get three() { return THREE; };
@@ -75,17 +76,6 @@ export class IS_VisualizerContext
 		VISUALIZER_FUNCTION();
 	}
 
-	networkVisualizer()
-	{
-		let networkRegistry = SIBLING_CONTEXT.NetworkRegistry;
-
-		for(let networkIndex = 0; networkIndex < networkRegistry.nNetworks; networkIndex++)
-		{
-			let iSNetwork = networkRegistry.getNetwork(networkIndex);
-			new IS_VisualNetwork(iSNetwork, -0.15, 1.5);
-		}
-	}
-
 	addToScene(visualElement)
 	{
 		SCENE.add(visualElement)
@@ -98,6 +88,9 @@ export class IS_VisualizerContext
 
 	_createCamera()
 	{
+		const rotateY = new THREE.Matrix4().makeRotationY(0.005);
+
+
 		CAMERA = new THREE.PerspectiveCamera
 		(
 			45,
@@ -144,6 +137,20 @@ export class IS_VisualizerContext
 		{
 			ANIMATION_REGISTRY[animationIndex].animate();
 		}
+
+		// LINE ANIMATION
+
+		let count = 0;
+		const time = performance.now() / 1000;
+
+		SCENE.traverse( function ( child ) {
+
+			child.rotation.x = count + ( time / 3 );
+			child.rotation.z = count + ( time / 4 );
+
+			count ++;
+
+		} );
 
 		RENDERER.render(SCENE, CAMERA);
 	};

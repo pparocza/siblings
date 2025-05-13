@@ -2380,8 +2380,8 @@ SchwaBox.prototype = {
 //--------------------------------------------------------------
 
 // create a network of filters to model a pipe of specified length (in meters)
-function SemiOpenPipe(length){
-
+function SemiOpenPipe(length)
+{
 	this.input = audioCtx.createGain();
 	this.output = audioCtx.createGain();
 
@@ -2392,7 +2392,8 @@ function SemiOpenPipe(length){
 
 	this.filters = {};
 
-	for(var i=0; i<4; i++){
+	for(var i=0; i<4; i++)
+	{
 		this.filters[i] = {filter: audioCtx.createBiquadFilter()};
 		this.filters[i].filter.type = "bandpass";
 		this.filters[i].filter.frequency.value = this.length*(this.lengthMultiplierArray[i]);
@@ -2406,7 +2407,6 @@ function SemiOpenPipe(length){
 		this.input.connect(this.filters[i].filter);
 		this.filters[i].filter.connect(this.output);
 	}
-
 }
 
 SemiOpenPipe.prototype = {
@@ -10427,8 +10427,8 @@ MyWaveShaper.prototype = {
 	},
 
 	// fill waveshaper with a frequency-modulated sine wave
-	makeFm: function(cFreq, mFreq, mGain){
-
+	makeFm: function(cFreq, mFreq, mGain)
+	{
 		this.twoPi = Math.PI*2;
 		this.p;
 		this.v;
@@ -10454,7 +10454,6 @@ MyWaveShaper.prototype = {
 			}
 
 		this.waveShaper.curve = this.curve;
-
 	},
 
 	// fill waveshaper with an amplitude-modulated sine wave

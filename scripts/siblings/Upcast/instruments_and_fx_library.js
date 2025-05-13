@@ -9021,21 +9021,19 @@ MyBuffer2.prototype = {
 
 	},
 
-	insert2: function( channel, insertStart, insertEnd ){
-
+	insert2: function( channel, insertStart, insertEnd )
+	{
 		const startSample = parseInt( this.buffer.length * insertStart );
 		const endSample = parseInt( this.buffer.length * insertEnd );
-		
 
-			this.nowBuffering = this.buffer.getChannelData(channel);
-			for (let i=0; i<this.buffer.length; i++){
-				
-				if( i > startSample && i < endSample ){
-					this.nowBuffering[i] = this.bufferShapeArray[ i - startSample ];
-				}
-			
+		this.nowBuffering = this.buffer.getChannelData(channel);
+		for (let i=0; i<this.buffer.length; i++)
+		{
+			if( i > startSample && i < endSample )
+			{
+				this.nowBuffering[i] = this.bufferShapeArray[ i - startSample ];
 			}
-
+		}
 	},
 
 
@@ -9187,30 +9185,25 @@ MyBuffer2.prototype = {
 
 	},
 
-	bufferShape: function(inBuffer){
-
+	bufferShape: function(inBuffer)
+	{
 		this.shape = inBuffer.getChannelData(0);
-
 		return this;
-
 	},
 	
-	bufferShape2: function(inBuffer){
-
+	bufferShape2: function(inBuffer)
+	{
 		this.bufferShapeArray = inBuffer.getChannelData(0);
-
 		return this;
-
 	},
 	
-	unipolarNoise: function(){
-
+	unipolarNoise: function()
+	{
 		for (let i=0; i<this.shape.length; i++){
 			this.shape[i] = Math.random();
 		}
 
 		return this;
-
 	},
 
 	square: function(dutyCycle){
