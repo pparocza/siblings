@@ -78,7 +78,7 @@ export class Piece
         this.loadRampingConvolver();
     }
 
-    start()
+    schedule()
     {
         this.structure3Short();
     }
@@ -407,9 +407,9 @@ class RampingConvolver extends Piece
         let duration = 1 / this.oscillationRate;
         let divPosition = 0;
 
-        this.amplitudeModulationConvolver1.start(startTime, stopTime);
-        this.amplitudeModulationConvolver2.start(startTime, stopTime);
-        this.amplitudeModulationConvolver2.start(startTime, stopTime);
+        this.amplitudeModulationConvolver1.schedule(startTime, stopTime);
+        this.amplitudeModulationConvolver2.schedule(startTime, stopTime);
+        this.amplitudeModulationConvolver2.schedule(startTime, stopTime);
 
         while(currentTime < stopTime)
         {
@@ -609,7 +609,7 @@ class AMConvolver extends Piece
         this.tapBufferSource.loop = true;
     }
 
-    start(startTime, stopTime)
+    schedule(startTime, stopTime)
     {
         this.tapBufferSource.scheduleStart( startTime );
         this.tapBufferSource.scheduleStop( stopTime );
