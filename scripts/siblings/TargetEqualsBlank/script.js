@@ -3,9 +3,6 @@ import { Piece } from "./sections.js";
 
 IS.onLoad(runPatch);
 
-/*import { IS_Visualizer } from "../../visualizer/IS_Visualizer.js";
-IS.onReady(IS_Visualizer.visualize);*/
-
 function runPatch()
 {
 	const gain = IS.createGain();

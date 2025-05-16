@@ -42,8 +42,6 @@ export class IS_VisualizerContext
 
 		this._visualElementRegistry = [];
 		VISUAL_ELEMENT_REGISTRY = this._visualElementRegistry;
-
-		VISUALIZER_FUNCTION = Visualizers.Line.visualize;
 	}
 
 	get three() { return THREE; };
@@ -52,6 +50,16 @@ export class IS_VisualizerContext
 	get renderer() { return RENDERER };
 	get labelRenderer() { return LABEL_RENDERER; };
 	get siblingContext() { return SIBLING_CONTEXT };
+
+	set visualizer(visualizer)
+	{
+		VISUALIZER_FUNCTION = visualizer;
+	}
+
+	get visualizer()
+	{
+		return Visualizers;
+	}
 
 	get showLabels() { return this._showLabels; };
 	set showLabels(value)
@@ -140,17 +148,18 @@ export class IS_VisualizerContext
 
 		// LINE ANIMATION
 
+/*
 		let count = 0;
 		const time = performance.now() / 1000;
 
-		SCENE.traverse( function ( child ) {
-
+		SCENE.traverse( function ( child )
+		{
 			child.rotation.x = count + ( time / 3 );
 			child.rotation.z = count + ( time / 4 );
 
 			count ++;
-
 		} );
+*/
 
 		RENDERER.render(SCENE, CAMERA);
 	};

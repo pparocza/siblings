@@ -7,9 +7,6 @@ import { Keys } from "./Keys.js";
 
 IS.onLoad(roll);
 
-/*import { IS_Visualizer } from "../../visualizer/IS_Visualizer.js";
-IS.onReady(IS_Visualizer.visualize);*/
-
 function roll()
 {
     OutputBus.Initialize();

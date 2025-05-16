@@ -4,7 +4,8 @@ import { Parameters } from "./parameters.js";
 IS.onLoad(test);
 
 import { IS_Visualizer } from "../../visualizer/IS_Visualizer.js";
-IS.onReady(IS_Visualizer.visualize);
+
+IS_Visualizer.visualizer = IS_Visualizer.visualizer.Network.visualize;
 
 function test()
 {
