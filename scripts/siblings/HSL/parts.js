@@ -1,4 +1,6 @@
-class Piece {
+import { IS } from "../../../script.js";
+
+export class Piece {
     
     constructor(){
 
@@ -223,7 +225,7 @@ class Piece {
 
     }
 
-    start(){
+    schedule(){
 
         this.fadeFilter.start(1, 50);
 		this.globalNow = audioCtx.currentTime;

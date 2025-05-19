@@ -1,11 +1,11 @@
+import { IS } from "../../../script.js";
+
 export class Piece
 {
-
     constructor(){}
 
     initMasterChannel()
     {
-
         this.gain = audioCtx.createGain();
         this.gain.gain.value = 1;
 
@@ -16,7 +16,7 @@ export class Piece
         this.cB.makeNoise();
         this.cB.applyRamp(0, 1, 0.01, 0.015, 0.5, 4);
 
-        this.c.setBuffer( this.cB.buffer );
+        this.c.setBuffer(this.cB.buffer);
         this.c.output.gain.value = 0.25;
 
         // DELAY
@@ -157,7 +157,7 @@ export class Piece
 
     }
 
-    start()
+    schedule()
     {
 
         this.fadeFilter.start(1, 50);
