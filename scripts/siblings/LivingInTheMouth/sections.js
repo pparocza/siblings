@@ -13,11 +13,11 @@ export class Piece
 
         this.c = new MyConvolver(2, 3, audioCtx.sampleRate);
         this.cB = new MyBuffer(2, 3, audioCtx.sampleRate);
-        this.cB.makeNoise();
-        this.cB.applyRamp(0, 1, 0.01, 0.015, 0.5, 4);
+        this.convolverBuffer.makeNoise();
+        this.convolverBuffer.applyRamp(0, 1, 0.01, 0.015, 0.5, 4);
 
-        this.c.setBuffer(this.cB.buffer);
-        this.c.output.gain.value = 0.25;
+        this.convolver.setBuffer(this.convolverBuffer.buffer);
+        this.convolver.output.gain.value = 0.25;
 
         // DELAY
 
@@ -25,9 +25,9 @@ export class Piece
 
         this.dL = randomFloat(0.25, 0.4);
 
-        this.d.stereoDelay(this.dL*2, this.dL, 0.2, 1);
-        this.d.on();
-        this.d.output.gain.value = 0.25;
+        this.delay.stereoDelay(this.dL*2, this.dL, 0.2, 1);
+        this.delay.on();
+        this.delay.output.gain.value = 0.25;
 
         this.dF = new MyBiquad( 'highpass' , 500 , 1 );
         this.cF = new MyBiquad( 'highpass' , 500 , 1 );
@@ -77,14 +77,14 @@ export class Piece
 
         // CONNECTIONS
 
-        this.masterGain.connect(this.c.input);
-        this.masterGain.connect(this.d.input);
-        this.masterGain.connect( this.dSend3In.input );
+        this.mainGain.connect(this.convolver.input);
+        this.mainGain.connect(this.delay.input);
+        this.mainGain.connect( this.dSend3In.input );
 
-        this.masterGain.connect(this.gain);
+        this.mainGain.connect(this.gain);
 
-        this.c.connect(this.cF);
-        this.d.connect(this.dF);
+        this.convolver.connect(this.cF);
+        this.delay.connect(this.dF);
         this.dSend3.connect( this.dF );
 
         this.cF.connect(this.gain);
@@ -92,10 +92,10 @@ export class Piece
 
         this.gain.connect( this.w.input );
         this.w.connect( this.wF );
-        this.wF.connect( this.f );
+        this.wF.connect( this.filter );
 
-        this.gain.connect(this.f.input);
-        this.f.connect(this.f2);
+        this.gain.connect(this.filter.input);
+        this.filter.connect(this.f2);
 
         this.f2.connect(this.fadeFilter);
         this.fadeFilter.connect(audioCtx.destination);
@@ -491,7 +491,7 @@ export class Piece
         f.connect(output);
         delay.connect(output);
 
-        output.connect(this.masterGain);
+        output.connect(this.mainGain);
 
         impulse.startAtTime( this.globalNow + startTime );
         delayLFO.startAtTime( this.globalNow + startTime );
@@ -573,7 +573,7 @@ export class Piece
 
         delay.connect(output);
 
-        output.connect(this.masterGain);
+        output.connect(this.mainGain);
 
         impulse.startAtTime( this.globalNow + startTime );
         delayLFO.startAtTime( this.globalNow + startTime );
@@ -639,7 +639,7 @@ export class Piece
         f.connect(output);
         delay.connect(output);
 
-        output.connect(this.masterGain);
+        output.connect(this.mainGain);
 
         c.startAtTime( this.globalNow + startTime );
         delayLFO.startAtTime( this.globalNow + startTime );
@@ -716,7 +716,7 @@ export class Piece
         f.connect(output);
         delay.connect(output);
 
-        output.connect(this.masterGain);
+        output.connect(this.mainGain);
 
         const nP = numberOfPhrases;
         let t = 0;
@@ -807,7 +807,7 @@ export class Piece
         f2.connect(output);
         delay.connect(output);
 
-        output.connect(this.masterGain);
+        output.connect(this.mainGain);
 
         const nP = numberOfPhrases;
         let t = 0;
@@ -903,7 +903,7 @@ export class Piece
         f2.connect(output);
         delay.connect(output);
 
-        output.connect(this.masterGain);
+        output.connect(this.mainGain);
 
         const nP = numberOfPhrases;
         let t = 0;
@@ -1001,7 +1001,7 @@ export class Piece
         // delay.connect(output);
         pan.connect(output);
 
-        output.connect(this.masterGain);
+        output.connect(this.mainGain);
 
         const nP = numberOfPhrases;
         let t = 0;
@@ -1094,7 +1094,7 @@ export class Piece
         // delay.connect(output);
         pan.connect(output);
 
-        output.connect(this.masterGain);
+        output.connect(this.mainGain);
 
         const nP = numberOfPhrases;
         let t = 0;

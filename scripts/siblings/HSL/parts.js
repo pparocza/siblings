@@ -21,16 +21,16 @@ export class Piece {
         this.ls2 = new MyBiquad( 'lowshelf' , 162.24 , 1 );
         this.ls2.biquad.gain.value = -3.13;
         this.f = new MyBiquad( 'peaking' , 279.5 , 1.586 );
-        this.f.biquad.gain.value = -2.20;
+        this.filter.biquad.gain.value = -2.20;
         this.f2 = new MyBiquad( 'peaking' , 2557.9 , 1 );
         this.f2.biquad.gain.value = 1.38;
     
         this.masterGain = audioCtx.createGain();
-        this.masterGain.connect( this.hp.input );
+        this.mainGain.connect( this.hp.input );
         this.hp.connect( this.ls );
         this.ls.connect( this.ls2 );
-        this.ls2.connect( this.f );
-        this.f.connect( this.gain );
+        this.ls2.connect( this.filter );
+        this.filter.connect( this.gain );
         this.gain.connect( this.fadeFilter.input );
         this.fadeFilter.connect( audioCtx.destination );
 
@@ -44,16 +44,16 @@ export class Piece {
 
             this.c = new MyConvolver();
             this.cB = new MyBuffer2( 2 , 2 , audioCtx.sampleRate );
-            this.cB.noise().fill( 0 );
-            this.cB.noise().fill( 1 );
-            this.cB.ramp( 0 , 1 , 0.01 , 0.015 , 0.1 , 4 ).multiply( 0 );
-            this.cB.ramp( 0 , 1 , 0.01 , 0.015 , 0.1 , 4 ).multiply( 1 );
-            this.c.output.gain.value = 1;
+            this.convolverBuffer.noise().fill( 0 );
+            this.convolverBuffer.noise().fill( 1 );
+            this.convolverBuffer.ramp( 0 , 1 , 0.01 , 0.015 , 0.1 , 4 ).multiply( 0 );
+            this.convolverBuffer.ramp( 0 , 1 , 0.01 , 0.015 , 0.1 , 4 ).multiply( 1 );
+            this.convolver.output.gain.value = 1;
 
-            this.c.setBuffer( this.cB.buffer );
+            this.convolver.setBuffer( this.convolverBuffer.buffer );
 
-            this.reverbSend.connect( this.c );
-            this.c.connect( this.masterGain );
+            this.reverbSend.connect( this.convolver );
+            this.convolver.connect( this.mainGain );
 
     }
 
@@ -201,11 +201,11 @@ export class Piece {
             8 
         );
 
-        this.rC1.output.connect( this.masterGain );
-        this.rC2.output.connect( this.masterGain );
-        this.rC3.output.connect( this.masterGain );
-        this.rC4.output.connect( this.masterGain );
-        this.rC5.output.connect( this.masterGain );
+        this.rC1.output.connect( this.mainGain );
+        this.rC2.output.connect( this.mainGain );
+        this.rC3.output.connect( this.mainGain );
+        this.rC4.output.connect( this.mainGain );
+        this.rC5.output.connect( this.mainGain );
 
     }
 

@@ -16,7 +16,7 @@ export class Piece
         this.fadeFilter = new FilterFade(0);
 
         this.f = new MyBiquad( 'peaking' , 568.45 , 0.9 );
-        this.f.biquad.gain.value = -2.10;
+        this.filter.biquad.gain.value = -2.10;
 
         this.hp = new MyBiquad( 'highpass' , 10 , 1 );
 
@@ -24,8 +24,8 @@ export class Piece
         this.hs.biquad.gain.value = 3;
     
         this.masterGain = audioCtx.createGain();
-        this.masterGain.connect(this.f.input);
-        this.f.connect( this.hp );
+        this.mainGain.connect(this.filter.input);
+        this.filter.connect( this.hp );
         this.hp.connect( this.hs );
         this.hs.connect( this.gain );
         this.gain.connect(this.fadeFilter.input);
@@ -41,15 +41,15 @@ export class Piece
 
             this.c = new MyConvolver();
             this.cB = new MyBuffer2( 2 , 2 , audioCtx.sampleRate );
-            this.cB.noise().fill( 0 );
-            this.cB.noise().fill( 1 );
-            this.cB.ramp( 0 , 1 , 0.01 , 0.015 , 0.1 , 4 ).multiply( 0 );
-            this.cB.ramp( 0 , 1 , 0.01 , 0.015 , 0.1 , 4 ).multiply( 1 );
+            this.convolverBuffer.noise().fill( 0 );
+            this.convolverBuffer.noise().fill( 1 );
+            this.convolverBuffer.ramp( 0 , 1 , 0.01 , 0.015 , 0.1 , 4 ).multiply( 0 );
+            this.convolverBuffer.ramp( 0 , 1 , 0.01 , 0.015 , 0.1 , 4 ).multiply( 1 );
 
-            this.c.setBuffer( this.cB.buffer );
+            this.convolver.setBuffer( this.convolverBuffer.buffer );
 
-            this.cSend.connect( this.c );
-            this.c.connect( this.masterGain );
+            this.convolverSend.connect( this.convolver );
+            this.convolver.connect( this.mainGain );
 
     }
 
@@ -364,7 +364,7 @@ export class Piece
 
         }
 
-        this.cSend.gain.gain.setTargetAtTime( 1 , 0 ,  this.globalNow + ( 16 ) );
+        this.convolverSend.gain.gain.setTargetAtTime( 1 , 0 ,  this.globalNow + ( 16 ) );
 
     }
 

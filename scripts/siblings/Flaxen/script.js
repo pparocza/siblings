@@ -1,11 +1,9 @@
 import { IS } from "../../../script.js";
 import { Parameters } from "./parameters.js";
+import { IS_Visualizer } from "../../visualizer/IS_Visualizer.js";
+IS_Visualizer.visualizer = IS_Visualizer.visualizer.Network.visualize;
 
 IS.onLoad(test);
-
-import { IS_Visualizer } from "../../visualizer/IS_Visualizer.js";
-
-IS_Visualizer.visualizer = IS_Visualizer.visualizer.Network.visualize;
 
 function test()
 {
