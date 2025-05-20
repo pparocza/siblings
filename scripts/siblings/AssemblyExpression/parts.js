@@ -1,71 +1,96 @@
 import { IS } from "../../../script.js";
 
-export class Piece {
-    
+const m2 = 25/24;
+const M2 = 9/8;
+const m3 = 6/5;
+const M3 = 5/4;
+const P4 = 4/3;
+const d5 = 45/32;
+const P5 = 3/2;
+const m6 = 8/5;
+const M6 = 5/3;
+const m7 = 9/5;
+const M7 = 15/8;
+
+function shuffle(array)
+{
+    var i = array.length;
+    var j = 0;
+    var temp;
+
+    while (i--)
+    {
+        j = Math.floor(Math.random() * (i+1));
+        temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+
+    return array;
+}
+
+export class Piece
+{
     constructor(){}
 
-    initMasterChannel(){
-
+    initMasterChannel()
+    {
         this.globalNow = 0;
 
-        this.gain = audioCtx.createGain();
-        this.gain.gain.value = 6;
-    
-        this.fadeFilter = new FilterFade(0);
+        this.gain = IS.createGain();
+        this.gain.gain = 18;
 
-        this.f = new MyBiquad( 'highpass' , 10 , 1 );
+        this.filter = IS.createFilter('highpass', 10, 1);
     
-        this.masterGain = audioCtx.createGain();
-        this.masterGain.connect(this.f.input);
-        this.f.connect( this.gain );
-        this.gain.connect(this.fadeFilter.input);
-        this.fadeFilter.connect(audioCtx.destination);
+        this.mainGain = IS.createGain();
+        this.mainGain.connect(this.filter);
+        this.filter.connect(this.gain);
+        this.gain.connectToMainOutput();
 
         // GLOBAL NOISE
+        this.globalNoiseBuffer = IS.createBuffer(1, 1);
+        this.globalNoiseBuffer.noise().add();
 
-        this.globalNoise = new MyBuffer2( 1 , 1 , audioCtx.sampleRate );
-        this.globalNoise.noise().fill( 0 );
+        this.globalNoise = IS.createBufferSource(this.globalNoiseBuffer);
         this.globalNoise.playbackRate = 0.4;
         this.globalNoise.loop = true;
-        this.globalNoise.output.gain.value = 0.15;
-
+        this.globalNoise.gain = 0.15;
     }
 
-    initFXChannels(){
-
+    initFXChannels()
+    {
         // REVERB
+        this.convolverSend = IS.createGain();
 
-            this.cSend = new MyGain( 1 );
+        this.convolverBuffer = IS.createBuffer(2, 2);
+        this.convolverBuffer.noise().add();
+        this.convolverBuffer.ramp
+        (
+            0, 1, 0.01, 0.015, 0.1, 4
+        ).multiply();
 
-            this.c = new MyConvolver();
-            this.cB = new MyBuffer2( 2 , 2 , audioCtx.sampleRate );
-            this.cB.noise().fill( 0 );
-            this.cB.noise().fill( 1 );
-            this.cB.ramp( 0 , 1 , 0.01 , 0.015 , 0.1 , 4 ).multiply( 0 );
-            this.cB.ramp( 0 , 1 , 0.01 , 0.015 , 0.1 , 4 ).multiply( 1 );
+        this.convolver = IS.createConvolver(this.convolverBuffer);
 
-            this.c.setBuffer( this.cB.buffer );
-
-            this.cSend.connect( this.c );
-            this.c.connect( this.masterGain );
+        this.convolverSend.connect(this.convolver);
+        this.convolver.connect(this.mainGain);
 
         // DELAY
+        this.delaySend = IS.createGain();
 
-            this.dSend = new MyGain( 1 );
-            this.d = new Effect();
-            this.d.randomEcho();
-            this.d.on();
+        this.delay = IS.createStereoDelay
+        (
+            IS.Random.Float(0.35, 0.6), IS.Random.Float(0.35, 0.6), IS.Random.Float(0, 0.2), 1
+        );
 
-            this.d.output.gain.value = 0.25;
-
+        this.delay.gain = 0.25;
     }
 
-    generateStructure(){
-
-        this.qN = 4 * ( 1 / this.rate );
-        this.bar = 2 * this.qN;
+    generateStructure()
+    {
+        this.quarterNote = 4 * ( 1 / this.rate );
+        this.bar = 2 * this.quarterNote;
         this.nBars = 28 * ( this.rate / 2 );
-        this.structureIdx = 0; // randomInt( 0 , 2 );
+        this.structureIdx = 0; // IS.Random.Int( 0 , 2 );
 
         switch( this.structureIdx){
 
@@ -85,9 +110,9 @@ export class Piece {
                 console.log( 'spec arrangement structure' );
                 // arrangementArray **
                 this.specArrangementStructure( 
-                    // if you replace each item with a randomInt, you can maintain a general
+                    // if you replace each item with a IS.Random.Int, you can maintain a general
                     // arrangement contour, but still have variety between outputs
-                    [ 5 , 2 , 5 , 1 , 3 , 6 , 2 , 7 , 1 , 8 , 7 , 6 , 5 , 4 , 3 , 1 ] 
+                    [5, 2, 5, 1, 3, 6, 2, 7, 1, 8, 7, 6, 5, 4, 3, 1]
                 );
                 break;
 
@@ -95,19 +120,11 @@ export class Piece {
                 console.log( 'explicit structure' );
                 this.explicitStructure();
                 break;
-
         }
-
-        // modulus
-        // this.moduloStructure( 2 );        
-
-        // groupSize
-        // this.twoGroups( 4 );
-
     }
 
-    load(){
-
+    load()
+    {
             this.rC5 = new RampingConvolver( this );
             this.rC4 = new RampingConvolver( this );
             this.rC3 = new RampingConvolver( this );
@@ -121,24 +138,24 @@ export class Piece {
 
             // RAMPING CONVOLVER
 
-            this.fund = 0.5 * randomFloat( 350 , 450 );
-            this.rate = 0.5; // 4 , randomFloat( 3.9 , 4.5 );
+            this.fund = 0.5 * IS.Random.Float(300, 400);
+            this.rate = 0.5; // 4 , IS.Random.Float( 3.9 , 4.5 );
             this.gainVal = 1;
 
-            console.log( `fund: ${this.fund} , rate: ${this.rate}` );
+            console.log(`fund: ${this.fund} , rate: ${this.rate}`);
     
             // startTime , rate , rampArray , bufferLength , fund , frequencyRange , gainVal
 
-                this.rC1.load( this.rate * randomFloat( 0.0625 , 1 ) , [ 0 , 1 , 0.5 , 0.5 , 1 , 1 ] , randomArrayValue( [ 2 ])                  , this.fund * 0.5 , [ 100 , 500 ]   , this.gainVal * 2 );
-                this.rC2.load( this.rate * randomFloat( 0.0625 , 1 ) , [ 0 , 1 , 0.5 , 0.5 , 1 , 1 ] , randomArrayValue( [ 1 ])                  , this.fund       , [ 100 , 500 ]   , this.gainVal * 2 );
-                this.rC3.load( this.rate * randomFloat( 0.0625 , 1 ) , [ 0 , 1 , 0.5 , 0.5 , 1 , 1 ] , randomArrayValue( [ 0.25 , 0.5 , 1 , 2 ]) , this.fund       , [ 4000 , 7000 ] , this.gainVal * 2 );
-                this.rC4.load( this.rate * randomFloat( 0.0625 , 1 ) , [ 0 , 1 , 0.5 , 0.5 , 1 , 1 ] , randomArrayValue( [ 0.25 , 0.5 , 1 , 2 ]) , this.fund       , [ 100 , 1000 ]  , this.gainVal * 3 );
-                this.rC5.load( this.rate * randomFloat( 0.0625 , 1 ) , [ 0 , 1 , 0.5 , 0.5 , 1 , 1 ] , randomArrayValue( [ 0.5 , 1 , 2 ])        , this.fund * 0.5 , [ 100 , 5000 ]  , this.gainVal * 2 );
+                this.rC1.load( this.rate * IS.Random.Float(0.0625, 1), [ 0 , 1 , 0.5 , 0.5 , 1 , 1 ] , IS.Random.Select(2)                  , this.fund * 0.5 , [ 100 , 500 ]   , this.gainVal * 2 );
+                this.rC2.load( this.rate * IS.Random.Float(0.0625, 1), [ 0 , 1 , 0.5 , 0.5 , 1 , 1 ] , IS.Random.Select([ 1 ])                  , this.fund       , [ 100 , 500 ]   , this.gainVal * 2 );
+                this.rC3.load( this.rate * IS.Random.Float(0.0625, 1), [ 0 , 1 , 0.5 , 0.5 , 1 , 1 ] , IS.Random.Select(0.25, 0.5, 1, 2) , this.fund       , [ 4000 , 7000 ] , this.gainVal * 2 );
+                this.rC4.load( this.rate * IS.Random.Float(0.0625, 1), [ 0 , 1 , 0.5 , 0.5 , 1 , 1 ] , IS.Random.Select(0.25, 0.5, 1, 2) , this.fund       , [ 100 , 1000 ]  , this.gainVal * 3 );
+                this.rC5.load( this.rate * IS.Random.Float(0.0625, 1), [ 0 , 1 , 0.5 , 0.5 , 1 , 1 ] , IS.Random.Select(0.5, 1, 2)        , this.fund * 0.5 , [ 100 , 5000 ]  , this.gainVal * 2 );
 
-                this.rC2A.load( this.rate * randomFloat( 0.0625 , 1 ) , [ 0 , 1 , 0.5 , 0.5 , 1 , 1 ] , 2 , this.fund       , [ 100 , 1000 ] , this.gainVal * 2.5 );
-                this.rC3A.load( this.rate * randomFloat( 0.0625 , 1 ) , [ 0 , 1 , 0.5 , 0.5 , 1 , 1 ] , 2 , this.fund * 0.5 , [ 100 , 5000 ] , this.gainVal * 1.5 );
-                this.rC4A.load( this.rate * randomFloat( 0.0625 , 1 ) , [ 0 , 1 , 0.5 , 0.5 , 1 , 1 ] , 2 , this.fund       , [ 100 , 1000 ] , this.gainVal * 1.5 );
-                this.rC5A.load( this.rate * randomFloat( 0.0625 , 1 ) , [ 0 , 1 , 0.5 , 0.5 , 1 , 1 ] , 2 , this.fund * 0.5 , [ 100 , 5000 ] , this.gainVal * 1.5 );
+                this.rC2A.load( this.rate * IS.Random.Float( 0.0625 , 1 ) , [ 0 , 1 , 0.5 , 0.5 , 1 , 1 ] , 2 , this.fund       , [ 100 , 1000 ] , this.gainVal * 2.5 );
+                this.rC3A.load( this.rate * IS.Random.Float( 0.0625 , 1 ) , [ 0 , 1 , 0.5 , 0.5 , 1 , 1 ] , 2 , this.fund * 0.5 , [ 100 , 5000 ] , this.gainVal * 1.5 );
+                this.rC4A.load( this.rate * IS.Random.Float( 0.0625 , 1 ) , [ 0 , 1 , 0.5 , 0.5 , 1 , 1 ] , 2 , this.fund       , [ 100 , 1000 ] , this.gainVal * 1.5 );
+                this.rC5A.load( this.rate * IS.Random.Float( 0.0625 , 1 ) , [ 0 , 1 , 0.5 , 0.5 , 1 , 1 ] , 2 , this.fund * 0.5 , [ 100 , 5000 ] , this.gainVal * 1.5 );
 
             this.rCArray = [ this.rC1 , this.rC2 , this.rC3 , this.rC4 , this.rC5 , this.rC2A , this.rC3A , this.rC4A , this.rC5A ];
 
@@ -146,32 +163,28 @@ export class Piece {
 
     }
 
-    randomStructure( minimumVoices ){
-
+    randomStructure(minimumVoices)
+    {
         this.structureArray = [];
 
-        for( let i = 0 ; i < this.nBars ; i++ ){
-
+        for( let i = 0 ; i < this.nBars ; i++ )
+        {
             this.structureArray[ i ] = [];
 
-            for( let j = 0 ; j < this.rCArray.length - minimumVoices ; j++ ){
-
-                this.structureArray[i].push( randomInt( 0 , 2 ) );
-
+            for( let j = 0 ; j < this.rCArray.length - minimumVoices ; j++ )
+            {
+                this.structureArray[i].push(IS.Random.Int(0, 2));
             }
 
-            for( let j = 0 ; j < minimumVoices ; j++ ){
-
+            for( let j = 0 ; j < minimumVoices ; j++ )
+            {
                 this.structureArray[i].push( 1 );
-
             }
 
-            shuffle( this.structureArray[i] );
-            
+            shuffle(this.structureArray[i]);
         }
 
-        console.log( this.structureArray );
-
+        console.log(this.structureArray);
     }
 
     explicitStructure(){
@@ -195,11 +208,7 @@ export class Piece {
 
         ]
 
-        this.structureArray = randomArrayValue(
-            [
-                this.structureArray1
-            ]
-        )
+        this.structureArray = IS.Random.Select(...this.structureArray1);
 
         console.log('---- STRUCTURE ARRAY: ' , this.structureArray );
 
@@ -214,7 +223,7 @@ export class Piece {
 
             this.structureArray[ i ] = [];
 
-            nVoices = randomInt( minimumVoices , maximumVoices );
+            nVoices = IS.Random.Int( minimumVoices , maximumVoices );
 
             for( let j = 0 ; j < nVoices ; j++ ){
 
@@ -264,202 +273,200 @@ export class Piece {
 
     }
 
-    schedule(){
+    schedule()
+    {
+		this.globalNow = IS.now;
 
-        this.fadeFilter.start(1, 50);
-		this.globalNow = audioCtx.currentTime;
-
-        this.globalNoise.start();
+        this.globalNoise.scheduleStart(0);
 
         let r = 0;
 
-        for( let i = 0 ; i < this.rCArray.length ; i++ ){
+        for( let i = 0 ; i < this.rCArray.length ; i++ )
+        {
             this.rCArray[i].rampStart();
         }
 
-        for( let i = 0 ; i < this.structureArray.length ; i++ ){
-
-            for( let j = 0 ; j < this.structureArray[i].length ; j++ ){
-
-                    if( this.structureArray[i][j] === 1 ){
-
-                        this.rCArray[j].start( this.globalNow + ( this.bar * i ) , this.globalNow + ( this.bar * ( i + 1 ) ) );
-
-                    }
-
+        for( let i = 0 ; i < this.structureArray.length ; i++ )
+        {
+            for( let j = 0 ; j < this.structureArray[i].length ; j++ )
+            {
+                if( this.structureArray[i][j] === 1 )
+                {
+                    this.rCArray[j].scheduleStart
+                    (
+                        this.globalNow + (this.bar * i), this.globalNow + (this.bar * (i + 1))
+                    );
+                }
             }
-
         }
-
     }
 
-    stop() {
-
+    stop()
+    {
         this.fadeFilter.start(0, 20);
         startButton.innerHTML = "reset";
-
     }
 
 }
 
-class RampingConvolver{
+class RampingConvolver
+{
+    constructor(piece)
+    {
+        this.piece = piece;
 
-    constructor( piece ){
+        // TODO: look here if things end up not making any noise
+        this.output = IS.createGain(0);
 
-        this.output = new MyGain( 0 );
-
-        this.output.connect( piece.masterGain );
-        this.output.connect( piece.cSend );
-        this.output.connect( piece.dSend );
+        this.output.connect(piece.mainGain);
+        this.output.connect(piece.convolverSend);
+        this.output.connect(piece.delaySend);
 
         this.isStarted = false;
-
     }
 
-    load( rate , rampArray , bufferLength , fund , frequencyRange , gainVal ){
-
+    load(rate, rampArray, bufferLength, fund, frequencyRange, gainVal)
+    {
         this.rate = rate;
 
-        this.output.gain.gain.value = gainVal;
+        this.output.gain = gainVal;
 
-        this.c = new MyConvolver();
-        this.cB = new MyBuffer2(  1 , bufferLength , audioCtx.sampleRate );
-        this.cAB = new MyBuffer2( 1 , bufferLength , audioCtx.sampleRate );
+        this.convolverBuffer = IS.createBuffer(1, bufferLength);
 
-        const iArray = [ 1 , M2 , M3 , P4 , P5 , M6 , 2 ];
-        const oArray = [ 1 , 4 , 2 ];
+        const intervalArray = [1, M2, M3, P4, P5, M6, 2];
+        const octaveArray = [1, 4, 2];
 
         let interval = 0;
-        let o = 0;
-        let p = 0;
+        let octave = 0;
+        let percent = 0;
 
-        for( let i = 0 ; i < 20 ; i++ ){
+        for(let i = 0; i < 20; i++)
+        {
+            interval = IS.Random.Select(...intervalArray);
+            octave = IS.Random.Select(...octaveArray);
+            percent = IS.Random.Float(0.1, 0.9);
 
-            interval = randomArrayValue( iArray );
-            o = randomArrayValue( oArray );
-            p = randomFloat( 0.1 , 0.9 );
+            this.convolverBuffer.suspendOperations();
 
-            this.cAB.fm( randomFloat( 0.99 , 1.01 ) * fund * interval * o , randomFloat( 0.99 , 1.01 ) * fund * interval * o , 0.5 ).add( 0 );
-            this.cAB.constant( 1 / o ).multiply( 0 );
-            this.cAB.ramp( p , p + 0.1 , 0.5 , 0.5 , 0.1 , 0.1 ).multiply( 0 );
+                this.convolverBuffer.frequencyModulatedSine
+                (
+                    IS.Random.Float( 0.99 , 1.01 ) * fund * interval * octave,
+                    IS.Random.Float( 0.99 , 1.01 ) * fund * interval * octave,
+                    0.5
+                ).add();
 
-            this.cB.addBuffer( this.cAB.buffer );
+                this.convolverBuffer.constant(1 / octave).multiply();
 
+                this.convolverBuffer.ramp
+                (
+                    percent, percent + 0.1,
+                    0.5, 0.5,
+                    0.1, 0.1
+                ).multiply();
+
+            this.convolverBuffer.applySuspendedOperations().add();
         }
 
-        this.cB.normalize( -1 , 1 );
+        this.convolverBuffer.normalize();
 
-        this.c.setBuffer( this.cB.buffer );
+        this.convolver = IS.createConvolver(this.convolverBuffer);
 
         // NOISE FILTER
 
-        this.noiseFilter = new MyBiquad( 'bandpass' , 0 , 1 );
+        this.noiseFilter = IS.createFilter('bandpass', 0, 1);
 
         // AM
 
-        this.aG = new MyGain( 0 );
-        this.aB = new MyBuffer2( 1 , 1 , audioCtx.sampleRate );
-        this.aB.ramp( ...rampArray ).fill( 0 );
-        this.aB.loop = true;
-        this.aB.playbackRate = rate;
+        this.amplitudeModulationGain = IS.createGain(0);
+        this.amplitudeModulationBuffer = IS.createBuffer(1, 1);
+        this.amplitudeModulationBuffer.ramp(...rampArray).add();
 
-        this.aF = new MyBiquad( 'lowpass' , 500 , 1 );
+        this.amplitudeModulationBufferSource = IS.createBufferSource(this.amplitudeModulationBuffer);
+        this.amplitudeModulationBufferSource.loop = true;
+        this.amplitudeModulationBufferSource.playbackRate = rate;
+
+        this.amplitudeModulationFilter = IS.createFilter('lowpass', 500, 1);
 
         // FADE GAINS
 
-        this.convolverGain = new MyGain( 0 );
-        this.noiseGain = new MyGain( 0.05 );
+        this.convolverGain = IS.createGain(0);
+        this.noiseGain = IS.createGain(0.05);
 
         // PAN
-
-        this.p = new MyPanner2( 0 );
-
-        // WAVESHAPER
-
-        this.s = new MyWaveShaper();
-        this.s.makeSigmoid( 3 );
+        this.panner = IS.createStereoPanner(0);
 
         // SEQUENCE GAIN
-
-        this.sG = new MyGain ( 0 );
+        this.sequenceGain = IS.createGain(0);
 
         // CONNECTIONS
+        this.piece.globalNoise.connect(this.noiseFilter);
+        this.amplitudeModulationBufferSource.connect(this.amplitudeModulationFilter);
+        this.noiseFilter.connect(this.amplitudeModulationGain);
+        this.amplitudeModulationFilter.connect(this.amplitudeModulationGain.gain);
 
-        piece.globalNoise.connect( this.noiseFilter );
-        this.aB.connect( this.aF );
-        this.noiseFilter.connect( this.aG );    this.aF.connect( this.aG.gain.gain );
+        this.amplitudeModulationGain.connect(this.noiseGain);
+        this.noiseGain.connect(this.panner);
 
-        this.aG.connect( this.noiseGain );
-        this.noiseGain.connect( this.p );
+        this.amplitudeModulationGain.connect(this.convolverGain);
+        this.convolverGain.connect(this.convolver);
 
-        this.aG.connect( this.convolverGain );
-        this.convolverGain.connect( this.c );
+        this.convolver.connect(this.panner);
+        this.panner.connect(this.sequenceGain);
+        this.sequenceGain.connect(this.output);
 
-        this.c.connect( this.p );
-        this.p.connect( this.sG );
-        this.sG.connect( this.output );
-
-        this.c.output.gain.value = 1;
+        this.convolver.gain = 1;
 
         // FILTER SEQUENCE
 
-        const sL = randomInt( 4 , 11 );
+        const sequenceLength = IS.Random.Int(4, 11);
+        this.frequencySequence = [];
 
-        this.fSeq = new Sequence();
-        this.fSeq.randomInts( sL , frequencyRange[ 0 ] , frequencyRange[ 1 ] );
-
-        this.fSeq = this.fSeq.sequence;
-
-    }
-
-    rampStart(){
-
-        this.convolverGain.gain.gain.setTargetAtTime( 2 , piece.globalNow + 25 , 70 );
-        this.noiseGain.gain.gain.setTargetAtTime( 0.025 , piece.globalNow , 100 );
-
-    }
-
-    start( startTime , stopTime ){
-
-        /*
-        if(!this.isStarted){
-            this.convolverGain.gain.gain.setTargetAtTime( 2 , piece.globalNow + 20 , 60 );
-            this.noiseGain.gain.gain.setTargetAtTime( 0.025 , piece.globalNow , 100 );
-            this.isStarted = true;
+        for(let frequencyIndex = 0; frequencyIndex < sequenceLength; frequencyIndex++)
+        {
+            this.frequencySequence.push(IS.Random.Int(frequencyRange[0], frequencyRange[1]));
         }
-        */
+    }
 
-        let t = 0;
+    rampStart()
+    {
+        this.convolverGain.gain.scheduleValue(2, IS.now + 10, 35);
+        this.noiseGain.gain.scheduleValue(0.025, IS.now, 100);
+    }
+
+    scheduleStart(startTime, stopTime)
+    {
+        let time = 0;
         let i = 0;
 
-        while( t < stopTime ){
+        while( time < stopTime )
+        {
+            time = startTime + (i / (this.rate * IS.Random.Float(1, 7)));
 
-            t = startTime + ( i / ( this.rate * randomFloat( 1 , 7 ) ) );
+                this.panner.pan.scheduleValue(IS.Random.Float(-1, 1), time);
+                this.sequenceGain.gain.scheduleValue(IS.Random.Float(1, 3), time);
 
-                this.p.setPositionAtTime( randomFloat( -1 , 1 ) , t );
-                this.sG.gain.gain.setValueAtTime( randomFloat( 1 , 3 ) , t );
-                this.noiseFilter.biquad.frequency.setValueAtTime( this.fSeq[ i % this.fSeq.length ] , t );
+                this.noiseFilter.frequency.scheduleValue
+                (
+                    this.frequencySequence[i % this.frequencySequence.length], time
+                );
 
             i++;
-
         }
 
-        t = 0;
+        time = 0;
         i = 0;
 
-        while( t < stopTime ){
+        while( time < stopTime )
+        {
+            time = startTime + (i / (this.rate * IS.Random.Float(1, 7)));
 
-            t = startTime + ( i / ( this.rate * randomFloat( 1 , 7 ) ) );
-
-                this.output.gain.gain.setValueAtTime( randomInt( 0 , 2 ) , t );
+                this.output.gain.scheduleValue(IS.Random.Int(0, 2), time);
 
             i++;
-
         }
 
-        this.aB.startAtTime( startTime );
-
-        this.aB.stopAtTime( stopTime );
+        this.amplitudeModulationBufferSource.scheduleStart(startTime);
+        this.amplitudeModulationBufferSource.scheduleStop(stopTime);
 
     }
 
