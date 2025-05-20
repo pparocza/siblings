@@ -10144,8 +10144,8 @@ MyStereoDelay.prototype = {
 //--------------------------------------------------------------
 
 // adaptation of the Web Audio API WaveShaperNode
-function MyWaveShaper(){
-
+function MyWaveShaper()
+{
 	this.input = audioCtx.createGain();
 	this.output = audioCtx.createGain();
 
@@ -10153,10 +10153,10 @@ function MyWaveShaper(){
 
 	this.input.connect(this.waveShaper);
 	this.waveShaper.connect(this.output);
-
 }
 
-MyWaveShaper.prototype = {
+MyWaveShaper.prototype =
+{
 
 	input: this.input,
 	output: this.output,
