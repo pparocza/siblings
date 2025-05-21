@@ -3,8 +3,6 @@ import { IS_VisualNode } from "./IS_VisualNode.js";
 import { IS_VisualConnection } from "./IS_VisualConnection.js";
 import { IS_VisualizerParameters } from "../IS_VisualizerParameters.js";
 
-let MAIN_PARAMETERS = IS_VisualizerParameters;
-
 export class IS_VisualNetwork extends IS_VisualElement
 {
 	constructor
@@ -22,17 +20,15 @@ export class IS_VisualNetwork extends IS_VisualElement
 		this._middle = xPosition;
 		this._top = yPosition;
 
-		this._initializeVisualParameters();
-
 		this._iSNetworkToArray(iSNetwork);
-
-		this._drawNodes();
-		this._drawConnections();
 	}
 
 	get nRows() { return this._iSNetworkAsArray.length; }
 	get top() { return this._top; }
 	get middle() { return this._middle; }
+
+	set columnSpacing(value) { this._columnSpacing = value; }
+	set rowSpacing(value) { this._rowSpacing = value; }
 
 	get nodeHeight() { return this.nRows; }
 	get nodeWidth()
@@ -52,12 +48,6 @@ export class IS_VisualNetwork extends IS_VisualElement
 		return width;
 	}
 
-	_initializeVisualParameters()
-	{
-		this._columnSpacing = MAIN_PARAMETERS.VisualNetwork.ColumnSpacing;
-		this._rowSpacing = MAIN_PARAMETERS.VisualNetwork.RowSpacing;
-	}
-
 	_iSNetworkToArray(iSNetwork)
 	{
 		for (let rowIndex = 0; rowIndex < iSNetwork.connectionMatrix.nRows; rowIndex++)
@@ -72,6 +62,12 @@ export class IS_VisualNetwork extends IS_VisualElement
 				this._iSNetworkAsArray[rowIndex].push(node);
 			}
 		}
+	}
+
+	draw()
+	{
+		this._drawNodes();
+		this._drawConnections();
 	}
 
 	_drawNodes()

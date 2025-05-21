@@ -32,11 +32,5 @@ export const IS_VisualizerParameters =
 		Width: 1.3,
 		Height: 0.5,
 		Scale: 0.15
-	},
-
-	VisualNetwork:
-	{
-		ColumnSpacing: 0.5 * 0.75 * 2,
-		RowSpacing: -0.35 * 0.8 * 2,
 	}
 }
