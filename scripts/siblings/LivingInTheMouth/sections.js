@@ -141,9 +141,9 @@ export class Piece
         this.filter2.connectToMainOutput();
     }
 
-    initParams()
+    initializeParameters()
     {
-        this.fund = 2 * IS.Random.Float(160, 180);
+        this.fund = Parameters.Fundamental;
         this.gainVal = 0.25;
 
         this.c1A = [1, M2, P4, 1/m3, M6];
@@ -157,27 +157,10 @@ export class Piece
         this.currentChord = this.chordArray[ this.chordIdx ];
 		this.chord2 = this.chordArray[ IS.Random.Int( 0 , this.chordArray.length ) ];
 
-        this.div = IS.Random.Int(5, 11);
-        this.rate = IS.Random.Float(0.2, 0.3);
+        this.div = Parameters.Division;
+        this.rate = Parameters.Rate;
         this.pL = 1 / this.rate;
-        this.endTime = this.div * 14;
-    }
-
-    // TODO: Move/expose to config
-    printParams( paramText )
-    {
-        // create a new div element
-        const newDiv = document.createElement("p");
-
-        // and give it some content
-        const newContent = document.createTextNode( paramText );
-
-        // add the text node to the newly created div
-        newDiv.appendChild(newContent);
-
-        // add the newly created element and its content into the DOM
-        const currentDiv = document.getElementById("div1");
-        document.body.insertBefore(newDiv, currentDiv);
+        this.endTime = Parameters.EndTime;
     }
 
     schedule()
