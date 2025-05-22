@@ -33,7 +33,7 @@ export class Piece
 {
     constructor(){}
 
-    initMasterChannel()
+    initMainChannel()
     {
         this.globalNow = 0;
 
