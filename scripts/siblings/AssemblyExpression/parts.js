@@ -93,24 +93,25 @@ export class Piece
         this.nBars = 28 * ( this.rate / 2 );
         this.structureIdx = 0; // IS.Random.Int( 0 , 2 );
 
-        switch( this.structureIdx){
-
+        switch(this.structureIdx)
+        {
             case 0: 
-                console.log( 'random structure' );
+                console.log('random structure');
                 // minimumVoices
                 this.randomStructure(2);
                 break;
 
             case 1: 
-                console.log( 'random range structure' );
+                console.log('random range structure');
                 // minimumVoices , maximumVoices **
                 this.randomRangeStructure(1 , this.rCArray.length + 1);
                 break;
 
             case 2:
-                console.log( 'spec arrangement structure' );
+                console.log('spec arrangement structure');
                 // arrangementArray **
-                this.specArrangementStructure( 
+                this.specArrangementStructure
+                (
                     // if you replace each item with a IS.Random.Int, you can maintain a general
                     // arrangement contour, but still have variety between outputs
                     [5, 2, 5, 1, 3, 6, 2, 7, 1, 8, 7, 6, 5, 4, 3, 1]
@@ -118,7 +119,7 @@ export class Piece
                 break;
 
             case 3:
-                console.log( 'explicit structure' );
+                console.log('explicit structure');
                 this.explicitStructure();
                 break;
         }
@@ -210,7 +211,7 @@ export class Piece
 
         this.structureArray = IS.Random.Select(...this.structureArray1);
 
-        console.log('---- STRUCTURE ARRAY: ' , this.structureArray );
+        console.log('---- STRUCTURE ARRAY: ' , this.structureArray);
     }
 
     randomRangeStructure( minimumVoices , maximumVoices )
@@ -434,11 +435,12 @@ class RampingConvolver
 
                 let frequency = this.frequencySequence[i % this.frequencySequence.length];
                 let gainMax = frequency > 2000 ? 1 : 3;
+                gainMax = frequency < 400 ? 1.5 : 3;
 
                 this.panner.pan.scheduleValue(IS.Random.Float(-1, 1), time, IS.Random.Float(0.5, 2));
                 this.sequenceGain.gain.scheduleValue(IS.Random.Float(1, gainMax), time, IS.Random.Float(0.025, 0.05));
 
-                this.noiseFilter.frequency.scheduleValue(frequency, time);
+                this.noiseFilter.frequency.scheduleValue(frequency, time, IS.Random.Float(0, 0.1));
 
             i++;
         }
@@ -450,7 +452,7 @@ class RampingConvolver
         {
             time = startTime + (i / (this.rate * IS.Random.Float(1, 7)));
 
-                // this.output.gain.scheduleValue(IS.Random.Int(0, 2), time, IS.Random.Float(0.0125, 0.05));
+                this.output.gain.scheduleValue(IS.Random.Int(0, 2), time, IS.Random.Float(0.0125, 0.05));
 
             i++;
         }
