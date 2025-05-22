@@ -1,4 +1,5 @@
 import { IS } from "../../../script.js";
+import { Parameters } from "./parameters.js";
 
 const m2 = 25/24;
 const M2 = 9/8;
@@ -97,13 +98,13 @@ export class Piece
             case 0: 
                 console.log( 'random structure' );
                 // minimumVoices
-                this.randomStructure( 2 );
+                this.randomStructure(2);
                 break;
 
             case 1: 
                 console.log( 'random range structure' );
                 // minimumVoices , maximumVoices **
-                this.randomRangeStructure( 1 , this.rCArray.length + 1 );
+                this.randomRangeStructure(1 , this.rCArray.length + 1);
                 break;
 
             case 2:
@@ -138,8 +139,8 @@ export class Piece
 
             // RAMPING CONVOLVER
 
-            this.fund = 0.5 * IS.Random.Float(300, 400);
-            this.rate = 0.5; // 4 , IS.Random.Float( 3.9 , 4.5 );
+            this.fund = Parameters.Fundamental;
+            this.rate = Parameters.Rate; // 4 , IS.Random.Float( 3.9 , 4.5 );
             this.gainVal = 1;
 
             console.log(`fund: ${this.fund} , rate: ${this.rate}`);
@@ -187,10 +188,10 @@ export class Piece
         console.log(this.structureArray);
     }
 
-    explicitStructure(){
-
-        this.structureArray1 = [
-
+    explicitStructure()
+    {
+        this.structureArray1 =
+        [
             // 1
             [ 1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ],
             // 2
@@ -205,72 +206,62 @@ export class Piece
             [ 1 , 1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ],
             // 7
             [ 1 , 1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ]
-
         ]
 
         this.structureArray = IS.Random.Select(...this.structureArray1);
 
         console.log('---- STRUCTURE ARRAY: ' , this.structureArray );
-
     }
 
-    randomRangeStructure( minimumVoices , maximumVoices ){
-
+    randomRangeStructure( minimumVoices , maximumVoices )
+    {
         this.structureArray = [];
         let nVoices = 0;
 
-        for( let i = 0 ; i < this.nBars ; i++ ){
-
+        for( let i = 0 ; i < this.nBars ; i++ )
+        {
             this.structureArray[ i ] = [];
 
             nVoices = IS.Random.Int( minimumVoices , maximumVoices );
 
-            for( let j = 0 ; j < nVoices ; j++ ){
-
+            for( let j = 0 ; j < nVoices ; j++ )
+            {
                 this.structureArray[i].push( 1 );
-
             }
 
-            for( let j = 0 ; j < this.rCArray.length - nVoices ; j++ ){
-
+            for( let j = 0 ; j < this.rCArray.length - nVoices ; j++ )
+            {
                 this.structureArray[i].push( 0 );
-
             }
 
             shuffle( this.structureArray[i] );
-            
         }
 
         console.log( this.structureArray );
-
     }
 
-    specArrangementStructure( arrangementArray ){
-
+    specArrangementStructure( arrangementArray )
+    {
         this.structureArray = [];
 
-        for( let i = 0 ; i < this.nBars ; i++ ){
-
+        for( let i = 0 ; i < this.nBars ; i++ )
+        {
             this.structureArray[ i ] = [];
 
-            for( let j = 0 ; j < arrangementArray[ i ] ; j++ ){
-
+            for( let j = 0 ; j < arrangementArray[ i ] ; j++ )
+            {
                 this.structureArray[i].push( 1 );
-
             }
 
-            for( let j = 0 ; j < this.rCArray.length - arrangementArray[ i ] ; j++ ){
-
+            for( let j = 0 ; j < this.rCArray.length - arrangementArray[ i ] ; j++ )
+            {
                 this.structureArray[i].push( 0 );
-
             }
 
             shuffle( this.structureArray[i] );
-            
         }
 
         console.log( this.structureArray );
-
     }
 
     schedule()
@@ -306,7 +297,6 @@ export class Piece
         this.fadeFilter.start(0, 20);
         startButton.innerHTML = "reset";
     }
-
 }
 
 class RampingConvolver
@@ -390,7 +380,7 @@ class RampingConvolver
         // FADE GAINS
 
         this.convolverGain = IS.createGain(0);
-        this.noiseGain = IS.createGain(0.05);
+        this.noiseGain = IS.createGain(0.025);
 
         // PAN
         this.panner = IS.createStereoPanner(0);
@@ -430,7 +420,7 @@ class RampingConvolver
     rampStart()
     {
         this.convolverGain.gain.scheduleValue(2, IS.now + 10, 35);
-        this.noiseGain.gain.scheduleValue(0.025, IS.now, 100);
+        this.noiseGain.gain.scheduleValue(0.00625, IS.now, 50);
     }
 
     scheduleStart(startTime, stopTime)
@@ -438,17 +428,17 @@ class RampingConvolver
         let time = 0;
         let i = 0;
 
-        while( time < stopTime )
+        while(time < stopTime)
         {
             time = startTime + (i / (this.rate * IS.Random.Float(1, 7)));
 
-                this.panner.pan.scheduleValue(IS.Random.Float(-1, 1), time);
-                this.sequenceGain.gain.scheduleValue(IS.Random.Float(1, 3), time);
+                let frequency = this.frequencySequence[i % this.frequencySequence.length];
+                let gainMax = frequency > 2000 ? 1 : 3;
 
-                this.noiseFilter.frequency.scheduleValue
-                (
-                    this.frequencySequence[i % this.frequencySequence.length], time
-                );
+                this.panner.pan.scheduleValue(IS.Random.Float(-1, 1), time, IS.Random.Float(0.5, 2));
+                this.sequenceGain.gain.scheduleValue(IS.Random.Float(1, gainMax), time, IS.Random.Float(0.025, 0.05));
+
+                this.noiseFilter.frequency.scheduleValue(frequency, time);
 
             i++;
         }
@@ -456,18 +446,17 @@ class RampingConvolver
         time = 0;
         i = 0;
 
-        while( time < stopTime )
+        while(time < stopTime)
         {
             time = startTime + (i / (this.rate * IS.Random.Float(1, 7)));
 
-                this.output.gain.scheduleValue(IS.Random.Int(0, 2), time);
+                // this.output.gain.scheduleValue(IS.Random.Int(0, 2), time, IS.Random.Float(0.0125, 0.05));
 
             i++;
         }
 
         this.amplitudeModulationBufferSource.scheduleStart(startTime);
         this.amplitudeModulationBufferSource.scheduleStop(stopTime);
-
     }
 
 }
