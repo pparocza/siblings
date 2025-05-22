@@ -15,6 +15,8 @@ const ANIMATION_REGISTRY = [];
 let VISUALIZER_FUNCTION = null;
 let VISUAL_ELEMENT_REGISTRY = [];
 
+let ROTATE = false;
+
 function READY_CALLBACK(audioNodeUuid)
 {
 	let nodeData = WAITING_FOR_READY[audioNodeUuid];
@@ -60,6 +62,8 @@ export class IS_VisualizerContext
 	{
 		return Visualizers;
 	}
+
+	set rotate(value) { ROTATE = value; }
 
 	get showLabels() { return this._showLabels; };
 	set showLabels(value)
@@ -147,17 +151,20 @@ export class IS_VisualizerContext
 		}
 
 		// LINE ANIMATION
-
-/*		let count = 0;
-		const time = performance.now() / 1000;
-
-		SCENE.traverse( function ( child )
+		if(ROTATE)
 		{
-			child.rotation.x = count + ( time / 3 );
-			child.rotation.z = count + ( time / 4 );
+			let count = 0;
+			const time = performance.now() / 1000;
 
-			count ++;
-		} );*/
+			SCENE.traverse( function (child)
+			{
+				child.rotation.x = count + ( time / 3 );
+				child.rotation.z = count + ( time / 4 );
+
+				count ++;
+			});
+
+		}
 
 		RENDERER.render(SCENE, CAMERA);
 	};

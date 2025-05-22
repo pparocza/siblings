@@ -20,6 +20,8 @@ export class IS_VisualNetwork extends IS_VisualElement
 		this._middle = xPosition;
 		this._top = yPosition;
 
+		this._showConnections = true;
+
 		this._iSNetworkToArray(iSNetwork);
 	}
 
@@ -29,6 +31,9 @@ export class IS_VisualNetwork extends IS_VisualElement
 
 	set columnSpacing(value) { this._columnSpacing = value; }
 	set rowSpacing(value) { this._rowSpacing = value; }
+
+	get showConnections() { return this._showConnections; }
+	set showConnections(value) { this._showConnections = value; }
 
 	get nodeHeight() { return this.nRows; }
 	get nodeWidth()
@@ -67,7 +72,11 @@ export class IS_VisualNetwork extends IS_VisualElement
 	draw()
 	{
 		this._drawNodes();
-		this._drawConnections();
+
+		if(this._showConnections)
+		{
+			this._drawConnections();
+		}
 	}
 
 	_drawNodes()
