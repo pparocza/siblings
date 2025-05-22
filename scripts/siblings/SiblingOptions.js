@@ -11,6 +11,7 @@ export const SIBLING_OPTIONS_ARRAY =
 [
     new SiblingOption("AssemblyExpression", "assembly expression"),
     new SiblingOption("Flaxen", "flaxen"),
+    new SiblingOption("HSL", "hsl"),
     new SiblingOption("JustForYou", "just for you"),
     new SiblingOption("LivingInTheMouth", "living in the mouth"),
     new SiblingOption("RollForHope", "roll for hope"),
