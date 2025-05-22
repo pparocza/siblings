@@ -148,8 +148,7 @@ export class IS_VisualizerContext
 
 		// LINE ANIMATION
 
-/*
-		let count = 0;
+/*		let count = 0;
 		const time = performance.now() / 1000;
 
 		SCENE.traverse( function ( child )
@@ -158,8 +157,7 @@ export class IS_VisualizerContext
 			child.rotation.z = count + ( time / 4 );
 
 			count ++;
-		} );
-*/
+		} );*/
 
 		RENDERER.render(SCENE, CAMERA);
 	};
