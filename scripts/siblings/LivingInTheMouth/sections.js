@@ -1,6 +1,7 @@
 import { IS } from "../../../script.js";
 import { SigmoidShaper } from "./SigmoidShaper.js";
 import { PitchedPresets } from "./PitchedPresets.js";
+import { Parameters } from "./parameters.js";
 
 let m2 = 25/24;
 let M2 = 9/8;
@@ -14,41 +15,37 @@ let M6 = 5/3;
 let m7 = 9/5;
 let M7 = 15/8;
 
+// TODO: compare with original, which sounds way better
+
 export class Piece
 {
     constructor()
     {
         this.pA =
-            [
-                'pitch23',
-                'pitch27',
-                'pitch1',
-                'pitch3',
-                'pitch7',
-                'pitch9',
-                'pitch10',
-                'pitch12',
-                'pitch13',
-                'pitch20'
-            ];
+        [
+            'pitch23', 'pitch27', 'pitch1', 'pitch3',
+            'pitch7', 'pitch9', 'pitch10', 'pitch12',
+            'pitch13', 'pitch20'
+        ];
 
         this.pAHigh1 =
-            [
-                'pitch23' , 'pitch27' , 'pitch1' , 'pitch12' , 'pitch13' , 'pitch20'
-            ];
+        [
+            'pitch23' , 'pitch27' , 'pitch1' , 'pitch12' , 'pitch13' , 'pitch20'
+        ];
 
         this.pALow1 =
-            [
-                'pitch23' , 'pitch27' , 'pitch20'
-            ];
+        [
+            'pitch23' , 'pitch27' , 'pitch20'
+        ];
     }
 
-    initMainChannel()
+    initializeMainChannel()
     {
         this.gain = IS.createGain();
         this.gain.gain = 1;
 
         // REVERB
+
         this.convolverBuffer = IS.createBuffer(2, 3);
         this.convolverBuffer.noise().add();
         this.convolverBuffer.ramp
@@ -64,7 +61,7 @@ export class Piece
         this.delayLength = IS.Random.Float(0.25, 0.4);
         this.delay = IS.createStereoDelay
         (
-            this.delayLength*2, this.delayLength, 0.2, 1
+            this.delayLength * 2, this.delayLength, 0.2, 1
         );
 
         this.delay.gain = 0.25;
@@ -87,15 +84,15 @@ export class Piece
         this.delaySend3LFO2Buffer = IS.createBuffer(1, 1);
         this.delaySend3LFO1Buffer.noise().add();
         this.delaySend3LFO2Buffer.noise().add();
-        this.delaySend3LFO1Buffer.constant(0.04).multiply();
-        this.delaySend3LFO2Buffer.constant(0.04).multiply();
+        this.delaySend3LFO1Buffer.constant(0.015).multiply();
+        this.delaySend3LFO2Buffer.constant(0.015).multiply();
 
         this.delaySend3LFO1 = IS.createBufferSource(this.delaySend3LFO1Buffer);
         this.delaySend3LFO2 = IS.createBufferSource(this.delaySend3LFO2Buffer);
         this.delaySend3LFO1.loop = true;
         this.delaySend3LFO2.loop = true;
-        this.delaySend3LFO1.playbackRate = IS.Random.Float(0.00001, 0.000001);
-        this.delaySend3LFO2.playbackRate = IS.Random.Float(0.00001, 0.000001);
+        this.delaySend3LFO1.playbackRate = IS.Random.Float(0.000001, 0.00001);
+        this.delaySend3LFO2.playbackRate = IS.Random.Float(0.000001, 0.00001);
 
         this.delaySend3LFO1.connect(this.delaySend3.delayTimeLeft);
         this.delaySend3LFO2.connect(this.delaySend3.delayTimeRight);
@@ -114,7 +111,9 @@ export class Piece
         this.waveShaperFilter = IS.createFilter('highpass', 600, 1);
 
         // MAIN
+
         this.mainGain = IS.createGain();
+        this.mainGain.gain = 1;
 
         // CONNECTIONS
 
@@ -254,12 +253,11 @@ export class Piece
         this.rate = 0.28577601206429365;
         this.pL = this.bufferLength / this.rate ;
 
-        this.gainVal = 1.1;
+        this.gainVal = 3;
 
         const paramText = `fund: ${this.fund} , chord: ${this.chordIdx} , buffer length: ${this.bufferLength} , number of buffers: ${this.numberOfBuffers} , div ${this.div} , rate: ${this.rate} , end time: ${this.endTime}`;
 
         console.log( paramText );
-        this.printParams( paramText );
 
         // startTime, stopTime, numberOfBuffers, bufferLength, numberOfPhrases, rate, spliceDiv, fund, cArray, pArray, gainVal
 
@@ -342,7 +340,7 @@ export class Piece
         }
 
         convolverBuffer.normalize();
-        convolverBuffer.movingAverage(36);
+        convolverBuffer.movingAverage(128);
         convolverBuffer.ramp
         (
             0, 1, 0.0125, 0.9875, 0.5, 0.5
@@ -433,7 +431,7 @@ export class Piece
         }
 
         convolverBuffer.normalize();
-        convolverBuffer.movingAverage(36);
+        convolverBuffer.movingAverage(128);
         convolverBuffer.ramp
         (
             0, 1, 0.0125, 0.9875, 0.5, 0.5
@@ -476,7 +474,7 @@ export class Piece
         (
             IS.Random.Float(0.01, 0.035), IS.Random.Float(0.01, 0.035), IS.Random.Float(0, 0.1), 1
         );
-        delay.gain = 0;
+        delay.gain = 1;
 
         const delayLFOBuffer = IS.createBuffer(1, 1);
 
@@ -532,7 +530,7 @@ export class Piece
             }
 
             buffer.normalize();
-            buffer.movingAverage(36);
+            buffer.movingAverage(128);
             buffer.ramp
             (
                 0, 1,
@@ -650,7 +648,7 @@ export class Piece
             }
 
             buffer.normalize();
-            buffer.movingAverage(36);
+            buffer.movingAverage(128);
             buffer.ramp
             (
                 0, 1,
@@ -781,7 +779,7 @@ export class Piece
             }
 
             buffer.normalize();
-            buffer.movingAverage(36);
+            buffer.movingAverage(128);
             buffer.ramp
             (
                 0, 1, 0.0125, 0.9875, 0.5, 0.5
