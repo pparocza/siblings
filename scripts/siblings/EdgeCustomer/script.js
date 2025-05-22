@@ -1,7 +1,7 @@
 import { IS } from "../../../script.js";
 import * as SineSection from "./SineSection.js";
 import { Parameters } from "./parameters.js";
-// import * as Visualizer from "./visualizer.js";
+import * as Visualizer from "./visualizer.js";
 
 export let MAIN_GAIN;
 let delayAmplitudeModulator;

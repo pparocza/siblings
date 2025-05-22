@@ -1,11 +1,9 @@
 import { IS } from "../../../script.js";
 import { OscillatingStereoReverb } from "./OscillatingStereoReverb.js";
 import { FMSynth } from "./FMSynth.js";
+import * as Visualizer from "./visualizer.js";
 
 IS.onLoad(roseSequence);
-
-import { IS_Visualizer } from "../../visualizer/IS_Visualizer.js";
-IS_Visualizer.visualizer = IS_Visualizer.visualizer.Network.visualize;
 
 function roseSequence()
 {

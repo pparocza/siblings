@@ -4,6 +4,7 @@ import { OutputBus } from "./OutputBus.js";
 import { Pads } from "./Pads.js";
 import { Grid } from "./Grid.js";
 import { Keys } from "./Keys.js";
+import * as Visualizer from "./visualizer.js";
 
 IS.onLoad(roll);
 
