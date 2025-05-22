@@ -175,7 +175,12 @@ function loadScript()
 	SIBLING_SELECTION_DROPDOWN.remove();
 	SELECTION_DIV.hidden = true;
 
-	TITLE_DIV.innerHTML = "...loading sibling...";
+	TITLE_DIV.innerHTML = "...loading " + '[' + TITLE + ']' + "...";
+
+	if(PROGRESS_DIV.hidden)
+	{
+		PROGRESS_DIV.hidden = false;
+	}
 
 	let script  = document.createElement('script'),
 		head = document.head || document.getElementsByTagName('head')[0];
@@ -281,11 +286,6 @@ class ValueListener
 
 	getValue(value)
 	{
-		if(PROGRESS_DIV.hidden)
-		{
-			PROGRESS_DIV.hidden = false;
-		}
-
 		this._progressBar.value = value * 100;
 	}
 }
