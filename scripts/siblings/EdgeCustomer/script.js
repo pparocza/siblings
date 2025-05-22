@@ -1,46 +1,86 @@
 import { IS } from "../../../script.js";
+import * as SineSection from "./SineSection.js";
+import { Parameters } from "./parameters.js";
+// import * as Visualizer from "./visualizer.js";
 
-let masterGain;
-let fadeFilter;
-let dB;
+export let MAIN_GAIN;
+let delayAmplitudeModulator;
 
 IS.onLoad(load);
 
 function load()
 {
-	var gain = audioCtx.createGain();
-	gain.gain.value = 5;
+	initPieceParameters();
 
-	var d = new Effect();
-	d.stereoDelay(randomFloat(0.25, 0.7), randomFloat(0.25, 0.7), 0.3);
-	d.on();
-	d.output.gain.value = 0;
+	let gain = IS.createGain(10);
 
-	var dF = new MyBiquad("highpass", 200, 1);
+	let delay = IS.createStereoDelay
+	(
+		IS.Random.Float(0.25, 0.7), IS.Random.Float(0.25, 0.7), 0.3
+	);
+	delay.gain = 0;
 
-	dB = new LFO(0, 0.5, 0.00001);
-	dB.buffer.makeNoise();
-	dB.connect(d.output.gain);
+	let delayFilter = IS.createFilter("highpass", 200, 1);
 
-	var f = new MyBiquad("highpass", 20, 1);
+	let delayOscillatorBuffer = IS.createBuffer(1, 1);
+	delayOscillatorBuffer.unipolarNoise().add();
+	delayOscillatorBuffer.constant(0.5).multiply();
 
-	var dG = new MyGain(0);
+	let delayAmplitudeModulator = IS.createBufferSource(delayOscillatorBuffer);
+	delayAmplitudeModulator.loop = true;
+	delayAmplitudeModulator.playbackRate = 0.00001;
+	delayAmplitudeModulator.connect(delay.gain);
 
-	fadeFilter = new FilterFade(0);
+	let highpass = IS.createFilter("highpass", 20, 1);
 
-	masterGain = audioCtx.createGain();
-	masterGain.gain.value = 0;
+	MAIN_GAIN = IS.createGain();
 
-	masterGain.connect(gain);
-	masterGain.connect(dF.input);
+	MAIN_GAIN.connect(gain);
+	MAIN_GAIN.connect(delayFilter.input);
 
-	dF.connect(d);
-	d.connect(gain);
+	delayFilter.connect(delay);
+	delay.connect(gain);
 
-	gain.connect(f.input);
-	f.connect(fadeFilter);
-	fadeFilter.connect(audioCtx.destination);
+	gain.connect(highpass.input);
+	highpass.connectToMainOutput();
 
-	dB.start();
-	addSineSection(playbackRate, fund);
+	delayAmplitudeModulator.scheduleStart();
+	SineSection.addSineSection(playbackRate, fund);
+}
+
+export let s1;
+export let s2;
+export let s3;
+export let s4;
+export let s5;
+export let s6;
+export let s7;
+export let s8;
+export let s9;
+export let s10;
+
+let playbackRate;
+let fund;
+let pieceLength;
+
+function initPieceParameters()
+{
+	playbackRate = Parameters.Rate;
+	fund = Parameters.Fundamental; // 432;
+
+	let bar = 1/playbackRate;
+
+	s1 = 0*4*bar;
+	s2 = s1+(4*bar);
+	s3 = s2+(4*bar);
+	s4 = s3+(4*bar);
+	// s5 = s4+(4*bar);
+
+	s6 = s4+(4*bar);
+	s7 = s6+(2*bar);
+	s8 = s7+(2*bar);
+	s9 = s8+(4*bar);
+	s10 = s9+(8*bar);
+
+	pieceLength = s10+3;
 }
