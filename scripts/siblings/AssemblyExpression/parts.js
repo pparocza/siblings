@@ -44,8 +44,8 @@ export class Piece
         this.filter = IS.createFilter('highpass', 10, 1);
     
         this.mainGain = IS.createGain();
-        this.mainGain.connect(this.peakingFilter);
-        this.peakingFilter.connect(this.gain);
+        this.mainGain.connect(this.filter);
+        this.filter.connect(this.gain);
         this.gain.connectToMainOutput();
 
         // GLOBAL NOISE
