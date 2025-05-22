@@ -21,25 +21,30 @@ export class Piece
     {
         this.globalNow = 0;
 
-        this.gain = IS.createGain(8);
+        this.mainGain = IS.createGain();
 
         this.highpass = IS.createFilter('highpass', 30.225, 0.581);
         this.lowshelf = IS.createFilter('lowshelf', 695.22, 1);
         this.lowshelf.gain = -2.67;
         this.lowshelf2 = IS.createFilter('lowshelf', 162.24, 1);
         this.lowshelf2.gain = -3.13;
+        this.highshelf = IS.createFilter('highshelf', 1000, 1);
+        this.highshelf.gain = -2;
         this.peakingFilter = IS.createFilter('peaking', 279.5, 1.586);
         this.peakingFilter.gain = -2.20;
         this.peakingFilter2 = IS.createFilter('peaking', 2557.9, 1);
         this.peakingFilter2.gain = 1.38;
-    
-        this.mainGain = IS.createGain();
-        this.mainGain.connect(this.highpass);
-        this.highpass.connect(this.lowshelf);
-        this.lowshelf.connect(this.lowshelf2);
-        this.lowshelf2.connect(this.peakingFilter);
-        this.peakingFilter.connect(this.gain);
-        this.gain.connectToMainOutput();
+
+        this.outputGain = IS.createGain(6);
+
+        IS.connect.series
+        (
+            this.mainGain,
+            this.highpass, this.lowshelf, this.lowshelf2, this.peakingFilter, this.highshelf,
+            this.outputGain
+        );
+
+        this.outputGain.connectToMainOutput();
     }
 
     initFXChannels()
@@ -242,7 +247,7 @@ export class Piece
 
     schedule()
     {
-		this.globalNow = IS.now;
+		this.globalNow = 0;
 
         this.startRampingConvolvers();
     }
