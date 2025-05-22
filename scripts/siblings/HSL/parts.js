@@ -1,107 +1,123 @@
 import { IS } from "../../../script.js";
+import { Parameters } from "./parameters.js";
 
-export class Piece {
-    
-    constructor(){
+var m2 = 25/24;
+var M2 = 9/8;
+var m3 = 6/5;
+var M3 = 5/4;
+var P4 = 4/3;
+var d5 = 45/32;
+var P5 = 3/2;
+var m6 = 8/5;
+var M6 = 5/3;
+var m7 = 9/5;
+var M7 = 15/8;
 
-    }
+export class Piece
+{
+    constructor(){}
 
-    initMasterChannel(){
-
+    initMainChannel()
+    {
         this.globalNow = 0;
 
-        this.gain = audioCtx.createGain();
-        this.gain.gain.value = 2;
-    
-        this.fadeFilter = new FilterFade(0);
+        this.gain = IS.createGain(8);
 
-        this.hp = new MyBiquad( 'highpass' , 30.225 , 0.581 );
-        this.ls = new MyBiquad( 'lowshelf' , 695.22 , 1 );
-        this.ls.biquad.gain.value = -2.67;
-        this.ls2 = new MyBiquad( 'lowshelf' , 162.24 , 1 );
-        this.ls2.biquad.gain.value = -3.13;
-        this.f = new MyBiquad( 'peaking' , 279.5 , 1.586 );
-        this.filter.biquad.gain.value = -2.20;
-        this.f2 = new MyBiquad( 'peaking' , 2557.9 , 1 );
-        this.f2.biquad.gain.value = 1.38;
+        this.highpass = IS.createFilter('highpass', 30.225, 0.581);
+        this.lowshelf = IS.createFilter('lowshelf', 695.22, 1);
+        this.lowshelf.gain = -2.67;
+        this.lowshelf2 = IS.createFilter('lowshelf', 162.24, 1);
+        this.lowshelf2.gain = -3.13;
+        this.peakingFilter = IS.createFilter('peaking', 279.5, 1.586);
+        this.peakingFilter.gain = -2.20;
+        this.peakingFilter2 = IS.createFilter('peaking', 2557.9, 1);
+        this.peakingFilter2.gain = 1.38;
     
-        this.masterGain = audioCtx.createGain();
-        this.mainGain.connect( this.hp.input );
-        this.hp.connect( this.ls );
-        this.ls.connect( this.ls2 );
-        this.ls2.connect( this.filter );
-        this.filter.connect( this.gain );
-        this.gain.connect( this.fadeFilter.input );
-        this.fadeFilter.connect( audioCtx.destination );
-
+        this.mainGain = IS.createGain();
+        this.mainGain.connect(this.highpass);
+        this.highpass.connect(this.lowshelf);
+        this.lowshelf.connect(this.lowshelf2);
+        this.lowshelf2.connect(this.peakingFilter);
+        this.peakingFilter.connect(this.gain);
+        this.gain.connectToMainOutput();
     }
 
-    initFXChannels(){
-
+    initFXChannels()
+    {
         // REVERB
 
-            this.reverbSend = new MyGain( 1 );
+        this.reverbSend = IS.createGain(2);
 
-            this.c = new MyConvolver();
-            this.cB = new MyBuffer2( 2 , 2 , audioCtx.sampleRate );
-            this.convolverBuffer.noise().fill( 0 );
-            this.convolverBuffer.noise().fill( 1 );
-            this.convolverBuffer.ramp( 0 , 1 , 0.01 , 0.015 , 0.1 , 4 ).multiply( 0 );
-            this.convolverBuffer.ramp( 0 , 1 , 0.01 , 0.015 , 0.1 , 4 ).multiply( 1 );
-            this.convolver.output.gain.value = 1;
+        this.delaySend = IS.createStereoDelay
+        (
+            IS.Random.Float(0.35, 0.6), IS.Random.Float(0.35, 0.6), IS.Random.Float(0, 0.2), 1
+        );
+        this.delaySend.gain = 0.0125;
 
-            this.convolver.setBuffer( this.convolverBuffer.buffer );
+        this.convolverBuffer = IS.createBuffer(2 , 3);
+        this.convolverBuffer.noise().add()
+        this.convolverBuffer.ramp(0, 1, 0.01, 0.015, 0.1, 4).multiply();
 
-            this.reverbSend.connect( this.convolver );
-            this.convolver.connect( this.mainGain );
+        this.fxHighpass = IS.createFilter("highpass", 200, 1);
 
+        this.convolver = IS.createConvolver(this.convolverBuffer);
+
+        IS.connect.series
+        (
+            this.reverbSend, this.fxHighpass, this.convolver, this.mainGain
+        );
+
+        IS.connect.series
+        (
+            this.reverbSend, this.fxHighpass, this.delaySend, this.mainGain
+        );
     }
 
-    load(){
-
+    load()
+    {
         this.loadRampingConvolvers();
-
     }
 
     loadRampingConvolvers(){
 
-        const fund = randomFloat( 225 , 325 ); // 300
+        const fund = Parameters.Fundamental; // 300
         const iArray = [ 1 , M2 , P4 , P5 , M6 ];
-        const iArray2 = [ 1 , M3 , P5 , 1/M2 , M6 ];
-        this.globalRate = 0.125;
+        this.globalRate = Parameters.Rate;
 
-        this.rC1 = new RampingConvolver( this );
-        this.rC2 = new RampingConvolver( this );
-        this.rC3 = new RampingConvolver( this );
-        this.rC4 = new RampingConvolver( this );
-        this.rC5 = new RampingConvolver( this );
+        this.rC1 = new RampingConvolver(this);
+        this.rC2 = new RampingConvolver(this);
+        this.rC3 = new RampingConvolver(this);
+        this.rC4 = new RampingConvolver(this);
+        this.rC5 = new RampingConvolver(this);
 
-        this.rC1.load( 
+        this.rC1.load
+        ( 
             // fund
-            fund , 
+            fund,
             // bufferLength
-            2 , 
+            2,
             // intervalArray
-            iArray , 
+            iArray,
             // octaveArray
-            [ 1 , 0.5 , 2 , 0.25 , 4 ] ,
+            [1, 0.5, 2, 0.25, 4] ,
             // cFreq 
-            12000 , 
+            12000,
             // bandwidth
-            11750 , 
+            11750,
             // Q
-            2 , 
+            2,
             // fmCFreq , fmMFreq
-            randomFloat( 1 , 5 ) , randomFloat( 1 , 5 ) ,  
+            IS.Random.Float(1, 5), IS.Random.Float(1, 5),
             // oscillationRate
-            this.globalRate , 
+            this.globalRate,
             // noiseRate
-            0.25 , 
+            0.25,
             // gain
             16 
         );
 
-        this.rC2.load( 
+        this.rC2.load
+        ( 
             // fund
             fund , 
             // bufferLength
@@ -117,7 +133,7 @@ export class Piece {
             // Q
             4 , 
             // fmCFreq , fmMFreq
-            randomInt( 1 , 10 ) , randomInt( 1 , 10 ) ,  
+            IS.Random.Int(1, 10) , IS.Random.Int(1, 10) ,
             // oscillationRate
             this.globalRate , 
             // noiseRate
@@ -142,7 +158,7 @@ export class Piece {
             // Q
             5 , 
             // fmCFreq , fmMFreq
-            randomInt( 1 , 10 ) , randomInt( 1 , 10 ) ,  
+            IS.Random.Int( 1 , 10 ) , IS.Random.Int( 1 , 10 ) ,  
             // oscillationRate
             this.globalRate , 
             // noiseRate
@@ -167,7 +183,7 @@ export class Piece {
             // Q
             2 , 
             // fmCFreq , fmMFreq
-            randomInt( 1 , 10 ) , randomInt( 1 , 10 ) ,  
+            IS.Random.Int( 1 , 10 ) , IS.Random.Int( 1 , 10 ) ,  
             // oscillationRate
             this.globalRate * 0.5 , 
             // noiseRate
@@ -192,7 +208,7 @@ export class Piece {
             // Q
             5 , 
             // fmCFreq , fmMFreq
-            randomInt( 1 , 10 ) , randomInt( 1 , 10 ) ,  
+            IS.Random.Int( 1 , 10 ) , IS.Random.Int( 1 , 10 ) ,  
             // oscillationRate
             this.globalRate, 
             // noiseRate
@@ -209,137 +225,147 @@ export class Piece {
 
     }
 
-    startRampingConvolvers(){
-
+    startRampingConvolvers()
+    {
         this.phraseLength = 1 / this.globalRate;
 
-        this.rC1.start( this.globalNow + this.phraseLength * 0  , this.globalNow + this.phraseLength * 8 );
-        this.rC3.start( this.globalNow + this.phraseLength * 4  , this.globalNow + this.phraseLength * 8 );
-        this.rC5.start( this.globalNow + this.phraseLength * 6  , this.globalNow + this.phraseLength * 8 );
+        this.rC1.start(this.globalNow + this.phraseLength * 0, this.globalNow + this.phraseLength * 8);
+        this.rC3.start(this.globalNow + this.phraseLength * 4, this.globalNow + this.phraseLength * 8);
+        this.rC5.start( this.globalNow + this.phraseLength * 4, this.globalNow + this.phraseLength * 8);
 
-        this.rC2.start( this.globalNow + this.phraseLength * 8  , this.globalNow + this.phraseLength * 16 );
-        this.rC4.start( this.globalNow + this.phraseLength * 10 , this.globalNow + this.phraseLength * 16 );
+        this.rC2.start(this.globalNow + this.phraseLength * 8  , this.globalNow + this.phraseLength * 16);
+        this.rC4.start(this.globalNow + this.phraseLength * 10 , this.globalNow + this.phraseLength * 16);
 
-        this.rC1.start( this.globalNow + this.phraseLength * 12 , this.globalNow + this.phraseLength * 16 );
-        this.rC3.start( this.globalNow + this.phraseLength * 15  , this.globalNow + this.phraseLength * 16 );
-
+        this.rC1.start(this.globalNow + this.phraseLength * 12 , this.globalNow + this.phraseLength * 16);
+        this.rC3.start(this.globalNow + this.phraseLength * 15  , this.globalNow + this.phraseLength * 16);
     }
 
-    schedule(){
-
-        this.fadeFilter.start(1, 50);
-		this.globalNow = audioCtx.currentTime;
+    schedule()
+    {
+		this.globalNow = IS.now;
 
         this.startRampingConvolvers();
-
     }
 
-    stop() {
-
+    stop()
+    {
         this.fadeFilter.start(0, 20);
         startButton.innerHTML = "reset";
-
     }
 
 }
 
-class RampingConvolver extends Piece{
-
-    constructor( piece ){
-
+class RampingConvolver extends Piece
+{
+    constructor( piece )
+    {
         super();
 
-        this.output = new MyGain( 1 );
+        this.output = IS.createGain();
 
-        this.output.connect( piece.masterGain );
-        this.output.connect( piece.reverbSend );
+        this.mainOutput = IS.createGain(1);
+        this.fxOutput = IS.createGain(0.125);
 
+        this.output.connect(this.mainOutput, this.fxOutput);
+
+        this.output.connect(piece.mainGain);
+        this.output.connect(piece.reverbSend);
     }
 
-    load( fund , bufferLength , iArray , oArray , centerFrequency , bandwidth , Q , fmCFreq , fmMFreq , oscillationRate , noiseRate , gainVal ){
-
-        this.c = new MyConvolver();
-        this.cB = new MyBuffer2(  1 , bufferLength , audioCtx.sampleRate );
-        this.cAB = new MyBuffer2( 1 , bufferLength , audioCtx.sampleRate );
+    load
+    (
+        fund, bufferLength, iArray, oArray, centerFrequency, bandwidth,
+        Q, fmCFreq, fmMFreq, oscillationRate, noiseRate, gainVal
+    )
+    {
+        this.convolverBuffer = IS.createBuffer(1, bufferLength);
 
         let interval = 0;
-        let o = 0;
-        let p = 0;
+        let octave = 0;
+        let rampPercent = 0;
 
-        for( let i = 0 ; i < 20 ; i++ ){
+        for(let i = 0; i < 20; i++)
+        {
+            interval = IS.Random.Select(...iArray);
+            octave = IS.Random.Select(...oArray);
+            rampPercent = IS.Random.Float(0.1, 0.9);
 
-            interval = randomArrayValue( iArray );
-            o = randomArrayValue( oArray );
-            p = randomFloat( 0.1 , 0.9 );
+            this.convolverBuffer.suspendOperations();
 
-            this.cAB.fm( fund * interval * o , fund * interval * o , 0.5 ).add( 0 );
-            this.cAB.constant( 1 / o ).multiply( 0 );
-            this.cAB.ramp( p , p + 0.1 , 0.5 , 0.5 , 0.1 , 0.1 ).multiply( 0 );
+                this.convolverBuffer.frequencyModulatedSine
+                (
+                    fund * interval * octave,
+                    fund * interval * octave,
+                    0.5
+                ).add();
 
-            this.cB.addBuffer( this.cAB.buffer );
+                this.convolverBuffer.constant(1 / octave).multiply();
+                this.convolverBuffer.ramp
+                (
+                    rampPercent, rampPercent + 0.1,
+                    0.5, 0.5,
+                    0.1, 0.1
+                ).multiply();
 
+            this.convolverBuffer.applySuspendedOperations().add();
         }
 
-        this.cB.normalize( -1 , 1 );
+        this.convolverBuffer.normalize();
 
-        this.c.setBuffer( this.cB.buffer );
+        this.convolver = IS.createConvolver(this.convolverBuffer);
 
         // NOISE
 
-            this.noise = new MyBuffer2( 1 , 1 , audioCtx.sampleRate );
-            this.noise.noise().fill( 0 );
+            this.noiseBuffer = IS.createBuffer(1, 1);
+            this.noiseBuffer.noise().add();
+
+            this.noise = IS.createBufferSource(this.noiseBuffer);
             this.noise.playbackRate = noiseRate;
             this.noise.loop = true;
-            this.noise.output.gain.value = 0.1;
+            this.noise.gain = 0.1;
 
-            this.nF = new MyBiquad( 'bandpass' , centerFrequency , Q );
+            this.noiseFilter = IS.createFilter('bandpass', centerFrequency, Q);
 
-            this.nO = new MyBuffer2( 1 , 1 , audioCtx.sampleRate );
-            this.nO.fm( fmCFreq , fmMFreq , 1 ).fill( 0 );
-            this.nO.playbackRate = oscillationRate;
-            this.nO.loop = true;
+            this.noiseOscillatorBuffer = IS.createBuffer(1 , 1);
+            this.noiseOscillatorBuffer.frequencyModulatedSine(fmCFreq, fmMFreq, 1).add();
 
-            this.nOG = new MyGain( bandwidth );
+            this.noiseOscillator = IS.createBufferSource(this.noiseOscillatorBuffer);
+            this.noiseOscillator.playbackRate = oscillationRate;
+            this.noiseOscillator.loop = true;
 
-            this.nO.connect( this.nOG );
-            this.nOG.connect( this.nF.biquad.frequency );
-            this.noise.connect( this.nF );
-            this.nF.connect( this.c );
+            this.noiseOscillatorGain = IS.createGain(bandwidth);
+
+            this.noiseOscillator.connect(this.noiseOscillatorGain);
+            this.noiseOscillatorGain.connect(this.noiseFilter.frequency);
+            this.noise.connect(this.noiseFilter);
+            this.noiseFilter.connect(this.convolver);
 
         // DELAY
 
-            this.d = new Effect();
-            this.d.randomEcho();
-            this.d.on();
-
-        // WAVESHAPER
-
-            this.s = new MyWaveShaper();
-            this.s.makeSigmoid( 10 );
+        this.delay = IS.createStereoDelay
+        (
+            IS.Random.Float(0.35, 0.6), IS.Random.Float(0.35, 0.6), IS.Random.Float(0, 0.2), 1
+        );
 
         // CONNECTIONS
 
-        this.c.connect( this.output );
+        this.convolver.connect(this.output);
 
-        this.c.connect( this.d );
-        this.c.connect( this.s );
+        this.convolver.connect(this.delay);
 
-        this.c.connect( this.output );
-        this.d.connect( this.output );
-        // this.s.connect( this.output );
+        this.convolver.connect(this.output);
+        this.delay.connect(this.output);
 
-        this.c.output.gain.value = gainVal;
-
+        this.convolver.gain = gainVal;
     }
 
-    start( startTime , stopTime){
+    start(startTime, stopTime)
+    {
+        this.noise.scheduleStart(startTime);
+        this.noiseOscillator.scheduleStart(startTime);
 
-        this.noise.startAtTime( startTime );
-        this.nO.startAtTime( startTime );
-
-        this.noise.stopAtTime( stopTime );
-        this.nO.stopAtTime( stopTime );
-
+        this.noise.scheduleStop(stopTime);
+        this.noiseOscillator.scheduleStop(stopTime);
     }
 
 }
