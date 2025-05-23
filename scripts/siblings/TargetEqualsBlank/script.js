@@ -1,12 +1,13 @@
 import { IS } from "../../../script.js";
 import { Piece } from "./sections.js";
+import * as Visualizer from "./visualizer.js";
 
 IS.onLoad(runPatch);
 
 function runPatch()
 {
 	const gain = IS.createGain();
-	gain.gain = 1;
+	gain.gain = 3;
 
 	const convolverBuffer = IS.createBuffer(2, 3);
 	convolverBuffer.noise().add();

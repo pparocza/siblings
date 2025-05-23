@@ -35,7 +35,7 @@ export class Piece
         this.peakingFilter2 = IS.createFilter('peaking', 2557.9, 1);
         this.peakingFilter2.gain = 1.38;
 
-        this.outputGain = IS.createGain(6);
+        this.outputGain = IS.createGain(4.5);
 
         IS.connect.series
         (
