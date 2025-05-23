@@ -91,38 +91,7 @@ export class Piece
         this.quarterNote = 4 * ( 1 / this.rate );
         this.bar = 2 * this.quarterNote;
         this.nBars = 28 * ( this.rate / 2 );
-        this.structureIdx = 0; // IS.Random.Int( 0 , 2 );
-
-        switch(this.structureIdx)
-        {
-            case 0: 
-                console.log('random structure');
-                // minimumVoices
-                this.randomStructure(2);
-                break;
-
-            case 1: 
-                console.log('random range structure');
-                // minimumVoices , maximumVoices **
-                this.randomRangeStructure(1 , this.rampingConvolverArray.length + 1);
-                break;
-
-            case 2:
-                console.log('spec arrangement structure');
-                // arrangementArray **
-                this.specArrangementStructure
-                (
-                    // if you replace each item with a IS.Random.Int, you can maintain a general
-                    // arrangement contour, but still have variety between outputs
-                    [5, 2, 5, 1, 3, 6, 2, 7, 1, 8, 7, 6, 5, 4, 3, 1]
-                );
-                break;
-
-            case 3:
-                console.log('explicit structure');
-                this.explicitStructure();
-                break;
-        }
+        this.randomStructure(2);
     }
 
     load()
@@ -159,7 +128,10 @@ export class Piece
                 this.rC4A.load( this.rate * IS.Random.Float( 0.0625 , 1 ) , [ 0 , 1 , 0.5 , 0.5 , 1 , 1 ] , 2 , this.fund       , [ 100 , 1000 ] , this.gainVal * 1.5 );
                 this.rC5A.load( this.rate * IS.Random.Float( 0.0625 , 1 ) , [ 0 , 1 , 0.5 , 0.5 , 1 , 1 ] , 2 , this.fund * 0.5 , [ 100 , 5000 ] , this.gainVal * 1.5 );
 
-            this.rCArray = [ this.rC1 , this.rC2 , this.rC3 , this.rC4 , this.rC5 , this.rC2A , this.rC3A , this.rC4A , this.rC5A ];
+            this.rampingConvolverArray =
+            [
+                this.rC1 , this.rC2 , this.rC3 , this.rC4 , this.rC5 , this.rC2A , this.rC3A , this.rC4A , this.rC5A
+            ];
 
             this.generateStructure();
 
@@ -187,82 +159,6 @@ export class Piece
         }
 
         console.log(this.structureArray);
-    }
-
-    explicitStructure()
-    {
-        this.structureArray1 =
-        [
-            // 1
-            [ 1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ],
-            // 2
-            [ 1 , 1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ],
-            // 3
-            [ 1 , 1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ],
-            // 4
-            [ 1 , 1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ],
-            // 5
-            [ 1 , 1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ],
-            // 6 
-            [ 1 , 1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ],
-            // 7
-            [ 1 , 1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ]
-        ]
-
-        this.structureArray = IS.Random.Select(...this.structureArray1);
-
-        console.log('---- STRUCTURE ARRAY: ' , this.structureArray);
-    }
-
-    randomRangeStructure( minimumVoices , maximumVoices )
-    {
-        this.structureArray = [];
-        let nVoices = 0;
-
-        for( let i = 0 ; i < this.nBars ; i++ )
-        {
-            this.structureArray[ i ] = [];
-
-            nVoices = IS.Random.Int( minimumVoices , maximumVoices );
-
-            for( let j = 0 ; j < nVoices ; j++ )
-            {
-                this.structureArray[i].push( 1 );
-            }
-
-            for(let j = 0 ; j < this.rampingConvolverArray.length - nVoices ; j++ )
-            {
-                this.structureArray[i].push( 0 );
-            }
-
-            shuffle( this.structureArray[i] );
-        }
-
-        console.log( this.structureArray );
-    }
-
-    specArrangementStructure( arrangementArray )
-    {
-        this.structureArray = [];
-
-        for( let i = 0 ; i < this.nBars ; i++ )
-        {
-            this.structureArray[ i ] = [];
-
-            for( let j = 0 ; j < arrangementArray[ i ] ; j++ )
-            {
-                this.structureArray[i].push( 1 );
-            }
-
-            for(let j = 0 ; j < this.rampingConvolverArray.length - arrangementArray[ i ] ; j++ )
-            {
-                this.structureArray[i].push( 0 );
-            }
-
-            shuffle( this.structureArray[i] );
-        }
-
-        console.log( this.structureArray );
     }
 
     schedule()
@@ -434,8 +330,16 @@ class RampingConvolver
             time = startTime + (i / (this.rate * IS.Random.Float(1, 7)));
 
                 let frequency = this.frequencySequence[i % this.frequencySequence.length];
-                let gainMax = frequency > 2000 ? 1 : 3;
-                gainMax = frequency < 400 ? 1.5 : 3;
+                let gainMax = 3
+
+                if(frequency > 2000)
+                {
+                    gainMax = 1;
+                }
+                else if(frequency < 150)
+                {
+                    gainMax = 1.5;
+                }
 
                 this.panner.pan.scheduleValue(IS.Random.Float(-1, 1), time, IS.Random.Float(0.5, 2));
                 this.sequenceGain.gain.scheduleValue(IS.Random.Float(1, gainMax), time, IS.Random.Float(0.025, 0.05));
