@@ -130,8 +130,11 @@ function gridSection
 
 		if(playAtStart)
 		{
-			// TODO: not intentional but it ended up being a nice start
-			fmKeyBufferSource.scheduleStart(0);
+			if(octave > 0.25 || pitched === false)
+			{
+				// TODO: not intentional but it ended up being a nice start
+				fmKeyBufferSource.scheduleStart(IS.Random.Float(0, 0.01));
+			}
 		}
 
 		let sequence = IS.sequenceArray();
