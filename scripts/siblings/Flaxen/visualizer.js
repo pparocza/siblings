@@ -1,4 +1,4 @@
-import { IS_Visualizer } from "../../visualizer/IS_Visualizer";
+import { IS_Visualizer } from "../../visualizer/IS_Visualizer.js";
 
 let networkVisualizer = IS_Visualizer.visualizer.Network;
 IS_Visualizer.visualizer = networkVisualizer.visualize;
