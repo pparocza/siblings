@@ -16,7 +16,7 @@ export const SIBLING_OPTIONS_ARRAY =
     new SiblingOption("HSL", "hsl"),
     // new SiblingOption("JustForYou", "just for you"),
     // new SiblingOption("LivingInTheMouth", "living in the mouth"),
-    // new SiblingOption("RollForHope", "roll for hope"),
+    new SiblingOption("RollForHope", "roll for hope"),
     new SiblingOption("TargetEqualsBlank", "target equals blank"),
     // new SiblingOption("Upcast", "upcast")
 ]
