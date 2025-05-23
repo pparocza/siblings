@@ -104,7 +104,7 @@ export class Piece
             case 1: 
                 console.log('random range structure');
                 // minimumVoices , maximumVoices **
-                this.randomRangeStructure(1 , this.rCArray.length + 1);
+                this.randomRangeStructure(1 , this.rampingConvolverArray.length + 1);
                 break;
 
             case 2:
@@ -173,7 +173,7 @@ export class Piece
         {
             this.structureArray[ i ] = [];
 
-            for( let j = 0 ; j < this.rCArray.length - minimumVoices ; j++ )
+            for(let j = 0 ; j < this.rampingConvolverArray.length - minimumVoices ; j++ )
             {
                 this.structureArray[i].push(IS.Random.Int(0, 2));
             }
@@ -230,7 +230,7 @@ export class Piece
                 this.structureArray[i].push( 1 );
             }
 
-            for( let j = 0 ; j < this.rCArray.length - nVoices ; j++ )
+            for(let j = 0 ; j < this.rampingConvolverArray.length - nVoices ; j++ )
             {
                 this.structureArray[i].push( 0 );
             }
@@ -254,7 +254,7 @@ export class Piece
                 this.structureArray[i].push( 1 );
             }
 
-            for( let j = 0 ; j < this.rCArray.length - arrangementArray[ i ] ; j++ )
+            for(let j = 0 ; j < this.rampingConvolverArray.length - arrangementArray[ i ] ; j++ )
             {
                 this.structureArray[i].push( 0 );
             }
@@ -273,9 +273,9 @@ export class Piece
 
         let r = 0;
 
-        for( let i = 0 ; i < this.rCArray.length ; i++ )
+        for(let i = 0 ; i < this.rampingConvolverArray.length ; i++ )
         {
-            this.rCArray[i].rampStart();
+            this.rampingConvolverArray[i].rampStart();
         }
 
         for( let i = 0 ; i < this.structureArray.length ; i++ )
@@ -284,7 +284,7 @@ export class Piece
             {
                 if( this.structureArray[i][j] === 1 )
                 {
-                    this.rCArray[j].scheduleStart
+                    this.rampingConvolverArray[j].scheduleStart
                     (
                         this.globalNow + (this.bar * i), this.globalNow + (this.bar * (i + 1))
                     );
