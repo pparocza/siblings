@@ -1,5 +1,6 @@
 import { IS } from "../../../script.js";
 import { PitchedPresets } from "./PitchedPresets.js";
+import { Parameters } from "./parameters.js";
 
 let mainGain = IS.createGain(0.07);
 mainGain.connectToMainOutput();
@@ -13,7 +14,6 @@ mainReverb.gain = 0.0625;
 
 mainGain.connect(mainReverb);
 mainReverb.connectToMainOutput();
-
 
 const m2 = 25/24;
 const M2 = 9/8;
@@ -31,8 +31,12 @@ export class Piece
 {
     constructor()
     {
-        this.fund = 2 * IS.Random.Float(160, 180);
-        this.gainVal = 0.25;
+        this.fund = Parameters.Fundamental;
+
+        this.div = Parameters.Division;
+        this.rate = Parameters.Rate;
+        this.endTime = this.div * 14;
+        this.pieceLength = 1 / this.rate;
     
         this.pA =
         [
@@ -59,11 +63,8 @@ export class Piece
     
         this.chordIdx = IS.Random.Int(0 , this.chordArray.length);
         this.currentChord = this.chordArray[ this.chordIdx ];
-    
-        this.div = IS.Random.Int( 5 , 11 );
-        this.rate = IS.Random.Float( 0.2 , 0.3 );
-        this.endTime = this.div * 14;
-        this.pL = 1/this.rate;
+
+        this.gainVal = 0.25;
     }
 
     start()

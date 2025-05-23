@@ -158,7 +158,7 @@ export class Piece
 
         this.div = Parameters.Division;
         this.rate = Parameters.Rate;
-        this.pL = 1 / this.rate;
+        this.pieceLength = 1 / this.rate;
         this.endTime = Parameters.EndTime;
     }
 
@@ -251,7 +251,7 @@ export class Piece
         this.numberOfBuffers = 5;
         this.div = 4; // 3 , 4
         this.rate = 0.28577601206429365;
-        this.pL = this.bufferLength / this.rate ;
+        this.pieceLength = this.bufferLength / this.rate ;
 
         this.gainVal = 3;
 
@@ -261,16 +261,16 @@ export class Piece
 
         // startTime, stopTime, numberOfBuffers, bufferLength, numberOfPhrases, rate, spliceDiv, fund, cArray, pArray, gainVal
 
-        this.bufferSequence2Key(    this.pL*0 ,  this.pL*89 , this.numberOfBuffers , this.bufferLength , 100 , this.rate ,  this.div * 2 , this.fund * 2 , this.chord2 , this.pAHigh1 , this.gainVal * 1 );
-        this.bufferSequence2Key(    this.pL*8 ,  this.pL*89 , this.numberOfBuffers , this.bufferLength , 100 , this.rate ,  this.div * 2 , this.fund * 2 , this.chord2 , this.pAHigh1 , this.gainVal * 1 );
-        this.bufferSequence2KeyPan( this.pL*16 , this.pL*89 , this.numberOfBuffers , this.bufferLength , 100 , this.rate ,  this.div * 2 , this.fund * 2 , this.chord2 , this.pAHigh1 , this.gainVal * 2 );
-        this.bufferSequence2KeyPan( this.pL*24 , this.pL*89 , this.numberOfBuffers , this.bufferLength , 100 , this.rate ,  this.div * 2 , this.fund * 2 , this.chord2 , this.pAHigh1 , this.gainVal * 2 );
+        this.bufferSequence2Key(    this.pieceLength*0 ,  this.pieceLength*89 , this.numberOfBuffers , this.bufferLength , 100 , this.rate ,  this.div * 2 , this.fund * 2 , this.chord2 , this.pAHigh1 , this.gainVal * 1 );
+        this.bufferSequence2Key(    this.pieceLength*8 ,  this.pieceLength*89 , this.numberOfBuffers , this.bufferLength , 100 , this.rate ,  this.div * 2 , this.fund * 2 , this.chord2 , this.pAHigh1 , this.gainVal * 1 );
+        this.bufferSequence2KeyPan( this.pieceLength*16 , this.pieceLength*89 , this.numberOfBuffers , this.bufferLength , 100 , this.rate ,  this.div * 2 , this.fund * 2 , this.chord2 , this.pAHigh1 , this.gainVal * 2 );
+        this.bufferSequence2KeyPan( this.pieceLength*24 , this.pieceLength*89 , this.numberOfBuffers , this.bufferLength , 100 , this.rate ,  this.div * 2 , this.fund * 2 , this.chord2 , this.pAHigh1 , this.gainVal * 2 );
 
-        this.bufferSequence2KeyPan( this.pL*40 , this.pL*89 , this.numberOfBuffers , this.bufferLength , 100 , this.rate ,  this.div * 2 , this.fund * 4 , this.chord2 , this.pAHigh1 , this.gainVal * 2 );
-        this.bufferSequence2KeyPan( this.pL*40 , this.pL*89 , this.numberOfBuffers , this.bufferLength , 100 , this.rate ,  this.div * 2 , this.fund * 4 , this.chord2 , this.pAHigh1 , this.gainVal * 2 );
+        this.bufferSequence2KeyPan( this.pieceLength*40 , this.pieceLength*89 , this.numberOfBuffers , this.bufferLength , 100 , this.rate ,  this.div * 2 , this.fund * 4 , this.chord2 , this.pAHigh1 , this.gainVal * 2 );
+        this.bufferSequence2KeyPan( this.pieceLength*40 , this.pieceLength*89 , this.numberOfBuffers , this.bufferLength , 100 , this.rate ,  this.div * 2 , this.fund * 4 , this.chord2 , this.pAHigh1 , this.gainVal * 2 );
 
-        this.bufferSequence2Key(    this.pL*44 ,  this.pL*89 , this.numberOfBuffers , this.bufferLength , 100 , this.rate ,  this.div * 1 , this.fund * 1 , this.chord2 , this.pAHigh1 , this.gainVal * 0.75 );
-        this.bufferSequence2Key(    this.pL*48 ,  this.pL*89 , this.numberOfBuffers , this.bufferLength , 100 , this.rate ,  this.div * 0.5 , this.fund * 0.5 , this.chord2 , this.pAHigh1 , this.gainVal * 0.5 );
+        this.bufferSequence2Key(    this.pieceLength*44 ,  this.pieceLength*89 , this.numberOfBuffers , this.bufferLength , 100 , this.rate ,  this.div * 1 , this.fund * 1 , this.chord2 , this.pAHigh1 , this.gainVal * 0.75 );
+        this.bufferSequence2Key(    this.pieceLength*48 ,  this.pieceLength*89 , this.numberOfBuffers , this.bufferLength , 100 , this.rate ,  this.div * 0.5 , this.fund * 0.5 , this.chord2 , this.pAHigh1 , this.gainVal * 0.5 );
     }
 
     pitchedPresetSequenceSpliceDelay
@@ -842,7 +842,7 @@ export class Piece
 
         this.bL = IS.Random.Float( 1.25 , 2.5 );
         this.rate = 1 / this.bL;
-        this.pL = 1 / this.rate;
+        this.pieceLength = 1 / this.rate;
         this.nPhrases = 40; // IS.Random.Int( 30 , 40 );
 
         // TODO: move to config
@@ -860,7 +860,7 @@ export class Piece
 
             this.pitchedPresetSequenceSpliceDelayPan
             (
-                phraseIndex * this.pL,  (phraseIndex + 1) * this.pL,
+                phraseIndex * this.pieceLength,  (phraseIndex + 1) * this.pieceLength,
                 this.bL, this.rate,  IS.Random.Int(3, 9),  this.fund * 0.5,
                 chord, this.pAHigh1, this.gainVal
             );
@@ -869,7 +869,7 @@ export class Piece
             {
                 this.pitchedPresetSequenceSpliceDelayPan
                 (
-                    phraseIndex * this.pL,  (phraseIndex + 1) * this.pL,  this.bL, this.rate,
+                    phraseIndex * this.pieceLength,  (phraseIndex + 1) * this.pieceLength,  this.bL, this.rate,
                     IS.Random.Int(3, 9), this.fund, chord, this.pAHigh1, this.gainVal
                 );
             }
