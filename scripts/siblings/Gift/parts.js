@@ -20,7 +20,7 @@ export class Piece
     initMainChannel()
     {
         this.gain = IS.createGain();
-        this.gain.gain = 2;
+        this.gain.gain = 4;
 
         this.peakingFilter = IS.createFilter('peaking', 568.45, 0.9);
         this.peakingFilter.gain = -2.10;
