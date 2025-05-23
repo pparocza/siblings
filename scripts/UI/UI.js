@@ -52,6 +52,9 @@ const LOAD_STRING = "load";
 const LOADING_STRING = "...loading";
 const RESET_STRING = "reset";
 
+const HIDE_UI_TOGGLE = document.querySelector('.HIDE_UI_TOGGLE');
+const HIDE_UI_DIV = document.querySelector('.HIDE_UI_DIV');
+
 const VOLUME_SLIDER = document.querySelector('.VOLUME_SLIDER');
 const VOLUME_SLIDER_INITIAL_VALUE = 0.7;
 const VOLUME_SLIDER_DISPLAY = document.querySelector('.VOLUME_DISPLAY');
@@ -216,8 +219,24 @@ function onSiblingLoaded()
 
 function handleStart()
 {
-	startOnline();
-	setStartButton(STOP_STRING, false);
+	let waitToStart = HIDE_UI_TOGGLE.checked;
+	let waitTime = waitToStart ? 1000 : 0;
+
+	if(waitToStart)
+	{
+		PLAYBACK_CONTROLS.hidden = true;
+		PARAMETER_DISPLAY_DIV.hidden = true;
+		DOWNLOAD_BUTTON.hidden = true;
+		TITLE_DIV.hidden = true;
+	}
+
+	HIDE_UI_DIV.hidden = true;
+
+	setTimeout(()=>
+	{
+		startOnline();
+		setStartButton(STOP_STRING, false);
+	}, waitTime);
 }
 
 function startOnline()
