@@ -1,23 +1,6 @@
 import { IS } from "../../../script.js";
 import { Parameters } from "./parameters.js";
-import { IS_Visualizer } from "../../visualizer/IS_Visualizer.js";
-
-let networkVisualizer = IS_Visualizer.visualizer.Network;
-IS_Visualizer.visualizer = networkVisualizer.visualize;
-
-function cool()
-{
-	networkVisualizer.showConnections = false;
-	networkVisualizer.nodeHeight = 1;
-	networkVisualizer.nodeWidth = 1;
-	networkVisualizer.nodeScale = 2.5;
-
-	networkVisualizer.columnSpacing = 1.15;
-
-	networkVisualizer.yPosition = 1.5;
-}
-
-cool();
+import * as Visualizer from "./visualizer.js";
 
 IS.onLoad(test);
 
