@@ -105,9 +105,16 @@ function handleSiblingSelection()
 	setTitle();
 }
 
-export async function requestSiblingScript()
+export async function requestSiblingScript(siblingScript = null)
 {
-	SCRIPT_SRC = SIBLING_PATH + "/" + SIBLING_SELECTION_DROPDOWN.value + "/script.js";
+	if(siblingScript === null)
+	{
+		SCRIPT_SRC = SIBLING_PATH + "/" + SIBLING_SELECTION_DROPDOWN.value + "/script.js";
+	}
+	else
+	{
+		SCRIPT_SRC = SIBLING_PATH + "/" + siblingScript + "/script.js";
+	}
 
 	let isSelectSibling = SIBLING_SELECTION_DROPDOWN.value === SIBLING_SELECTION_DROPDOWN[0].value;
 
@@ -247,7 +254,9 @@ function startOnline()
 
 export function handleReset()
 {
-	location.reload();
+	// TODO: currently makes sure the "Reset" button doesn't refresh the page
+	//   with a sibling name parameter. The whole system for that needs cleaning up
+	window.location.href = location.protocol + '//' + location.host + location.pathname;
 }
 
 function handleStop()
@@ -345,5 +354,26 @@ function displayControlParameters()
 	}
 }
 
+// TODO: This whole thing is very janky, but for now allows specifying the sibling
+//  in the url
+let PARAMS = new URLSearchParams(document.location.search);
+let SIBLING_PARAM = PARAMS.get("sibling");
+
 initializeUI();
+
+for(let optionIndex = 0; optionIndex < SIBLING_SELECTION_DROPDOWN.length; optionIndex++)
+{
+	let option = SIBLING_SELECTION_DROPDOWN[optionIndex];
+
+	if(option.value.toLowerCase() === SIBLING_PARAM)
+	{
+		SIBLING_SELECTION_DROPDOWN.value = option.value;
+		TITLE = SIBLING_SELECTION_DROPDOWN.options[optionIndex].text;
+		requestSiblingScript(SIBLING_PARAM);
+		loadScript();
+		break;
+	}
+}
+
+
 
