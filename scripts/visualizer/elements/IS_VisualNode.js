@@ -20,12 +20,11 @@ export class IS_VisualNode extends IS_VisualElement
 		const geometry = new this.visualizerContext.three.BoxGeometry(width, height, 0);
 		const material = new this.visualizerContext.three.MeshBasicMaterial();
 		material.transparent = true;
-		material.opacity = 1;
+		material.opacity = 0;
 
 		// TODO: generalize to getters and setters for IS_VisualElement
 		let colorBase = this._style.colorRGB;
 		material.color.set(...colorBase);
-
 
 		let nodeIcon = new this.visualizerContext.three.Mesh(geometry, material);
 		nodeIcon.position.x = xPosition;
@@ -55,7 +54,6 @@ export class IS_VisualNode extends IS_VisualElement
 	{
 		this.visualizerContext.addToScene(this._nodeIcon);
 	}
-
 
 	get audioNode() { return this._audioNode; }
 	get nodeIcon() { return this._nodeIcon; };
@@ -145,10 +143,12 @@ export class IS_VisualNode extends IS_VisualElement
 			this.RGB = [rValue, gValue, bValue];
 		}
 
-/*		if(this.audioNode.outputValue)
+/*
+		if(this.audioNode.outputValue)
 		{
 			let value = this.audioNode.outputValue;
 			this.colorAmplitude = Math.abs(value);
-		}*/
+		}
+*/
 	}
 }

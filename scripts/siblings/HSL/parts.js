@@ -35,7 +35,7 @@ export class Piece
         this.peakingFilter2 = IS.createFilter('peaking', 2557.9, 1);
         this.peakingFilter2.gain = 1.38;
 
-        this.outputGain = IS.createGain(4.5);
+        this.outputGain = IS.createGain(3);
 
         IS.connect.series
         (
@@ -262,7 +262,7 @@ export class Piece
 
 class RampingConvolver extends Piece
 {
-    constructor( piece )
+    constructor(piece)
     {
         super();
 
@@ -372,5 +372,4 @@ class RampingConvolver extends Piece
         this.noise.scheduleStop(stopTime);
         this.noiseOscillator.scheduleStop(stopTime);
     }
-
 }

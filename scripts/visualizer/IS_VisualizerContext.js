@@ -65,6 +65,11 @@ export class IS_VisualizerContext
 
 	set rotate(value) { ROTATE = value; }
 
+	set cameraPosition(xyz)
+	{
+		CAMERA.position.set(...xyz);
+	}
+
 	get showLabels() { return this._showLabels; };
 	set showLabels(value)
 	{
@@ -156,11 +161,10 @@ export class IS_VisualizerContext
 			let count = 0;
 			const time = performance.now() / 1000;
 
-			SCENE.traverse( function (child)
+			SCENE.traverse(function (child)
 			{
 				child.rotation.x = count + ( time / 3 );
 				child.rotation.z = count + ( time / 4 );
-
 				count ++;
 			});
 

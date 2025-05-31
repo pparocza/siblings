@@ -1,8 +1,9 @@
 import { IS } from "../../../script.js";
 import { Piece } from "./parts.js";
-// import * as Visualizer from "./visualizer.js";
+import * as Visualizer from "./visualizer.js";
 
 IS.onLoad(load);
+
 
 function load()
 {
