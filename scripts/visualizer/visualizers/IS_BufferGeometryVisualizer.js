@@ -403,9 +403,9 @@ class IS_BufferGeometry extends IS_VisualElement
 
 			this._material.color.setRGB
 			(
-				rValue,
-				gValue,
-				bValue,
+				rValue * 1.25,
+				gValue * 1.25,
+				bValue * 1.25,
 			);
 		}
 

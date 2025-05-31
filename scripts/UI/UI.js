@@ -107,14 +107,7 @@ function handleSiblingSelection()
 
 export async function requestSiblingScript(siblingScript = null)
 {
-	if(siblingScript === null)
-	{
-		SCRIPT_SRC = SIBLING_PATH + "/" + SIBLING_SELECTION_DROPDOWN.value + "/script.js";
-	}
-	else
-	{
-		SCRIPT_SRC = SIBLING_PATH + "/" + siblingScript + "/script.js";
-	}
+	SCRIPT_SRC = SIBLING_PATH + "/" + SIBLING_SELECTION_DROPDOWN.value + "/script.js";
 
 	let isSelectSibling = SIBLING_SELECTION_DROPDOWN.value === SIBLING_SELECTION_DROPDOWN[0].value;
 
@@ -369,7 +362,7 @@ for(let optionIndex = 0; optionIndex < SIBLING_SELECTION_DROPDOWN.length; option
 	{
 		SIBLING_SELECTION_DROPDOWN.value = option.value;
 		TITLE = SIBLING_SELECTION_DROPDOWN.options[optionIndex].text;
-		requestSiblingScript(SIBLING_PARAM);
+		requestSiblingScript();
 		loadScript();
 		break;
 	}
