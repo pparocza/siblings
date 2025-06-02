@@ -10,6 +10,7 @@ export class IS_VisualElement
 	}
 
 	get visualizerContext() { return this._visualizerContext; };
+	get three() { return this._visualizerContext.three; }
 	get isRegistered() { return this._visualizerContext.isRegistered(this); };
 	get isAnimated() { return this._isAnimated; };
 
