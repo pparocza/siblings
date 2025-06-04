@@ -1,18 +1,26 @@
 import { IS_Visualizer } from "../../visualizer/IS_Visualizer.js";
+import { IS } from "../../../script.js";
 
-let networkVisualizer = IS_Visualizer.visualizer.Network;
-IS_Visualizer.visualizer = networkVisualizer.visualize;
+IS.onReady(initialize);
+
+let visualizer = IS_Visualizer.visualizer.Network;
+IS_Visualizer.visualizer = visualizer.visualize;
 
 function cool()
 {
-	networkVisualizer.showConnections = false;
-	networkVisualizer.nodeHeight = 1;
-	networkVisualizer.nodeWidth = 1;
-	networkVisualizer.nodeScale = 2.5;
+	visualizer.showConnections = false;
+	visualizer.nodeHeight = 1;
+	visualizer.nodeWidth = 1;
+	visualizer.nodeScale = 2.5;
 
-	networkVisualizer.columnSpacing = 1.15;
+	visualizer.columnSpacing = 1.15;
 
-	networkVisualizer.yPosition = 1.5;
+	visualizer.yPosition = 1.5;
 }
 
 cool();
+
+function initialize()
+{
+	visualizer.initialize();
+}

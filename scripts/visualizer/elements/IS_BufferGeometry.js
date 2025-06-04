@@ -1,21 +1,20 @@
 import { IS_VisualElement } from "./IS_VisualElement.js";
-import { IS } from "../../../script.js";
 
 export class IS_BufferGeometry extends IS_VisualElement
 {
-	constructor(threeContext, audioNode)
+	constructor(audioNode)
 	{
 		super();
 
 		this._audioNode = audioNode;
 
 		this._vertices = new Vertices();
+	}
 
-		this._animationXRotationRate = IS.Random.Float(5, 10);
-		this._animationYRotationRate = IS.Random.Float(5, 10);
-		this._animationZRotationRate = IS.Random.Float(5, 10);
-
-		this.animate = this._animationCallback;
+	set material(material)
+	{
+		this._material = material;
+		this._mesh.material = this._material;
 	}
 
 	createBufferAttribute(array, numComponents)
@@ -30,10 +29,11 @@ export class IS_BufferGeometry extends IS_VisualElement
 
 	_createGeometry()
 	{
-		this._geometry = new Geometry(this._vertices);
+		this._geometry = new IS_Geometry(this._vertices);
 	}
 
-	createBufferGeometry()
+	// TODO: move this into createInstance and make private
+	_createBufferGeometry()
 	{
 		this._createGeometry();
 
@@ -51,6 +51,8 @@ export class IS_BufferGeometry extends IS_VisualElement
 
 	createInstance()
 	{
+		this._createBufferGeometry();
+
 		const material = new this.three.MeshLambertMaterial();
 		material.transparent = true;
 		material.opacity = 1;
@@ -61,54 +63,6 @@ export class IS_BufferGeometry extends IS_VisualElement
 		this._mesh = mesh;
 
 		return mesh;
-	}
-
-	_animationCallback()
-	{
-		let time = performance.now() / 1000;
-
-		if(this._audioNode.frequencyBins)
-		{
-			let frequencyArray = this._audioNode.frequencyBins;
-
-			let rArray = frequencyArray.slice(0, 5);
-			let gArray = frequencyArray.slice(5, 10);
-			let bArray = frequencyArray.slice(10, 16);
-
-			let r = rArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-			let g = gArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-			let b = bArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-
-			r /= rArray.length;
-			g /= gArray.length;
-			b /= bArray.length;
-
-			let rAmplitude = IS.Utility.DecibelsToAmplitude(r);
-			let gAmplitude = IS.Utility.DecibelsToAmplitude(g);
-			let bAmplitude = IS.Utility.DecibelsToAmplitude(b);
-
-			let averageAmplitude = (rAmplitude + gAmplitude + bAmplitude) / 3;
-
-			this._material.opacity = 1;
-
-			let rValue = rAmplitude; // * 10 * 0.25;
-			let gValue = gAmplitude * 100;
-			let bValue = bAmplitude * 1000; // * 15000 * 0.5;
-
-			this._material.color.setRGB
-			(
-				rValue * 1.25,
-				gValue * 1.25,
-				bValue * 1.25,
-			);
-		}
-
-		this._mesh.rotation.set
-		(
-			time / this._animationXRotationRate,
-			time / this._animationYRotationRate,
-			time / this._animationZRotationRate
-		);
 	}
 }
 
@@ -143,13 +97,12 @@ class Vertices
 		this._vertices = [];
 	}
 
-	addVertex(vertex) { this._vertices.push(vertex); }
 	createVertex(position, normal, uv) { this._vertices.push(new Vertex(position, normal, uv)); }
 
 	get vertices() { return this._vertices; }
 }
 
-class Geometry
+class IS_Geometry
 {
 	constructor(vertices)
 	{

@@ -17,8 +17,8 @@ export class IS_VisualNode extends IS_VisualElement
 		let height = this._style.height;
 		let width = this._style.width;
 
-		const geometry = new this.visualizerContext.three.BoxGeometry(width, height, 0);
-		const material = new this.visualizerContext.three.MeshBasicMaterial();
+		const geometry = new this.three.BoxGeometry(width, height, 0);
+		const material = new this.three.MeshBasicMaterial();
 		material.transparent = true;
 		material.opacity = 0;
 
@@ -39,10 +39,13 @@ export class IS_VisualNode extends IS_VisualElement
 
 		this.animate = this._animationCallback;
 
-		this._nodeIcon = nodeIcon;
+		this._mesh = nodeIcon;
 		this._geometry = geometry;
 		this._material = material;
 		this._colorBase = colorBase;
+		this._width = width;
+		this._height = height;
+		this._scale = 1;
 
 		this._xPosition = xPosition;
 		this._yPosition = yPosition;
@@ -52,11 +55,11 @@ export class IS_VisualNode extends IS_VisualElement
 
 	addToScene()
 	{
-		this.visualizerContext.addToScene(this._nodeIcon);
+		this.visualizerContext.addToScene(this._mesh);
 	}
 
 	get audioNode() { return this._audioNode; }
-	get nodeIcon() { return this._nodeIcon; };
+	get nodeIcon() { return this._mesh; };
 
 	get xPosition() { return this._xPosition; }
 	get yPosition() { return this._yPosition; }
@@ -65,20 +68,26 @@ export class IS_VisualNode extends IS_VisualElement
 	set scale(value)
 	{
 		this._scale = value;
-		this._height *= this._scale;
-		this._width *= this._scale;
+		this._height = this._height * this._scale;
+		this._width = this._width * this._scale;
+
+		this._mesh.scale.y = this._height;
+		this._mesh.scale.x = this._width;
 	};
 
 	get height() { return this._height; };
 	set height(value)
 	{
 		this._height = value * this._scale;
+
+		this._mesh.scale.y = this._height;
 	};
 
 	get width() { return this._width; };
 	set width(value)
 	{
 		this._width = value * this._scale;
+		this._mesh.scale.x = this._width;
 	};
 
 	set colorAmplitude(value)
@@ -112,6 +121,17 @@ export class IS_VisualNode extends IS_VisualElement
 
 	_animationCallback()
 	{
+		this._spectrumRGB();
+
+		if(this.randomRotate)
+		{
+			this._randomRotate();
+		}
+
+	}
+
+	_spectrumRGB()
+	{
 		if(this.audioNode.frequencyBins)
 		{
 			let frequencyArray = this.audioNode.frequencyBins;
@@ -134,7 +154,7 @@ export class IS_VisualNode extends IS_VisualElement
 
 			let averageAmplitude = (rAmplitude + gAmplitude + bAmplitude) / 3;
 
-			this._material.opacity = averageAmplitude > 0.0 ? 1 : 0;
+			this._material.opacity = averageAmplitude > 0.001 ? 1 : 0;
 
 			let rValue = rAmplitude * 100;
 			let gValue = gAmplitude * 10000;
@@ -142,13 +162,32 @@ export class IS_VisualNode extends IS_VisualElement
 
 			this.RGB = [rValue, gValue, bValue];
 		}
+	}
 
-/*
-		if(this.audioNode.outputValue)
+	randomRotate = false;
+	randomRotateInit = false;
+	randomRotateRateY = null;
+	randomRotateRateX = null;
+	randomRotateRateZ = null;
+
+	_randomRotate()
+	{
+		if(!this.randomRotateInit)
 		{
-			let value = this.audioNode.outputValue;
-			this.colorAmplitude = Math.abs(value);
+			this.randomRotateRateX = IS.Random.Float(1000, 3000);
+			this.randomRotateRateY = IS.Random.Float(5000, 10000);
+			this.randomRotateRateZ = IS.Random.Float(5000, 10000);
+
+			this.randomRotateInit = true;
 		}
-*/
+
+		const time = performance.now();
+
+		// this._nodeIcon.rotation.y = time / this.randomRotateRateY;
+		// this._nodeIcon.rotation.x = time / this.randomRotateRateX;
+		this._mesh.rotation.z = time / this.randomRotateRateZ;
+
+		this._mesh.scale.x = Math.abs(Math.sin(time / this.randomRotateRateY)) * this._scale;
+		this._mesh.scale.y = Math.abs(Math.sin(time / this.randomRotateRateY)) * this._scale;
 	}
 }

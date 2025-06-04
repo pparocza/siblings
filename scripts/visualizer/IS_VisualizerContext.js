@@ -155,6 +155,7 @@ export class IS_VisualizerContext
 			ANIMATION_REGISTRY[animationIndex].animate();
 		}
 
+		// TODO: Move this to visualizers that use it
 		// LINE ANIMATION
 		if(ROTATE)
 		{
@@ -167,7 +168,6 @@ export class IS_VisualizerContext
 				child.rotation.z = count + ( time / 4 );
 				count ++;
 			});
-
 		}
 
 		RENDERER.render(SCENE, CAMERA);

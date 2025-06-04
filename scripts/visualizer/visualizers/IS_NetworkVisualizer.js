@@ -9,6 +9,9 @@ let X_POSITION = -0.15;
 let Y_POSITION = 1.5;
 
 let SHOW_CONNECTIONS = true;
+let VISUAL_NETWORKS = [];
+
+let RANDOM_ROTATE = false;
 
 export const IS_NetworkVisualizer =
 {
@@ -36,7 +39,12 @@ export const IS_NetworkVisualizer =
 	get nodeScale() { return IS_VisualizerParameters.Node.Scale; },
 	set nodeScale(value) { IS_VisualizerParameters.Node.Scale = value; },
 
-	visualize()
+	get randomRotate() { return RANDOM_ROTATE; },
+	set randomRotate(value) { RANDOM_ROTATE = value; },
+
+	visualize() {},
+
+	initialize()
 	{
 		let networkRegistry = SIBLING_CONTEXT.NetworkRegistry;
 
@@ -49,7 +57,17 @@ export const IS_NetworkVisualizer =
 			visualNetwork.columnSpacing = COLUMN_SPACING;
 			visualNetwork.rowSpacing = ROW_SPACING;
 
+			console.log(visualNetwork);
+
+			if(RANDOM_ROTATE)
+			{
+				visualNetwork.randomRotate = true;
+			}
+
 			visualNetwork.draw();
+
+			VISUAL_NETWORKS.push(visualNetwork);
 		}
-	}
+	},
 }
+

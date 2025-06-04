@@ -1,15 +1,29 @@
 import { IS_Visualizer } from "../../visualizer/IS_Visualizer.js";
+import { IS } from "../../../script.js";
 
-let networkVisualizer = IS_Visualizer.visualizer.Network;
+IS.onReady(initialize);
 
-networkVisualizer.nodeScale = 4;
+let visualizer = IS_Visualizer.visualizer.Flower;
+IS_Visualizer.visualizer = visualizer.visualize;
 
-networkVisualizer.showConnections = false;
-networkVisualizer.columnSpacing *= 0;
-networkVisualizer.rowSpacing *= 0;
+function cool()
+{
+	visualizer.showConnections = false;
+	visualizer.nodeHeight = 1;
+	visualizer.nodeWidth = 1;
+	visualizer.nodeScale = 0.3;
 
-networkVisualizer.xPosition = 0;
-networkVisualizer.yPosition = 0;
+	visualizer.yPosition = 0;
+	visualizer.xPosition = 0;
 
-IS_Visualizer.visualizer = networkVisualizer.visualize;
-IS_Visualizer.rotate = true;
+	visualizer.randomRotate = false;
+}
+
+cool();
+
+function initialize()
+{
+	visualizer.initialize();
+}
+
+// TODO: Network flower? push everything out from a radius and rotate a bit, then rotate around radius as well?

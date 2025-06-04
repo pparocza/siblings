@@ -28,6 +28,7 @@ export const IS_HSLVisualizer =
 
 		this._createBufferCircles(bufferSources);
 		this._createBufferGeometries(bufferSources);
+
 	},
 
 	_createBufferCircles(bufferSources)
@@ -62,7 +63,7 @@ export const IS_HSLVisualizer =
 			let nSamples = bufferArray.length;
 			let circleNPoints = bufferArray.length / nCircles ;
 
-			let bufferGeometry = new IS_BufferGeometry(THREE, bufferSource);
+			let bufferGeometry = new IS_BufferGeometry(bufferSource);
 
 			for(let sampleIndex = 0; sampleIndex < nSamples; sampleIndex++)
 			{
@@ -77,7 +78,6 @@ export const IS_HSLVisualizer =
 				bufferGeometry.createVertex(position, [0, 0, 1], [0, 0]);
 			}
 
-			bufferGeometry.createBufferGeometry();
 			let shape = bufferGeometry.createInstance();
 
 			let xScale = 1;
@@ -87,7 +87,77 @@ export const IS_HSLVisualizer =
 			shape.scale.set(xScale, yScale, zScale);
 			shape.position.set(0, 0 , 0);
 
+			bufferGeometry.animate = new IS_HSL_Animation
+			(
+				bufferSource, bufferGeometry._material, bufferGeometry._mesh
+			);
+
 			IS_Visualizer.addToScene(shape);
 		}
 	}
 }
+
+class IS_HSL_Animation
+{
+	constructor(audioNode, mesh, material)
+	{
+		this._audioNode = audioNode;
+		this._mesh = mesh;
+		this._material = material;
+
+		this._animationXRotationRate = IS.Random.Float(5, 10);
+		this._animationYRotationRate = IS.Random.Float(5, 10);
+		this._animationZRotationRate = IS.Random.Float(5, 10);
+
+		return this._animationCallback;
+	}
+
+	_animationCallback()
+	{
+		let time = performance.now() / 1000;
+
+		if(this._audioNode.frequencyBins)
+		{
+			let frequencyArray = this._audioNode.frequencyBins;
+
+			let rArray = frequencyArray.slice(0, 5);
+			let gArray = frequencyArray.slice(5, 10);
+			let bArray = frequencyArray.slice(10, 16);
+
+			let r = rArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+			let g = gArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+			let b = bArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+
+			r /= rArray.length;
+			g /= gArray.length;
+			b /= bArray.length;
+
+			let rAmplitude = IS.Utility.DecibelsToAmplitude(r);
+			let gAmplitude = IS.Utility.DecibelsToAmplitude(g);
+			let bAmplitude = IS.Utility.DecibelsToAmplitude(b);
+
+			let averageAmplitude = (rAmplitude + gAmplitude + bAmplitude) / 3;
+
+			this._material.opacity = 1;
+
+			let rValue = rAmplitude; // * 10 * 0.25;
+			let gValue = gAmplitude * 100;
+			let bValue = bAmplitude * 1000; // * 15000 * 0.5;
+
+			this._material.color.setRGB
+			(
+				rValue * 1.25,
+				gValue * 1.25,
+				bValue * 1.25,
+			);
+		}
+
+		this._mesh.rotation.set
+		(
+			time / this._animationXRotationRate,
+			time / this._animationYRotationRate,
+			time / this._animationZRotationRate
+		);
+	}
+}
+

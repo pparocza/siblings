@@ -113,10 +113,17 @@ export class IS_VisualNetwork extends IS_VisualElement
 		}
 	}
 
+	randomRotate = false;
+
 	_createVisualNode(nodeMatrixData, xPosition, yPosition)
 	{
 		let visualNode = new IS_VisualNode(nodeMatrixData.audioNode, xPosition, yPosition);
 		visualNode.addToScene();
+
+		if(this.randomRotate)
+		{
+			visualNode.randomRotate = true;
+		}
 
 		this._internalRegisterVisualizedNode(nodeMatrixData, xPosition, yPosition);
 	}

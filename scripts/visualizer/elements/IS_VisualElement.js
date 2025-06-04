@@ -1,3 +1,4 @@
+// TODO: Dependency inject to constructor instead of import?
 import { IS_Visualizer } from "../IS_Visualizer.js";
 
 export class IS_VisualElement
