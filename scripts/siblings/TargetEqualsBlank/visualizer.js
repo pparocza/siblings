@@ -10,4 +10,4 @@ visualizer.nodeScale = 0.8;
 visualizer.columnSpacing *= 0.35;
 visualizer.rowSpacing *= 1.5;
 
-IS_Visualizer.visualizer = visualizer.visualize;
+IS_Visualizer.visualizer = visualizer.initialize;
