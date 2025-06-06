@@ -16,6 +16,7 @@ export const IS_HSLVisualizer =
 		let bufferSources = [];
 
 		let light = new IS_Light([0, 0, 2]);
+		light.animate = new IS_LightAnimation(light.light);
 		IS_Visualizer.addToScene(light.light);
 
 		for(const [audioNodeUUID, audioNode] of Object.entries(IS.NodeRegistry._registry))
@@ -78,7 +79,7 @@ export const IS_HSLVisualizer =
 				bufferGeometry.createVertex(position, [0, 0, 1], [0, 0]);
 			}
 
-			let shape = bufferGeometry.createInstance();
+			let shape = bufferGeometry.createInstance(new THREE.MeshLambertMaterial());
 
 			let xScale = 1;
 			let yScale = 1;
@@ -158,6 +159,36 @@ class IS_HSL_Animation
 			time / this._animationYRotationRate,
 			time / this._animationZRotationRate
 		);
+	}
+}
+
+class IS_LightAnimation
+{
+	constructor(light)
+	{
+		this.Y_TIME = 1250;
+		this.Z_TIME = 1500;
+		this.X_TIME = 1000;
+
+		this._light = light;
+
+		return this._animationCallback;
+	}
+
+	_animationCallback()
+	{
+		let time = performance.now();
+
+		this._light.position.set
+		(
+			Math.sin(time / this.X_TIME),
+			Math.cos(time / this.Y_TIME),
+			Math.abs(Math.sin(time / this.Z_TIME))
+		);
+
+		this.Y_TIME *= IS.Random.Float(0.999, 1.001);
+		this.X_TIME *= IS.Random.Float(0.999, 1.001);
+		this.Z_TIME *= IS.Random.Float(0.999, 1.001);
 	}
 }
 

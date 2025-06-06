@@ -17,6 +17,11 @@ export class IS_BufferGeometry extends IS_VisualElement
 		this._mesh.material = this._material;
 	}
 
+	set position(xyz)
+	{
+		this._mesh.position.set(...xyz);
+	}
+
 	createBufferAttribute(array, numComponents)
 	{
 		return new this.three.BufferAttribute(new Float32Array(array), numComponents);
@@ -32,7 +37,6 @@ export class IS_BufferGeometry extends IS_VisualElement
 		this._geometry = new IS_Geometry(this._vertices);
 	}
 
-	// TODO: move this into createInstance and make private
 	_createBufferGeometry()
 	{
 		this._createGeometry();
@@ -40,7 +44,7 @@ export class IS_BufferGeometry extends IS_VisualElement
 		let geometry = this._geometry;
 
 		const bufferGeometry = new this.three.BufferGeometry();
-		const positionAttribute = this.createBufferAttribute(this._geometry.positions, geometry.positionNumComponents);
+		const positionAttribute = this.createBufferAttribute(geometry.positions, geometry.positionNumComponents);
 		const normalAttribute = this.createBufferAttribute(geometry.normals, geometry.normalNumComponents);
 
 		bufferGeometry.setAttribute('position', positionAttribute);
@@ -49,11 +53,15 @@ export class IS_BufferGeometry extends IS_VisualElement
 		this._bufferGeometry = bufferGeometry;
 	}
 
-	createInstance()
+	createInstance(material = null)
 	{
 		this._createBufferGeometry();
 
-		const material = new this.three.MeshLambertMaterial();
+		if(material === null)
+		{
+			material = new this.three.MeshNormalMaterial();
+		}
+
 		material.transparent = true;
 		material.opacity = 1;
 

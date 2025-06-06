@@ -89,7 +89,7 @@ export const IS_FlowerNetworkVisualizer =
 		this._createConvolverSources(convolverSources);
 		// this._createDelaySources(delaySources);
 		// this._createConvolverSources(convolverSources);
-		this._createBackgroundNoise(backgroundNoise);
+		// this._createBackgroundNoise(backgroundNoise);
 	},
 
 	_createCirlces(sources)
@@ -147,7 +147,7 @@ export const IS_FlowerNetworkVisualizer =
 		{
 			let source = sources[sourceIndex];
 			let line = new IS_Line(source);
-			line.bufferGeometry(source);
+			line.bufferGeometry2(source);
 		}
 	}
 }
@@ -344,7 +344,7 @@ class IS_Line extends IS_VisualElement
 		{
 			let sampleValue = sampleArray[sampleIndex];
 			let progress = sampleIndex / nSamples;
-			let theta = (Math.PI * 2 * progress);
+
 			let point = new THREE.Vector3
 			(
 				sampleIndex / nSamples,
@@ -381,41 +381,95 @@ class IS_Line extends IS_VisualElement
 		let sampleArray = bufferSource.buffer.getChannelData(0);
 		let points = [];
 		let nSamples = sampleArray.length;
+		let bufferGeometry = new IS_BufferGeometry(bufferSource);
 
 		for(let sampleIndex = 0; sampleIndex < nSamples; sampleIndex++)
 		{
 			let sampleValue = sampleArray[sampleIndex];
+
 			let progress = sampleIndex / nSamples;
 			let theta = (Math.PI * 2 * progress);
 
-			let point = new THREE.Vector3
-			(
-				sampleIndex / nSamples,
-				sampleValue,
-				0
-			);
+			let xPosition = Math.sin(theta);
+			let yPosition = Math.cos(theta);
 
-			points.push(point);
+			let triangleVertex = sampleIndex % 3;
+			let samplePosition = sampleValue;
+
+			if(triangleVertex === 0)
+			{
+				samplePosition += yPosition;
+				bufferGeometry.createVertex
+				(
+					[xPosition, samplePosition, 0], [xPosition, yPosition, sampleValue], [0, 0]
+				);
+			}
+			else
+			{
+				samplePosition += xPosition;
+				bufferGeometry.createVertex
+				(
+					[samplePosition, yPosition, 0], [xPosition, yPosition, sampleValue], [0, 0]
+				);
+			}
 		}
 
-		let bufferGeometry = new IS_BufferGeometry(THREE, bufferSource);
-		bufferGeometry.material = new THREE.MeshNormalMaterial();
+		let light = new IS_Light();
+		IS_Visualizer.addToScene(light.light);
 
-		bufferGeometry.createVertex([0, 4, 0], [0, 0, 1], [0, 0]);
-		bufferGeometry.createVertex([-4, 0, 0], [0, 0, 1], [0, 0]);
-		bufferGeometry.createVertex([4, 0, 0], [0, 0, 1], [0, 0]);
-
-		bufferGeometry.createBufferGeometry();
-
-		let material = new THREE.LineBasicMaterial();
-		let geometry = bufferGeometry.createInstance();
-		geometry._material = new THREE.MeshNormalMaterial();
+		let mesh = bufferGeometry.createInstance(/*new THREE.MeshLambertMaterial()*/);
+		IS_Visualizer.addToScene(mesh);
+		mesh.scale.x = 2;
+		mesh.scale.y = 2;
 
 		bufferGeometry.shouldAnimate = false;
 
-		IS_Visualizer.addToScene(geometry);
-
 		// this.animate = this._spectrumAndRotate;
+	}
+
+	bufferGeometry2(bufferSource)
+	{
+		let sampleArray = bufferSource.buffer.getChannelData(0);
+		// let points = [];
+		let nSamples = sampleArray.length;
+		let geometry = new THREE.BufferGeometry();
+		let colors = [];
+		let color = new THREE.Color();
+		let positions = [];
+
+		for(let sampleIndex = 0; sampleIndex < nSamples; sampleIndex++)
+		{
+			let sampleValue = sampleArray[sampleIndex];
+
+			let progress = sampleIndex / nSamples;
+			let theta = Math.PI * 2 * progress;
+
+			let xPosition = Math.sin(theta);
+			let yPosition = Math.cos(theta);
+
+			positions.push(xPosition, yPosition, sampleValue);
+
+			const vx = Math.abs(xPosition);
+			const vy = Math.abs(yPosition);
+			const vz = Math.abs(sampleValue);
+
+			color.setRGB(vx, vy, vz, THREE.SRGBColorSpace);
+
+			colors.push( color.r, color.g, color.b );
+		}
+
+		let light = new IS_Light();
+		IS_Visualizer.addToScene(light.light);
+
+		geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
+		geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+
+		geometry.computeBoundingSphere();
+
+		let material = new THREE.PointsMaterial( { size: 1, vertexColors: true} );
+		let points = new THREE.Points(geometry, material);
+
+		IS_Visualizer.addToScene(points);
 	}
 
 	// TODO: AudioReaction(audioNode, visualNode)
