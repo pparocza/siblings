@@ -50,6 +50,8 @@ export class IS_VisualNode extends IS_VisualElement
 		this._xPosition = xPosition;
 		this._yPosition = yPosition;
 
+		this._transparencyAmplitudeThreshold = 0;
+
 		this.colorAmplitude = 1;
 	}
 
@@ -63,6 +65,9 @@ export class IS_VisualNode extends IS_VisualElement
 
 	get xPosition() { return this._xPosition; }
 	get yPosition() { return this._yPosition; }
+
+	get transparencyAmplitudeThreshold() { return this._transparencyAmplitudeThreshold; }
+	set transparencyAmplitudeThreshold(value) { this._transparencyAmplitudeThreshold = value; }
 
 	get scale() { return this._scale; };
 	set scale(value)
@@ -154,7 +159,7 @@ export class IS_VisualNode extends IS_VisualElement
 
 			let averageAmplitude = (rAmplitude + gAmplitude + bAmplitude) / 3;
 
-			this._material.opacity = averageAmplitude > 0.001 ? 1 : 0;
+			this._material.opacity = averageAmplitude > this._transparencyAmplitudeThreshold ? 1 : 0;
 
 			let rValue = rAmplitude * 100;
 			let gValue = gAmplitude * 10000;

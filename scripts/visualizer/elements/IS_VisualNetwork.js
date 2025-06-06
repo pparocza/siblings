@@ -22,8 +22,13 @@ export class IS_VisualNetwork extends IS_VisualElement
 
 		this._showConnections = true;
 
+		this._transparencyAmplitudeThreshold = 0;
+
 		this._iSNetworkToArray(iSNetwork);
 	}
+
+	get transparencyAmplitudeThreshold() { return this._transparencyAmplitudeThreshold; }
+	set transparencyAmplitudeThreshold(value) { this._transparencyAmplitudeThreshold = value; }
 
 	get nRows() { return this._iSNetworkAsArray.length; }
 	get top() { return this._top; }
@@ -124,6 +129,8 @@ export class IS_VisualNetwork extends IS_VisualElement
 		{
 			visualNode.randomRotate = true;
 		}
+
+		visualNode.transparencyAmplitudeThreshold = this._transparencyAmplitudeThreshold;
 
 		this._internalRegisterVisualizedNode(nodeMatrixData, xPosition, yPosition);
 	}

@@ -13,6 +13,8 @@ let VISUAL_NETWORKS = [];
 
 let RANDOM_ROTATE = false;
 
+let TRANSPARENCY_AMPLITUDE_THRESHOLD = 0;
+
 export const IS_NetworkVisualizer =
 {
 	get xPosition() { return X_POSITION; },
@@ -42,6 +44,9 @@ export const IS_NetworkVisualizer =
 	get randomRotate() { return RANDOM_ROTATE; },
 	set randomRotate(value) { RANDOM_ROTATE = value; },
 
+	get transparencyAmplitudeThreshold() { return TRANSPARENCY_AMPLITUDE_THRESHOLD; },
+	set transparencyAmplitudeThreshold(value) { TRANSPARENCY_AMPLITUDE_THRESHOLD = value; },
+
 	visualize() {},
 
 	initialize()
@@ -52,12 +57,11 @@ export const IS_NetworkVisualizer =
 		{
 			let iSNetwork = networkRegistry.getNetwork(networkIndex);
 			let visualNetwork = new IS_VisualNetwork(iSNetwork, X_POSITION, Y_POSITION);
+			visualNetwork.transparencyAmplitudeThreshold = TRANSPARENCY_AMPLITUDE_THRESHOLD;
 			visualNetwork.showConnections = SHOW_CONNECTIONS;
 
 			visualNetwork.columnSpacing = COLUMN_SPACING;
 			visualNetwork.rowSpacing = ROW_SPACING;
-
-			console.log(visualNetwork);
 
 			if(RANDOM_ROTATE)
 			{
