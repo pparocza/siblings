@@ -117,17 +117,6 @@ export async function requestSiblingScript(siblingScript = null)
 		return;
 	}
 
-	fetch(SCRIPT_SRC).then(response =>
-	{
-		if(response.ok)
-		{
-			BUTTONS.LOAD_BUTTON.disabled = false;
-			return;
-		}
-		BUTTONS.LOAD_BUTTON.disabled = true;
-	}, error => console.log(error.message)
-	);
-
 	const scriptRequest = await fetch(SCRIPT_SRC);
 	scriptRequest.async = false;
 
