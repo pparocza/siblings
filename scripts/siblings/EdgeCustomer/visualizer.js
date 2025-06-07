@@ -1,5 +1,5 @@
 import { IS_Visualizer } from "../../visualizer/IS_Visualizer.js";
-import {IS} from "../../../script";
+import { IS } from "../../../script.js";
 
 let networkVisualizer = IS_Visualizer.visualizer.Network;
 
