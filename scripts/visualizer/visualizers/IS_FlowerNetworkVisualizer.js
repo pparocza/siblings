@@ -2,7 +2,7 @@ import * as THREE from "https://cdn.skypack.dev/three@0.152.0";
 import { IS_VisualNode } from "../elements/IS_VisualNode.js";
 import { SIBLING_CONTEXT } from "../IS_VisualizerContext.js";
 import { IS_VisualizerParameters } from "../IS_VisualizerParameters.js";
-import { IS } from "../../../script";
+import { IS } from "../../../script.js";
 import { IS_Visualizer } from "../IS_Visualizer.js";
 import { IS_VisualElement } from "../elements/IS_VisualElement.js";
 import { IS_Light } from "../elements/IS_Light.js";
