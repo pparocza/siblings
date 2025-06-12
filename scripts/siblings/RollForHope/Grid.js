@@ -95,7 +95,7 @@ function percussionSections
 	);
 }
 
-const PLAY_AT_START_LIMIT = 15;
+const PLAY_AT_START_LIMIT = 1;
 
 function gridSection
 (
