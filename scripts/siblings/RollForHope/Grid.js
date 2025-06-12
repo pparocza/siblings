@@ -206,6 +206,4 @@ function gridSection
 			}
 		}
 	}
-
-	console.log(playingAtStart);
 }

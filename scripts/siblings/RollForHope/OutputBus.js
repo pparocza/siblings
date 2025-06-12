@@ -21,7 +21,8 @@ export const OutputBus =
             let compressor = IS.AudioContext.createDynamicsCompressor();
             let thru = IS.createGain();
 
-            // compressor.threshold.value = -3;
+            compressor.threshold.value = -2;
+            compressor.ratio.value = 1;
 
             this._mainOutput = IS.createGain()
             this._mainOutput.connect(compressor);
