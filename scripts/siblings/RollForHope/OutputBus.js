@@ -16,10 +16,17 @@ export const OutputBus =
     _mainOutput: null,
     get MainOutput()
     {
-        if(this._mainOutput == null)
+        if(this._mainOutput === null)
         {
+            let compressor = IS.AudioContext.createDynamicsCompressor();
+            let thru = IS.createGain();
+
+            // compressor.threshold.value = -3;
+
             this._mainOutput = IS.createGain()
-            this._mainOutput.connectToMainOutput();
+            this._mainOutput.connect(compressor);
+            compressor.connect(thru.input);
+            thru.connectToMainOutput();
             this._mainOutput.volume = Parameters.OutputBus.ImitationOutputVolumeValue;
         }
         return this._mainOutput;

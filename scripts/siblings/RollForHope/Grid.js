@@ -95,6 +95,8 @@ function percussionSections
 	);
 }
 
+const PLAY_AT_START_LIMIT = 15;
+
 function gridSection
 (
 	startTime, timeLimit, speed, possibleDurations,
@@ -105,6 +107,8 @@ function gridSection
 	pitched, referenceMemory
 )
 {
+	let playingAtStart = 0;
+
 	// TODO: you should be able to do this by changing the playback rate instead of having a buffer for each note
 	for(let voice = 0; voice < nVoices; voice++)
 	{
@@ -128,12 +132,13 @@ function gridSection
 
 		fmKeyBufferSource.playbackRate = 1;
 
-		if(playAtStart)
+		if(playAtStart && playingAtStart < PLAY_AT_START_LIMIT)
 		{
 			if(octave > 0.25 || pitched === false)
 			{
 				// TODO: not intentional but it ended up being a nice start
 				fmKeyBufferSource.scheduleStart(IS.Random.Float(0, 0.01));
+				playingAtStart++;
 			}
 		}
 
@@ -201,4 +206,6 @@ function gridSection
 			}
 		}
 	}
+
+	console.log(playingAtStart);
 }
