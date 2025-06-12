@@ -6,6 +6,6 @@
 
 [edge customer](https://pparocza.github.io/siblings/?sibling=edgecustomer) ||
 [flaxen](https://pparocza.github.io/siblings/?sibling=flaxen) ||
-[hsl](https://pparocza.github.io/siblings/?sibling=flaxen) ||
+[hsl](https://pparocza.github.io/siblings/?sibling=hsl) ||
 [roll for hope](https://pparocza.github.io/siblings/?sibling=rollforhope) ||
 [target equals blank](https://pparocza.github.io/siblings/?sibling=targetequalsblank)
