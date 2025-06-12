@@ -1,6 +1,6 @@
 ## Siblings
 
-[Music](https://pparocza.github.io/siblings/) made with the [infinite sibling](https://threejs.org/) generative music library.
+[Music](https://pparocza.github.io/siblings/) made with the [infinite sibling](https://github.com/pparocza/infinite_sibling) generative music library.
 
 ### Current
 
