@@ -17,3 +17,5 @@
 <video src="https://github.com/user-attachments/assets/2aaec845-d15e-4813-bf9c-1f3648977ef1" width="320" height="240" controls hidden></video>
 
 ### .sibling config
+
+<video src="https://github.com/user-attachments/assets/73fe40db-5e5c-4154-841b-8312cce9a242" width="320" height="240" controls hidden></video>
