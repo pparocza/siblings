@@ -18,19 +18,8 @@ export const OutputBus =
     {
         if(this._mainOutput === null)
         {
-            let compressor = IS.AudioContext.createDynamicsCompressor();
-            let thru = IS.createGain();
-
-            compressor.threshold.value = -4;
-            compressor.ratio.value = 1;
-            compressor.attack.value = 0;
-            compressor.release.value = 0.25;
-            compressor.knee.value = 10;
-
             this._mainOutput = IS.createGain()
-            this._mainOutput.connect(compressor);
-            compressor.connect(thru.input);
-            thru.connectToMainOutput();
+            this._mainOutput.connectToMainOutput();
             this._mainOutput.volume = Parameters.OutputBus.ImitationOutputVolumeValue;
         }
         return this._mainOutput;
