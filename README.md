@@ -2,6 +2,8 @@
 
 [Music](https://pparocza.github.io/siblings/) made with the [infinite sibling](https://github.com/pparocza/infinite_sibling) generative music library.
 
+https://github.com/user-attachments/assets/a52feb6d-0e06-4061-ac03-5e54f56d271c
+
 ## Current
 
 - [edge customer](https://pparocza.github.io/siblings/?sibling=edgecustomer) || [recording](https://www.youtube.com/watch?v=U9v7bDEuGAM) <br>
