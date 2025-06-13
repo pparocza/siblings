@@ -2,7 +2,7 @@
 
 [Music](https://pparocza.github.io/siblings/) made with the [infinite sibling](https://github.com/pparocza/infinite_sibling) generative music library.
 
-https://github.com/user-attachments/assets/a52feb6d-0e06-4061-ac03-5e54f56d271c
+https://github.com/user-attachments/assets/6bbd1f1c-9ae4-4ad9-b091-0a117c2c29ed
 
 ## Current
 
