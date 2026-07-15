@@ -5,9 +5,8 @@ IS.onLoad(load);
 
 function load()
 {
-	const piece = new Piece();
-	piece.initMainChannel();
-	piece.initFXChannels();
-	piece.load();
-	piece.schedule();
+    const piece = new Piece();
+
+    piece.load();
+    piece.schedule();
 }
